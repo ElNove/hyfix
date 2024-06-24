@@ -41,6 +41,11 @@ dependencies:
   table_calendar: ^3.1.2
   google_fonts: ^6.2.1
   diagonal_decoration: ^1.0.2
+  shared_preferences: ^2.2.3
+  provider: ^6.1.2
+  material_color_utilities: ^0.8.0
+  intl: ^0.19.0
+  http: ^1.2.1
   
 
 
@@ -68,6 +73,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
 
+    - assets/theme.json
     - lib/img/logo.png
   #   - images/a_dot_ham.jpeg
   

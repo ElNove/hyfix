@@ -6,12 +6,11 @@ import 'package:table_calendar/table_calendar.dart';
 class TableBasic extends StatefulWidget {
   const TableBasic(
       {super.key,
+      required this.lista,
       required this.onDaySelected,
       required this.calendarFormat,
       required this.updateFormat,
-      required this.visible,
-      required this.lista
-      });
+      required this.visible});
   final Function(DateTime) onDaySelected;
   final Function(CalendarFormat) updateFormat;
   final CalendarFormat calendarFormat;
@@ -29,50 +28,63 @@ class _TableBasicState extends State<TableBasic> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: TableCalendar(
-         locale: 'it_IT',
-         availableCalendarFormats:const {
-  CalendarFormat.month : 'Mese',
-  CalendarFormat.twoWeeks:'2 Settimane',
-  CalendarFormat.week:'Settimana'
-},
-          firstDay: DateTime.utc(2000, 1, 1),
-          lastDay: DateTime.utc(2050, 12, 31),
-          focusedDay: _focusedDay,
-          calendarFormat: widget.calendarFormat,
-          calendarStyle: const CalendarStyle(
-              selectedDecoration: BoxDecoration(
-                  color: Color.fromARGB(255, 97, 205, 255),
-                  shape: BoxShape.circle),
-                todayDecoration: BoxDecoration(color: Color.fromARGB(255, 188, 234, 255),shape: BoxShape.circle)),
-          onFormatChanged: (format) {
-            setState(() {
-              widget.updateFormat(format);
-            });
-          },
-          selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-          onDaySelected: (selectedDay, focusedDay) {
-            setState(() {
-              widget.onDaySelected(selectedDay);
-              _selectedDay = selectedDay;
-              _focusedDay = focusedDay;
-              selezionato = selectedDay;
-            });
-          },
-          eventLoader: (day) {
-            for (var i = 0; i <widget.lista.length; i++) {
-              if (isSameDay(day,widget.lista[i].data)) {
-                return [widget.lista[i]];
-              }
-            }
-            return [];
-          },
-          onPageChanged: (focusedDay) {
-            _focusedDay = focusedDay;
-          },
-        ));
+    return TableCalendar(
+      startingDayOfWeek: StartingDayOfWeek.monday,
+      locale: 'it_IT',
+      availableCalendarFormats: const {
+        CalendarFormat.month: 'Mese',
+        CalendarFormat.twoWeeks: '2 Settimane',
+        CalendarFormat.week: 'Settimana',
+      },
+      firstDay: DateTime.utc(2000, 1, 1),
+      lastDay: DateTime.utc(2050, 12, 31),
+      focusedDay: _focusedDay,
+      calendarFormat: widget.calendarFormat,
+      headerStyle: HeaderStyle(
+        leftChevronIcon: Icon(Icons.chevron_left,
+            color: Theme.of(context).colorScheme.onSurface),
+        rightChevronIcon: Icon(Icons.chevron_right,
+            color: Theme.of(context).colorScheme.onSurface),
+        formatButtonDecoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).colorScheme.onSurface),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+      calendarStyle: CalendarStyle(
+        selectedDecoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            shape: BoxShape.circle),
+        todayDecoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            shape: BoxShape.circle),
+      ),
+      onFormatChanged: (format) {
+        setState(() {
+          widget.updateFormat(format);
+        });
+      },
+      selectedDayPredicate: (day) {
+        return isSameDay(_selectedDay, day);
+      },
+      onDaySelected: (selectedDay, focusedDay) {
+        setState(() {
+          widget.onDaySelected(selectedDay);
+          _selectedDay = selectedDay;
+          _focusedDay = focusedDay;
+          selezionato = selectedDay;
+        });
+      },
+      eventLoader: (day) {
+        for (var i = 0; i < widget.lista.length; i++) {
+          if (isSameDay(day, widget.lista[i].data)) {
+            return [widget.lista[i]];
+          }
+        }
+        return [];
+      },
+      onPageChanged: (focusedDay) {
+        _focusedDay = focusedDay;
+      },
+    );
   }
 }

@@ -4,12 +4,11 @@ import 'package:progetto/Events.dart';
 class ContainerEvents extends StatefulWidget {
   const ContainerEvents(
       {required this.selezionato,
+      required this.lista,
       super.key,
-      required this.visible,
-      required this.lista});
+      required this.visible});
   final DateTime selezionato;
   final bool visible;
-
   final List lista;
 
   _ContainerEvents createState() => _ContainerEvents();
@@ -18,11 +17,11 @@ class ContainerEvents extends StatefulWidget {
 class _ContainerEvents extends State<ContainerEvents> {
   bool controllo() {
     bool check = false;
-    widget.lista.forEach((ele) {
+    for (var ele in widget.lista) {
       if (DateUtils.isSameDay(widget.selezionato, ele.data)) {
         check = true;
       }
-    });
+    }
 
     return check;
   }
@@ -36,20 +35,18 @@ class _ContainerEvents extends State<ContainerEvents> {
         child: Container(
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(227, 170, 237, 255)
-                        .withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-                borderRadius: BorderRadius.circular(10),
-                color: const Color.fromARGB(255, 140, 219, 255)),
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).colorScheme.primaryContainer,
+            ),
             child: controllo()
-                ? Events(lista: widget.lista, data: widget.selezionato)
-                : const Center(child: Text("NON CI SONO ATTIVITÀ"))));
+                ? Events(data: widget.selezionato, lista: widget.lista)
+                : Center(
+                    child: Text(
+                    "NON CI SONO ATTIVITÀ",
+                    style: TextStyle(
+                        color:
+                            Theme.of(context).colorScheme.onPrimaryContainer),
+                  ))));
   }
 }
 
