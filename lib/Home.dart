@@ -6,6 +6,19 @@ import 'InsertActivity.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
 
+class Cliente{
+  int id=0;
+  int id_costumer=1;
+  String code="";
+  String costumer_code="";
+  String companyname="";
+
+  Cliente(){
+    
+  }
+
+}
+
 class Element {
   String cliente = "";
   String luogo = "";
@@ -48,6 +61,8 @@ class _MyAppState extends State<MyApp> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
   int i = 0;
+
+  
   void aggiornaData(DateTime data) {
     if (_data == data) {
       visible = !visible;

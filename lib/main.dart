@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Home.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:http/http.dart' as http;
+import 'Login.dart' as globals;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -134,6 +137,23 @@ class _AccessoState extends State<Accesso> {
   var utente = "";
   var password = "";
 
+
+
+Future<http.Response>  fetchUtente() async{
+  final queryParameters = {
+  'username': utente,
+  'password': password,
+};
+final uri =
+    Uri.https('hyfix.test.nealis.it', '/auth/login', queryParameters);
+final response = await http.get(uri, headers: {
+  HttpHeaders.contentTypeHeader: 'application/json',
+}) ;
+var sesid=response.headers["set-cookie"];
+globals.sesid=sesid!;
+
+return response;
+  }
   @override
   void initState() {
     super.initState();
@@ -197,6 +217,49 @@ class _AccessoState extends State<Accesso> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Password',
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 122, 213, 255),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // <-- Radius
+                    ),
+                  ),
+                  onPressed: () {
+                    fetchUtente();
+                    utente != "" && password != ""
+                        ? Navigator.push(
+                            context,
+                            
+                            MaterialPageRoute(builder: (context) => MyApp()),
+                          )
+                        : showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Riempi i campi'),
+                              content:utente==""?(
+                                password==""?
+                                  const Text('Inserisci nome utente e password'):const Text('Inserisci nome utente')
+                                ):( 
+                                    password==""?
+                                    const Text('Inserisci la password'):null
+                                  ) ,
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'OK'),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                  },
+                  child: const Text(
+                    'Accedi',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
                 onChanged: (String newText) {
                   password = newText;
