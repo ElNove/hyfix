@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Home.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart'  as http;
 import 'Login.dart' as globals;
 
 void main() async {
