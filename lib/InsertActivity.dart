@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'Login.dart' as globals;
@@ -14,6 +13,7 @@ class InsertActivity extends StatefulWidget {
   final Function addElement;
   final DateTime dataAttuale;
 
+  @override
   _InsertActivity createState() => _InsertActivity();
 }
 
@@ -45,6 +45,7 @@ class _InsertActivity extends State<InsertActivity> {
   String cate = "";
   int ore = 0;
 
+  @override
   void initState() {
     // verityFirstRun();
     if (widget.dataAttuale.isAfter(DateTime.now())) {
@@ -92,79 +93,94 @@ class _InsertActivity extends State<InsertActivity> {
     }
   }
 
-
-  void FetchClienti() {}
+void FetchClienti() {}
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(15),
-        child: Column(children: [
-          const Text(
-            "AGGIUNGI ",
-            style: TextStyle(
-                color: Colors.red, fontSize: 50, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                  width: 150,
-                  child: TextButton(
-                    style: ElevatedButton.styleFrom(
-                      side: BorderSide(
-                          color: Color.fromARGB(255, 122, 213, 255), width: 3),
-                      backgroundColor: tipo == "R"
-                          ? Color.fromARGB(255, 122, 213, 255)
-                          : null,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8), // <-- Radius
+      padding: const EdgeInsets.all(15),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Text(
+              "AGGIUNGI ",
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                    width: 150,
+                    child: TextButton(
+                      style: ElevatedButton.styleFrom(
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          width: 3,
+                        ),
+                        backgroundColor: tipo == "R"
+                            ? Theme.of(context).colorScheme.primaryContainer
+                            : null,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // <-- Radius
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        tipo = "R";
-                      });
-                    },
-                    child: const Text(
-                      'Rapportino',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  )),
-              const SizedBox(
-                width: 30,
-              ),
-              SizedBox(
-                  width: 150,
-                  child: TextButton(
-                    style: ElevatedButton.styleFrom(
-                      side: BorderSide(
-                          color: Color.fromARGB(255, 122, 213, 255), width: 3),
-                      backgroundColor: tipo == "E"
-                          ? Color.fromARGB(255, 122, 213, 255)
-                          : null,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8), // <-- Radius
+                      onPressed: () {
+                        setState(() {
+                          tipo = "R";
+                        });
+                      },
+                      child: Text(
+                        'Rapportino',
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer
+                               ),
                       ),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        tipo = "E";
-                      });
-                    },
-                    child: const Text(
-                      'Evento',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ))
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          tipo == 'R'
+                    )),
+                const SizedBox(
+                  width: 30,
+                ),
+                SizedBox(
+                    width: 150,
+                    child: TextButton(
+                      style: ElevatedButton.styleFrom(
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          width: 3,
+                        ),
+                        backgroundColor: tipo == "E"
+                            ? Theme.of(context).colorScheme.primaryContainer
+                            : null,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // <-- Radius
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          tipo = "E";
+                        });
+                      },
+                      child: Text(
+                        'Evento',
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer
+                                ),
+                      ),
+                    ))
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            tipo == 'R'
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -255,10 +271,10 @@ class _InsertActivity extends State<InsertActivity> {
           const SizedBox(
             height: 10,
           ),
-          Text(
-            "Data: " + DateFormat('dd/MM/yyyy').format(widget.dataAttuale),
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+            Text(
+              "Data: ${DateFormat('dd/MM/yyyy').format(widget.dataAttuale)}",
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
           const SizedBox(
             height: 10,
           ),
@@ -299,15 +315,15 @@ class _InsertActivity extends State<InsertActivity> {
                 }),
               ),
             ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Autocomplete<String>(
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Autocomplete<String>(
                     optionsBuilder: (TextEditingValue textEditingValue) {
                   if (textEditingValue.text == '') {
                     return _progettoOptions;
@@ -397,13 +413,14 @@ class _InsertActivity extends State<InsertActivity> {
               Expanded(
                   child: Autocomplete<String>(
                       optionsBuilder: (TextEditingValue textEditingValue) {
-                if (textEditingValue.text == '') {
-                  return _activityOptions;
-                }
-                return _activityOptions.where((String option) {
-                  return option.contains(textEditingValue.text.toUpperCase());
-                });
-              }, fieldViewBuilder: (BuildContext context,
+                    if (textEditingValue.text == '') {
+                      return _clientiOptions;
+                    }
+                    return _clientiOptions.where((String option) {
+                      return option
+                          .contains(textEditingValue.text.toUpperCase());
+                    });
+                  }, fieldViewBuilder: (BuildContext context,
                           TextEditingController fieldTextEditingController,
                           FocusNode fieldFocusNode,
                           VoidCallback onFieldSubmitted) {
@@ -473,28 +490,121 @@ class _InsertActivity extends State<InsertActivity> {
                   'Aggiungi',
                   style: TextStyle(color: Colors.black),
                 ),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              TextButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 122, 213, 255),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8), // <-- Radius
+                Ore(
+                  ore: assegnaOre,
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                Expanded(
+                    child: Autocomplete<String>(
+                        optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text == '') {
+                    return _locationOptions;
+                  }
+                  return _locationOptions.where((String option) {
+                    return option.contains(textEditingValue.text.toUpperCase());
+                  });
+                }, fieldViewBuilder: (BuildContext context,
+                            TextEditingController fieldTextEditingController,
+                            FocusNode fieldFocusNode,
+                            VoidCallback onFieldSubmitted) {
+                  return TextField(
+                    controller: fieldTextEditingController,
+                    focusNode: fieldFocusNode,
+                    decoration: const InputDecoration(
+                        label: Text('Luogo'), border: OutlineInputBorder()),
+                    onChanged: (text) {
+                      // Update suggestions based on user input
+                      // Implement the logic to filter and refresh suggestions
+                      luogo = text;
+                    },
+                    onSubmitted: (text) {
+                      // Handle the submission of the selected suggestion
+                      // Implement the logic for the selection action
+                      luogo = text;
+                    },
+                  );
+                }, onSelected: (String selection) {
+                  luogo = selection;
+                })),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                      maxLines: 4,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Note',
+                      ),
+                      onChanged: (String newText) {
+                        note = newText;
+                      }),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // <-- Radius
+                    ),
+                  ),
+                  onPressed: () {
+                    controllo();
+
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Aggiungi',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
                   ),
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Chiudi',
-                  style: TextStyle(color: Colors.black),
+                const SizedBox(
+                  width: 20,
                 ),
-              )
-            ],
-          ),
-        ]));
+                TextButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // <-- Radius
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Chiudi',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -514,7 +624,7 @@ class _OreState extends State<Ore> {
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<int>(
-      label: Text("Ore"),
+      label: const Text("Ore"),
       initialSelection: 0,
       onSelected: (int? value) {
         // This is called when the user selects an item.
