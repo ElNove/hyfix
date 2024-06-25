@@ -24,10 +24,8 @@ class _InsertActivity extends State<InsertActivity> {
     'TRASFERTA',
   ];
 
-
-  
-  List<Map<String,dynamic>> clienti = <Map<String,dynamic>>[];
-  List <String> _clientiOptions=<String>[];
+  List<Map<String, dynamic>> clienti = <Map<String, dynamic>>[];
+  List<String> _clientiOptions = <String>[];
 
   static const List<String> _locationOptions = <String>[
     'SEDE',
@@ -38,7 +36,7 @@ class _InsertActivity extends State<InsertActivity> {
   ];
   String attivita = "";
   String luogo = "";
-  late Map<String,dynamic> cliente;
+  late Map<String, dynamic> cliente;
   String progetto = "";
   String tipo = "";
   String note = "";
@@ -65,33 +63,31 @@ class _InsertActivity extends State<InsertActivity> {
     });
     var deco = jsonDecode(response2.body);
     for (var elem in deco["data"]) {
-      
       clienti.add(elem);
       print(elem["companyname"]);
-    _clientiOptions.add(elem["code"]+" - "+elem["companyname"]);
+      _clientiOptions.add(elem["code"] + " - " + elem["companyname"]);
     }
-    
   }
+
   void getProgetti(sesid) async {
-    final params={
-      'filters[code_or_companyname]':cliente["code"],
+    final params = {
+      'filters[code_or_companyname]': cliente["code"],
     };
-    final uri2 = Uri.https('hyfix.test.nealis.it', '/reports/project/readactive');
-    final response2 = await http.get(uri2,
-    
-    headers: {
-      HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.cookieHeader: sesid,
-    },
+    final uri2 =
+        Uri.https('hyfix.test.nealis.it', '/reports/project/readactive');
+    final response2 = await http.get(
+      uri2,
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.cookieHeader: sesid,
+      },
     );
     var deco = jsonDecode(response2.body);
     for (var elem in deco["data"]) {
-      
       clienti.add(elem);
       print(elem["companyname"]);
-    _clientiOptions.add(elem["code"]+" - "+elem["companyname"]);
+      _clientiOptions.add(elem["code"] + " - " + elem["companyname"]);
     }
-    
   }
 
   void assegnaOre(int o) {
@@ -115,17 +111,18 @@ class _InsertActivity extends State<InsertActivity> {
     }
   }
 
-
   void FetchClienti() {}
   @override
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.all(15),
         child: Column(children: [
-          const Text(
+          Text(
             "AGGIUNGI ",
             style: TextStyle(
-                color: Colors.red, fontSize: 50, fontWeight: FontWeight.bold),
+                color: Theme.of(context).colorScheme.primaryContainer,
+                fontSize: 50,
+                fontWeight: FontWeight.bold),
           ),
           const SizedBox(
             height: 40,
@@ -138,9 +135,10 @@ class _InsertActivity extends State<InsertActivity> {
                   child: TextButton(
                     style: ElevatedButton.styleFrom(
                       side: BorderSide(
-                          color: Color.fromARGB(255, 122, 213, 255), width: 3),
+                          color:
+                              Theme.of(context).colorScheme.primaryContainer),
                       backgroundColor: tipo == "R"
-                          ? Color.fromARGB(255, 122, 213, 255)
+                          ? Theme.of(context).colorScheme.primaryContainer
                           : null,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8), // <-- Radius
@@ -151,9 +149,13 @@ class _InsertActivity extends State<InsertActivity> {
                         tipo = "R";
                       });
                     },
-                    child: const Text(
+                    child: Text(
                       'Rapportino',
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(
+                        color: tipo == "R"
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : Theme.of(context).colorScheme.primaryContainer,
+                      ),
                     ),
                   )),
               const SizedBox(
@@ -164,9 +166,10 @@ class _InsertActivity extends State<InsertActivity> {
                   child: TextButton(
                     style: ElevatedButton.styleFrom(
                       side: BorderSide(
-                          color: Color.fromARGB(255, 122, 213, 255), width: 3),
+                          color:
+                              Theme.of(context).colorScheme.primaryContainer),
                       backgroundColor: tipo == "E"
-                          ? Color.fromARGB(255, 122, 213, 255)
+                          ? Theme.of(context).colorScheme.primaryContainer
                           : null,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8), // <-- Radius
@@ -177,9 +180,13 @@ class _InsertActivity extends State<InsertActivity> {
                         tipo = "E";
                       });
                     },
-                    child: const Text(
+                    child: Text(
                       'Evento',
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(
+                        color: tipo == "E"
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : Theme.of(context).colorScheme.primaryContainer,
+                      ),
                     ),
                   ))
             ],
@@ -196,10 +203,12 @@ class _InsertActivity extends State<InsertActivity> {
                         child: TextButton(
                           style: ElevatedButton.styleFrom(
                             side: BorderSide(
-                                color: Color.fromARGB(255, 122, 213, 255),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
                                 width: 3),
                             backgroundColor: cate == "T"
-                                ? Color.fromARGB(255, 122, 213, 255)
+                                ? Theme.of(context).colorScheme.primaryContainer
                                 : null,
                             shape: RoundedRectangleBorder(
                               borderRadius:
@@ -211,9 +220,17 @@ class _InsertActivity extends State<InsertActivity> {
                               cate = "T";
                             });
                           },
-                          child: const Text(
+                          child: Text(
                             'Tempo',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: cate == "T"
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                            ),
                           ),
                         )),
                     const SizedBox(
@@ -224,10 +241,12 @@ class _InsertActivity extends State<InsertActivity> {
                         child: TextButton(
                           style: ElevatedButton.styleFrom(
                             side: BorderSide(
-                                color: Color.fromARGB(255, 122, 213, 255),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
                                 width: 3),
                             backgroundColor: cate == "C"
-                                ? Color.fromARGB(255, 122, 213, 255)
+                                ? Theme.of(context).colorScheme.primaryContainer
                                 : null,
                             shape: RoundedRectangleBorder(
                               borderRadius:
@@ -239,9 +258,17 @@ class _InsertActivity extends State<InsertActivity> {
                               cate = "C";
                             });
                           },
-                          child: const Text(
+                          child: Text(
                             'Costo',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: cate == "C"
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                            ),
                           ),
                         )),
                     const SizedBox(
@@ -251,11 +278,13 @@ class _InsertActivity extends State<InsertActivity> {
                         width: 100,
                         child: TextButton(
                           style: ElevatedButton.styleFrom(
-                            side: const BorderSide(
-                                color: Color.fromARGB(255, 122, 213, 255),
+                            side: BorderSide(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
                                 width: 3),
                             backgroundColor: cate == "D"
-                                ? const Color.fromARGB(255, 122, 213, 255)
+                                ? Theme.of(context).colorScheme.primaryContainer
                                 : null,
                             shape: RoundedRectangleBorder(
                               borderRadius:
@@ -267,9 +296,17 @@ class _InsertActivity extends State<InsertActivity> {
                               cate = "D";
                             });
                           },
-                          child: const Text(
+                          child: Text(
                             'Distanza',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: cate == "D"
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                            ),
                           ),
                         ))
                   ],
@@ -279,8 +316,8 @@ class _InsertActivity extends State<InsertActivity> {
             height: 10,
           ),
           Text(
-            "Data: " + DateFormat('dd/MM/yyyy').format(widget.dataAttuale),
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            "Data: ${DateFormat('dd/MM/yyyy').format(widget.dataAttuale)}",
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(
             height: 10,
@@ -293,10 +330,11 @@ class _InsertActivity extends State<InsertActivity> {
                     optionsBuilder: (TextEditingValue textEditingValue) {
                   if (textEditingValue.text == '') {
                     return _clientiOptions;
-                    
                   }
                   return _clientiOptions.where((String option) {
-                    return option.toUpperCase().contains(textEditingValue.text.toUpperCase());
+                    return option
+                        .toUpperCase()
+                        .contains(textEditingValue.text.toUpperCase());
                   });
                 }, fieldViewBuilder: (BuildContext context,
                         TextEditingController fieldTextEditingController,
@@ -310,7 +348,6 @@ class _InsertActivity extends State<InsertActivity> {
                     onChanged: (text) {
                       // Update suggestions based on user input
                       // Implement the logic to filter and refresh suggestions
-                      
                     },
                     onSubmitted: (text) {
                       // Handle the submission of the selected suggestion
@@ -318,13 +355,13 @@ class _InsertActivity extends State<InsertActivity> {
                     },
                   );
                 }, onSelected: (String selection) {
-                  var nomeC=selection.split(" ");
+                  var nomeC = selection.split(" ");
                   print(nomeC);
-                  for(var s in clienti){
-                    if(s["companyname"]==nomeC[2]){
+                  for (var s in clienti) {
+                    if (s["companyname"] == nomeC[2]) {
                       print(s);
                       cliente = s;
-                    }  
+                    }
                   }
                 }),
               ),
@@ -489,7 +526,8 @@ class _InsertActivity extends State<InsertActivity> {
             children: [
               TextButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 122, 213, 255),
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8), // <-- Radius
                   ),
@@ -499,9 +537,10 @@ class _InsertActivity extends State<InsertActivity> {
 
                   Navigator.pop(context);
                 },
-                child: const Text(
+                child: Text(
                   'Aggiungi',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer),
                 ),
               ),
               const SizedBox(
@@ -509,7 +548,8 @@ class _InsertActivity extends State<InsertActivity> {
               ),
               TextButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 122, 213, 255),
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8), // <-- Radius
                   ),
@@ -517,9 +557,10 @@ class _InsertActivity extends State<InsertActivity> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text(
+                child: Text(
                   'Chiudi',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer),
                 ),
               )
             ],
