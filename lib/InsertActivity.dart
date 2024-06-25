@@ -24,10 +24,8 @@ class _InsertActivity extends State<InsertActivity> {
     'TRASFERTA',
   ];
 
-
-  
-  List<Map<String,dynamic>> _clientiOptions = <Map<String,dynamic>>[];
-  List <String> _nomiCliente=<String>[];
+  List<Map<String, dynamic>> _clientiOptions = <Map<String, dynamic>>[];
+  List<String> _nomiCliente = <String>[];
 
   static const List<String> _locationOptions = <String>[
     'SEDE',
@@ -38,7 +36,7 @@ class _InsertActivity extends State<InsertActivity> {
   ];
   String attivita = "";
   String luogo = "";
-  late Map<String,dynamic> cliente;
+  late Map<String, dynamic> cliente;
   String progetto = "";
   String tipo = "";
   String note = "";
@@ -69,7 +67,6 @@ class _InsertActivity extends State<InsertActivity> {
       _clientiOptions.add(elem);
       print(_clientiOptions);
     }
-    
   }
 
   void assegnaOre(int o) {
@@ -93,7 +90,7 @@ class _InsertActivity extends State<InsertActivity> {
     }
   }
 
-void FetchClienti() {}
+  void FetchClienti() {}
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -137,10 +134,13 @@ void FetchClienti() {}
                       child: Text(
                         'Rapportino',
                         style: TextStyle(
-                            color: Theme.of(context)
+                            color: tipo == "R"
+                                ? Theme.of(context)
                                     .colorScheme
                                     .onPrimaryContainer
-                               ),
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer),
                       ),
                     )),
                 const SizedBox(
@@ -169,10 +169,13 @@ void FetchClienti() {}
                       child: Text(
                         'Evento',
                         style: TextStyle(
-                            color: Theme.of(context)
+                            color: tipo == "E"
+                                ? Theme.of(context)
                                     .colorScheme
                                     .onPrimaryContainer
-                                ),
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer),
                       ),
                     ))
               ],
@@ -181,140 +184,173 @@ void FetchClienti() {}
               height: 10,
             ),
             tipo == 'R'
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        width: 100,
-                        child: TextButton(
-                          style: ElevatedButton.styleFrom(
-                            side: BorderSide(
-                                color: Color.fromARGB(255, 122, 213, 255),
-                                width: 3),
-                            backgroundColor: cate == "T"
-                                ? Color.fromARGB(255, 122, 213, 255)
-                                : null,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(8), // <-- Radius
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                          width: 100,
+                          child: TextButton(
+                            style: ElevatedButton.styleFrom(
+                              side: BorderSide(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  width: 3),
+                              backgroundColor: cate == "T"
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer
+                                  : null,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(8), // <-- Radius
+                              ),
                             ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              cate = "T";
-                            });
-                          },
-                          child: const Text(
-                            'Tempo',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        )),
-                    const SizedBox(
-                      width: 30,
-                    ),
-                    SizedBox(
-                        width: 100,
-                        child: TextButton(
-                          style: ElevatedButton.styleFrom(
-                            side: BorderSide(
-                                color: Color.fromARGB(255, 122, 213, 255),
-                                width: 3),
-                            backgroundColor: cate == "C"
-                                ? Color.fromARGB(255, 122, 213, 255)
-                                : null,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(8), // <-- Radius
+                            onPressed: () {
+                              setState(() {
+                                cate = "T";
+                              });
+                            },
+                            child: Text(
+                              'Tempo',
+                              style: TextStyle(
+                                  color: cate == "T"
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer),
                             ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              cate = "C";
-                            });
-                          },
-                          child: const Text(
-                            'Costo',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        )),
-                    const SizedBox(
-                      width: 30,
-                    ),
-                    SizedBox(
-                        width: 100,
-                        child: TextButton(
-                          style: ElevatedButton.styleFrom(
-                            side: const BorderSide(
-                                color: Color.fromARGB(255, 122, 213, 255),
-                                width: 3),
-                            backgroundColor: cate == "D"
-                                ? const Color.fromARGB(255, 122, 213, 255)
-                                : null,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(8), // <-- Radius
+                          )),
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      SizedBox(
+                          width: 100,
+                          child: TextButton(
+                            style: ElevatedButton.styleFrom(
+                              side: BorderSide(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  width: 3),
+                              backgroundColor: cate == "C"
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer
+                                  : null,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(8), // <-- Radius
+                              ),
                             ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              cate = "D";
-                            });
-                          },
-                          child: const Text(
-                            'Distanza',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ))
-                  ],
-                )
-              : Text(""),
-          const SizedBox(
-            height: 10,
-          ),
+                            onPressed: () {
+                              setState(() {
+                                cate = "C";
+                              });
+                            },
+                            child: Text(
+                              'Costo',
+                              style: TextStyle(
+                                  color: cate == "C"
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer),
+                            ),
+                          )),
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      SizedBox(
+                          width: 100,
+                          child: TextButton(
+                            style: ElevatedButton.styleFrom(
+                              side: BorderSide(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  width: 3),
+                              backgroundColor: cate == "D"
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer
+                                  : null,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(8), // <-- Radius
+                              ),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                cate = "D";
+                              });
+                            },
+                            child: Text(
+                              'Distanza',
+                              style: TextStyle(
+                                  color: cate == "D"
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer),
+                            ),
+                          ))
+                    ],
+                  )
+                : Text(""),
+            const SizedBox(
+              height: 10,
+            ),
             Text(
               "Data: ${DateFormat('dd/MM/yyyy').format(widget.dataAttuale)}",
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Autocomplete<Map<String,dynamic>>(
-                    optionsBuilder: (TextEditingValue textEditingValue) {
-                  if (textEditingValue.text == '') {
-                    return _clientiOptions;
-                    
-                  }
-                  return _clientiOptions.where((Map<String,dynamic> option) {
-                    return option["companyname"].toUpperCase().contains(textEditingValue.text.toUpperCase());
-                  });
-                }, fieldViewBuilder: (BuildContext context,
-                        TextEditingController fieldTextEditingController,
-                        FocusNode fieldFocusNode,
-                        VoidCallback onFieldSubmitted) {
-                  return TextField(
-                    controller: fieldTextEditingController,
-                    focusNode: fieldFocusNode,
-                    decoration: const InputDecoration(
-                        label: Text('Cliente'), border: OutlineInputBorder()),
-                    onChanged: (text) {
-                      // Update suggestions based on user input
-                      // Implement the logic to filter and refresh suggestions
-                      
-                    },
-                    onSubmitted: (text) {
-                      // Handle the submission of the selected suggestion
-                      // Implement the logic for the selection action
-                    },
-                  );
-                }, onSelected: (Map<String,dynamic> selection) {
-                  cliente = selection;
-                }),
-              ),
-            ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Autocomplete<Map<String, dynamic>>(
+                      optionsBuilder: (TextEditingValue textEditingValue) {
+                    if (textEditingValue.text == '') {
+                      return _clientiOptions;
+                    }
+                    return _clientiOptions.where((Map<String, dynamic> option) {
+                      return option["companyname"]
+                          .toUpperCase()
+                          .contains(textEditingValue.text.toUpperCase());
+                    });
+                  }, fieldViewBuilder: (BuildContext context,
+                          TextEditingController fieldTextEditingController,
+                          FocusNode fieldFocusNode,
+                          VoidCallback onFieldSubmitted) {
+                    return TextField(
+                      controller: fieldTextEditingController,
+                      focusNode: fieldFocusNode,
+                      decoration: const InputDecoration(
+                          label: Text('Cliente'), border: OutlineInputBorder()),
+                      onChanged: (text) {
+                        // Update suggestions based on user input
+                        // Implement the logic to filter and refresh suggestions
+                      },
+                      onSubmitted: (text) {
+                        // Handle the submission of the selected suggestion
+                        // Implement the logic for the selection action
+                      },
+                    );
+                  }, onSelected: (Map<String, dynamic> selection) {
+                    cliente = selection;
+                  }),
+                ),
+              ],
             ),
             const SizedBox(
               height: 10,
@@ -324,99 +360,11 @@ void FetchClienti() {}
               children: [
                 Expanded(
                   child: Autocomplete<String>(
-                    optionsBuilder: (TextEditingValue textEditingValue) {
-                  if (textEditingValue.text == '') {
-                    return _progettoOptions;
-                  }
-                  return _progettoOptions.where((String option) {
-                    return option.contains(textEditingValue.text.toUpperCase());
-                  });
-                }, fieldViewBuilder: (BuildContext context,
-                        TextEditingController fieldTextEditingController,
-                        FocusNode fieldFocusNode,
-                        VoidCallback onFieldSubmitted) {
-                  return TextField(
-                    controller: fieldTextEditingController,
-                    focusNode: fieldFocusNode,
-                    decoration: const InputDecoration(
-                        label: Text('Progetto'), border: OutlineInputBorder()),
-                    onChanged: (text) {
-                      // Update suggestions based on user input
-                      // Implement the logic to filter and refresh suggestions
-                      progetto = text;
-                    },
-                    onSubmitted: (text) {
-                      // Handle the submission of the selected suggestion
-                      // Implement the logic for the selection action
-                    },
-                  );
-                }, onSelected: (String selection) {
-                  progetto = selection;
-                }),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            children: [
-              Expanded(
-                  child: Autocomplete<String>(
-                      optionsBuilder: (TextEditingValue textEditingValue) {
-                if (textEditingValue.text == '') {
-                  return _locationOptions;
-                }
-                return _locationOptions.where((String option) {
-                  return option.contains(textEditingValue.text.toUpperCase());
-                });
-              }, fieldViewBuilder: (BuildContext context,
-                          TextEditingController fieldTextEditingController,
-                          FocusNode fieldFocusNode,
-                          VoidCallback onFieldSubmitted) {
-                return TextField(
-                  controller: fieldTextEditingController,
-                  focusNode: fieldFocusNode,
-                  decoration: const InputDecoration(
-                      label: Text('Luogo'), border: OutlineInputBorder()),
-                  onChanged: (text) {
-                    // Update suggestions based on user input
-                    // Implement the logic to filter and refresh suggestions
-                    luogo = text;
-                  },
-                  onSubmitted: (text) {
-                    // Handle the submission of the selected suggestion
-                    // Implement the logic for the selection action
-                    luogo = text;
-                  },
-                );
-              }, onSelected: (String selection) {
-                luogo = selection;
-              })),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Indirizzo: ",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            children: [
-              Expanded(
-                  child: Autocomplete<String>(
                       optionsBuilder: (TextEditingValue textEditingValue) {
                     if (textEditingValue.text == '') {
-                      return _clientiOptions;
+                      return _progettoOptions;
                     }
-                    return _clientiOptions.where((String option) {
+                    return _progettoOptions.where((String option) {
                       return option
                           .contains(textEditingValue.text.toUpperCase());
                     });
@@ -424,75 +372,26 @@ void FetchClienti() {}
                           TextEditingController fieldTextEditingController,
                           FocusNode fieldFocusNode,
                           VoidCallback onFieldSubmitted) {
-                return TextField(
-                  controller: fieldTextEditingController,
-                  focusNode: fieldFocusNode,
-                  decoration: const InputDecoration(
-                      label: Text('Attività'), border: OutlineInputBorder()),
-                  onChanged: (text) {
-                    // Update suggestions based on user input
-                    // Implement the logic to filter and refresh suggestions
-                    attivita = text;
-                  },
-                  onSubmitted: (text) {
-                    // Handle the submission of the selected suggestion
-                    // Implement the logic for the selection action
-                  },
-                );
-              }, onSelected: (String selection) {
-                attivita = selection;
-              })),
-              const SizedBox(
-                width: 10,
-              ),
-              Ore(
-                ore: assegnaOre,
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                    maxLines: 4,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Note',
-                    ),
-                    onChanged: (String newText) {
-                      note = newText;
-                    }),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 122, 213, 255),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8), // <-- Radius
-                  ),
+                    return TextField(
+                      controller: fieldTextEditingController,
+                      focusNode: fieldFocusNode,
+                      decoration: const InputDecoration(
+                          label: Text('Progetto'),
+                          border: OutlineInputBorder()),
+                      onChanged: (text) {
+                        // Update suggestions based on user input
+                        // Implement the logic to filter and refresh suggestions
+                        progetto = text;
+                      },
+                      onSubmitted: (text) {
+                        // Handle the submission of the selected suggestion
+                        // Implement the logic for the selection action
+                      },
+                    );
+                  }, onSelected: (String selection) {
+                    progetto = selection;
+                  }),
                 ),
-                onPressed: () {
-                  controllo();
-
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Aggiungi',
-                  style: TextStyle(color: Colors.black),
-                ),
-                Ore(
-                  ore: assegnaOre,
-                )
               ],
             ),
             const SizedBox(
@@ -532,6 +431,67 @@ void FetchClienti() {}
                 }, onSelected: (String selection) {
                   luogo = selection;
                 })),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Indirizzo: ",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                Expanded(
+                    child: Autocomplete<String>(
+                        optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text == '') {
+                    return _locationOptions;
+                  }
+                  return _locationOptions.where((String option) {
+                    return option.contains(textEditingValue.text.toUpperCase());
+                  });
+                },
+                        // if (textEditingValue.text == '') {
+                        //   return _clientiOptions;
+                        // }
+                        // return _clientiOptions.where((String option) {
+                        //   return option.contains(textEditingValue.text.toUpperCase());
+                        // });
+                        fieldViewBuilder: (BuildContext context,
+                            TextEditingController fieldTextEditingController,
+                            FocusNode fieldFocusNode,
+                            VoidCallback onFieldSubmitted) {
+                  return TextField(
+                    controller: fieldTextEditingController,
+                    focusNode: fieldFocusNode,
+                    decoration: const InputDecoration(
+                        label: Text('Attività'), border: OutlineInputBorder()),
+                    onChanged: (text) {
+                      // Update suggestions based on user input
+                      // Implement the logic to filter and refresh suggestions
+                      attivita = text;
+                    },
+                    onSubmitted: (text) {
+                      // Handle the submission of the selected suggestion
+                      // Implement the logic for the selection action
+                    },
+                  );
+                }, onSelected: (String selection) {
+                  attivita = selection;
+                })),
+                const SizedBox(
+                  width: 10,
+                ),
+                Ore(
+                  ore: assegnaOre,
+                )
               ],
             ),
             const SizedBox(

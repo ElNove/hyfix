@@ -111,13 +111,13 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
       child: Consumer<ThemeProvider>(
-        builder: (context, ThemeProvider, child) {
+        builder: (context, themeProvider, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Material Color Utilities',
             theme: ThemeData.from(colorScheme: lightColorScheme),
             darkTheme: ThemeData.from(colorScheme: darkColorScheme),
-            themeMode: ThemeMode.values[ThemeProvider.themeMode.index],
+            themeMode: themeProvider.themeMode,
             home: Accesso(),
           );
         },
@@ -127,33 +127,32 @@ class MainApp extends StatelessWidget {
 }
 
 class Accesso extends StatefulWidget {
-  Accesso({super.key});
+  const Accesso({super.key});
 
   @override
   State<Accesso> createState() => _AccessoState();
 }
 
 class _AccessoState extends State<Accesso> {
-  var utente = "";
-  var password = "";
+  String utente = "";
+  String password = "";
 
+  Future<http.Response> fetchUtente() async {
+    final queryParameters = {
+      'username': utente,
+      'password': password,
+    };
+    final uri =
+        Uri.https('hyfix.test.nealis.it', '/auth/login', queryParameters);
+    final response = await http.get(uri, headers: {
+      HttpHeaders.contentTypeHeader: 'application/json',
+    });
+    var sesid = response.headers["set-cookie"];
+    globals.sesid = sesid!;
 
-
-Future<http.Response>  fetchUtente() async{
-  final queryParameters = {
-  'username': utente,
-  'password': password,
-};
-final uri =
-    Uri.https('hyfix.test.nealis.it', '/auth/login', queryParameters);
-final response = await http.get(uri, headers: {
-  HttpHeaders.contentTypeHeader: 'application/json',
-}) ;
-var sesid=response.headers["set-cookie"];
-globals.sesid=sesid!;
-
-return response;
+    return response;
   }
+
   @override
   void initState() {
     super.initState();
@@ -165,9 +164,8 @@ return response;
     var themeProvider = context.read<ThemeProvider>();
 
     setState(() {
-      final isDark = prefs.getBool('isDark');
-
-      themeProvider.toggleTheme(isDark!);
+      final isDark = prefs.getBool('isDark') ?? false;
+      themeProvider.toggleTheme(isDark);
     });
   }
 
@@ -206,64 +204,26 @@ return response;
                   labelText: 'Nome Utente',
                 ),
                 onChanged: (String newText) {
-                  utente = newText;
+                  setState(() {
+                    utente = newText;
+                  });
                 }),
           ),
           const SizedBox(height: 10),
           SizedBox(
             width: 250,
             child: TextField(
-                obscureText: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 122, 213, 255),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // <-- Radius
-                    ),
-                  ),
-                  onPressed: () {
-                    fetchUtente();
-                    utente != "" && password != ""
-                        ? Navigator.push(
-                            context,
-                            
-                            MaterialPageRoute(builder: (context) => MyApp()),
-                          )
-                        : showDialog<String>(
-                            context: context,
-                            builder: (BuildContext context) => AlertDialog(
-                              title: const Text('Riempi i campi'),
-                              content:utente==""?(
-                                password==""?
-                                  const Text('Inserisci nome utente e password'):const Text('Inserisci nome utente')
-                                ):( 
-                                    password==""?
-                                    const Text('Inserisci la password'):null
-                                  ) ,
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, 'OK'),
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            ),
-                          );
-                  },
-                  child: const Text(
-                    'Accedi',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-                onChanged: (String newText) {
+              obscureText: true,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Password',
+              ),
+              onChanged: (String newText) {
+                setState(() {
                   password = newText;
-                }),
+                });
+              },
+            ),
           ),
           const SizedBox(height: 10),
           Row(
@@ -271,15 +231,15 @@ return response;
             children: [
               TextButton(
                 style: ElevatedButton.styleFrom(
-                  // backgroundColor: Color.fromARGB(255, 122, 213, 255),
                   backgroundColor:
                       Theme.of(context).colorScheme.primaryContainer,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8), // <-- Radius
                   ),
                 ),
                 onPressed: () {
-                  if (utente != "" && password != "") {
+                  fetchUtente();
+                  if (utente.isNotEmpty && password.isNotEmpty) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => MyApp()),
@@ -289,11 +249,11 @@ return response;
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                         title: const Text('Riempi i campi'),
-                        content: utente == ""
-                            ? (password == ""
+                        content: utente.isEmpty
+                            ? (password.isEmpty
                                 ? const Text('Inserisci nome utente e password')
                                 : const Text('Inserisci nome utente'))
-                            : (password == ""
+                            : (password.isEmpty
                                 ? const Text('Inserisci la password')
                                 : null),
                         actions: <Widget>[
@@ -306,13 +266,11 @@ return response;
                     );
                   }
                 },
-                child: Text('Accedi',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    )
-
-                    // Theme.of(context).colorScheme.primaryContainer,
-                    ),
+                child: Text(
+                  'Accedi',
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer),
+                ),
               ),
               const SizedBox(width: 20),
               TextButton(
