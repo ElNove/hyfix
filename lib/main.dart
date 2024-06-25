@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'Home.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:http/http.dart' as http;
+import 'Login.dart' as globals;
 
 
 void main(){
@@ -14,6 +17,23 @@ class Accesso extends StatelessWidget {
   var utente = "";
   var password = "";
 
+
+
+Future<http.Response>  fetchUtente() async{
+  final queryParameters = {
+  'username': utente,
+  'password': password,
+};
+final uri =
+    Uri.https('hyfix.test.nealis.it', '/auth/login', queryParameters);
+final response = await http.get(uri, headers: {
+  HttpHeaders.contentTypeHeader: 'application/json',
+}) ;
+var sesid=response.headers["set-cookie"];
+globals.sesid=sesid!;
+
+return response;
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -64,9 +84,11 @@ class Accesso extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
+                    fetchUtente();
                     utente != "" && password != ""
                         ? Navigator.push(
                             context,
+                            
                             MaterialPageRoute(builder: (context) => MyApp()),
                           )
                         : showDialog<String>(
