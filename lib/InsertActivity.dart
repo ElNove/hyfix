@@ -33,6 +33,7 @@ class _InsertActivity extends State<InsertActivity> {
   late Map<String, dynamic> progetto;
   late Map<String, dynamic> attivita;
   var id = 0;
+
   String tipo = "";
   String note = "";
   String cate = "";
@@ -105,6 +106,7 @@ class _InsertActivity extends State<InsertActivity> {
     for (var elem in deco["data"]) {
       progetti.add(elem);
       _progettiOptions.add(elem["code"] + " - " + elem["customer_companyname"]);
+
     }
   }
 
@@ -170,7 +172,6 @@ class _InsertActivity extends State<InsertActivity> {
   void aggiornaTipo(String t) {
     tipo = t;
   }
-
   void FetchClienti() {}
   @override
   Widget build(BuildContext context) {
@@ -411,7 +412,6 @@ class _InsertActivity extends State<InsertActivity> {
                     onChanged: (text) {
                       // Update suggestions based on user input
                       // Implement the logic to filter and refresh suggestions
-                      
                     },
                     onSubmitted: (text) {
                       // Handle the submission of the selected suggestion
