@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:progetto/Events.dart';
+import 'package:progetto/Home.dart';
+import 'package:progetto/models/Reports.dart';
+import 'package:provider/provider.dart';
 
 class ContainerEvents extends StatefulWidget {
   const ContainerEvents(
@@ -9,7 +12,7 @@ class ContainerEvents extends StatefulWidget {
       required this.visible});
   final DateTime selezionato;
   final bool visible;
-  final List lista;
+  final List<Reports> lista;
 
   _ContainerEvents createState() => _ContainerEvents();
 }
@@ -17,8 +20,8 @@ class ContainerEvents extends StatefulWidget {
 class _ContainerEvents extends State<ContainerEvents> {
   bool controllo() {
     bool check = false;
-    for (var ele in widget.lista) {
-      if (DateUtils.isSameDay(widget.selezionato, ele.data)) {
+    for (Reports ele in widget.lista) {
+      if (DateUtils.isSameDay(widget.selezionato, ele.reportDate)) {
         check = true;
       }
     }
@@ -29,14 +32,13 @@ class _ContainerEvents extends State<ContainerEvents> {
   @override
   Widget build(BuildContext context) {
     return AnimatedVisibility(
-        visible: widget.visible,
         enter: fadeIn(),
         exit: fadeOut(),
         child: Container(
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).colorScheme.primaryContainer,
+              color: Theme.of(context).colorScheme.tertiaryContainer,
             ),
             child: controllo()
                 ? Events(data: widget.selezionato, lista: widget.lista)

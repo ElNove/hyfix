@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Home.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:http/http.dart'  as http;
+import 'package:http/http.dart' as http;
 import 'Login.dart' as globals;
 
 void main() async {
@@ -109,6 +110,7 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => JobList())
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
@@ -137,7 +139,7 @@ class _AccessoState extends State<Accesso> {
   String utente = "";
   String password = "";
 
-  Future<http.Response> fetchUtente() async {
+  Future<String> fetchUtente() async {
     final queryParameters = {
       'username': utente,
       'password': password,
@@ -150,7 +152,7 @@ class _AccessoState extends State<Accesso> {
     var sesid = response.headers["set-cookie"];
     globals.sesid = sesid!;
 
-    return response;
+    return response.body;
   }
 
   @override
@@ -167,12 +169,22 @@ class _AccessoState extends State<Accesso> {
       final isDark = prefs.getBool('isDark') ?? false;
       themeProvider.toggleTheme(isDark);
     });
+
+    // var client = http.Client();
+
+    // var uri = Uri.https('hyfix.test.nealis.it',
+    //     '/assets/1718265055508/images/hyfix_logo_basic_white.svg');
+    // var icon = await client
+    //     .get(uri, headers: {HttpHeaders.contentTypeHeader: 'image/svg+xml'});
+    // final Widget networkSvg = SvgPicture.network(
+    //     'https://hyfix.test.nealis.it/assets/1718265055508/images/hyfix_logo_basic_white.svg');
+    // globals.image = networkSvg;
   }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = context.watch<ThemeProvider>();
-
+    var img = globals.image;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -194,8 +206,14 @@ class _AccessoState extends State<Accesso> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Image(width: 100, image: AssetImage('lib/img/logo.png')),
-          const SizedBox(height: 10),
+          // const Image(width: 100, image: AssetImage('lib/img/logo.png')),
+          SvgPicture.network(
+            'https://hyfix.test.nealis.it/assets/1718265055508/images/hyfix_logo_full_color.svg',
+            colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.primaryContainer,
+                BlendMode.srcIn),
+          ),
+          const SizedBox(height: 50),
           SizedBox(
             width: 250,
             child: TextField(
@@ -237,34 +255,48 @@ class _AccessoState extends State<Accesso> {
                     borderRadius: BorderRadius.circular(8), // <-- Radius
                   ),
                 ),
-                onPressed: () {
-                  fetchUtente();
-                  if (utente.isNotEmpty && password.isNotEmpty) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyApp()),
-                    );
-                  } else {
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Riempi i campi'),
-                        content: utente.isEmpty
-                            ? (password.isEmpty
-                                ? const Text('Inserisci nome utente e password')
-                                : const Text('Inserisci nome utente'))
-                            : (password.isEmpty
-                                ? const Text('Inserisci la password')
-                                : null),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
+                onPressed: () async {
+                  await fetchUtente().then((resp) => {
+                        print(resp),
+                        if (utente.isEmpty || password.isEmpty)
+                          {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('Riempi tutti i campi'),
+                                action: SnackBarAction(
+                                  label: 'Chiudi',
+                                  onPressed: () {
+                                    // Code to execute.
+                                  },
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            ),
+                          }
+                        else if (resp.contains('"success":false'))
+                          {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    const Text('Username e/o Password Errati'),
+                                action: SnackBarAction(
+                                  label: 'Chiudi',
+                                  onPressed: () {
+                                    // Code to execute.
+                                  },
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            ),
+                          }
+                        else
+                          {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MyApp()),
+                            ),
+                          }
+                      });
                 },
                 child: Text(
                   'Accedi',

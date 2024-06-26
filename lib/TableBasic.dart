@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:progetto/Home.dart';
+import 'package:progetto/models/Reports.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class TableBasic extends StatefulWidget {
@@ -15,7 +18,7 @@ class TableBasic extends StatefulWidget {
   final Function(CalendarFormat) updateFormat;
   final CalendarFormat calendarFormat;
   final bool visible;
-  final List lista;
+  final List<Reports> lista;
 
   @override
   _TableBasicState createState() => _TableBasicState();
@@ -23,7 +26,7 @@ class TableBasic extends StatefulWidget {
 
 class _TableBasicState extends State<TableBasic> {
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  DateTime? _selectedDay = DateTime.now();
   DateTime selezionato = DateTime.now();
 
   @override
@@ -51,6 +54,10 @@ class _TableBasicState extends State<TableBasic> {
         ),
       ),
       calendarStyle: CalendarStyle(
+        markerDecoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary,
+          shape: BoxShape.circle,
+        ),
         selectedDecoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primaryContainer,
             shape: BoxShape.circle),
@@ -76,7 +83,7 @@ class _TableBasicState extends State<TableBasic> {
       },
       eventLoader: (day) {
         for (var i = 0; i < widget.lista.length; i++) {
-          if (isSameDay(day, widget.lista[i].data)) {
+          if (isSameDay(day, widget.lista[i].reportDate)) {
             return [widget.lista[i]];
           }
         }

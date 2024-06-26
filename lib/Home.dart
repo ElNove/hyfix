@@ -1,51 +1,35 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:progetto/main.dart';
+import 'package:progetto/models/Reports.dart';
+import 'package:progetto/services/service.dart';
 import 'TableBasic.dart';
 import 'ContainerEvents.dart';
 import 'InsertActivity.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'Login.dart' as globals;
 
-class Cliente{
-  int id=0;
-  int id_costumer=1;
-  String code="";
-  String costumer_code="";
-  String companyname="";
+class Cliente {
+  int id = 0;
+  int id_costumer = 1;
+  String code = "";
+  String costumer_code = "";
+  String companyname = "";
 
-  Cliente(){
-    
-  }
-
-}
-
-class Element {
-  String cliente = "";
-  String luogo = "";
-  String progetto = "";
-  String attivita = "";
-  String ore = "";
-  String tipo = "";
-  String note = "";
-  DateTime data = DateTime(2022);
-
-  Element(this.cliente, this.luogo, this.progetto, this.attivita, this.ore,
-      this.data, this.note, this.tipo);
+  Cliente() {}
 }
 
 class JobList with ChangeNotifier {
-  List<Element> lista = <Element>[];
+  List<Reports> lista = <Reports>[];
 
-  void addElement(cliente, luogo, progetto, attivita, ore, data, note, tipo) {
-    lista.add(
-        Element(cliente, luogo, progetto, attivita, ore, data, note, tipo));
+  void addElement(Reports report) {
+    lista.add(report);
     notifyListeners();
   }
-
-  // void removeElement(Element element) {
-  //   lista.remove(element);
-  //   notifyListeners();
-  // }
 }
 
 class MyApp extends StatefulWidget {
@@ -62,7 +46,33 @@ class _MyAppState extends State<MyApp> {
 
   int i = 0;
 
-  
+  @override
+  void initState() {
+    super.initState();
+
+    var jobList = context.read<JobList>();
+
+    Service().getReports(globals.sesid).then((report) {
+      jobList.lista = <Reports>[];
+      for (var element in report) {
+        // print("element");
+        // print(element);
+        Reports reports = Reports.fromJson(element);
+        // print("entrato");
+        jobList.lista.add(reports);
+        // for (var i in jobList.lista) {
+        //   print(i.toJson());
+        // }
+        // print("reports");
+        // print(reports.toJson());
+        // JobList().addElement(reports);
+      }
+      setState(() {
+        jobList.lista = jobList.lista;
+      });
+    });
+  }
+
   void aggiornaData(DateTime data) {
     if (_data == data) {
       visible = !visible;
@@ -74,13 +84,6 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  // void addElement(cliente, luogo, progetto, attivita, ore, data, note, tipo) {
-  //   setState(() {
-  //     JobList().addElement(
-  //         Element(cliente, luogo, progetto, attivita, ore, data, note, tipo));
-  //   });
-  // }
-
   void updateFormat(CalendarFormat format) {
     setState(() {
       _calendarFormat = format;
@@ -90,6 +93,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     var themeProvider = context.watch<ThemeProvider>();
+    var jobList = context.watch<JobList>();
 
     return MultiProvider(
       providers: [
@@ -128,56 +132,54 @@ class _MyAppState extends State<MyApp> {
                       fontWeight: FontWeight.bold,
                       fontSize: 30))),
         ),
-        body: Consumer<JobList>(
-          builder: (context, jobList, _) => Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              children: [
-                TableBasic(
-                  lista: jobList.lista,
-                  onDaySelected: aggiornaData,
-                  calendarFormat: _calendarFormat,
-                  updateFormat: updateFormat,
+        body: Container(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            children: [
+              TableBasic(
+                lista: jobList.lista,
+                onDaySelected: aggiornaData,
+                calendarFormat: _calendarFormat,
+                updateFormat: updateFormat,
+                visible: visible,
+              ),
+              Expanded(
+                child: ContainerEvents(
+                  selezionato: _data,
                   visible: visible,
+                  lista: jobList.lista,
                 ),
-                Expanded(
-                  child: ContainerEvents(
-                    selezionato: _data,
-                    visible: visible,
-                    lista: jobList.lista,
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Container(
-                    margin: const EdgeInsets.fromLTRB(0, 20, 10, 20),
-                    child: FloatingActionButton(
-                      backgroundColor:
-                          Theme.of(context).colorScheme.primaryContainer,
-                      onPressed: () => showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) => Dialog.fullscreen(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                InsertActivity(
-                                  addElement: jobList.addElement,
-                                  dataAttuale: _data,
-                                ),
-                                const SizedBox(height: 15),
-                              ],
-                            ),
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(0, 20, 10, 20),
+                  child: FloatingActionButton(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                    onPressed: () => showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => Dialog.fullscreen(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              InsertActivity(
+                                addElement: jobList.addElement,
+                                dataAttuale: _data,
+                              ),
+                              const SizedBox(height: 15),
+                            ],
                           ),
                         ),
                       ),
-                      child: const Icon(Icons.add_rounded),
                     ),
+                    child: const Icon(Icons.add_rounded),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
