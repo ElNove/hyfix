@@ -1,7 +1,7 @@
 import 'package:diagonal_decoration/diagonal_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:progetto/models/Reports.dart';
+import 'package:hyfix/models/Reports.dart';
 
 extension HexColor on Color {
   static Color fromHex(String hexString) {

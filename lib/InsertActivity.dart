@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:progetto/models/Reports.dart';
+import 'package:hyfix/models/Reports.dart';
 import 'Login.dart' as globals;
 
 const List<int> _hoursOptions = <int>[1, 2, 3, 4, 5, 6, 7, 8];
@@ -58,7 +58,7 @@ class _InsertActivity extends State<InsertActivity> {
 
   void getClienti(sesid, id) async {
     clienti = [];
-    _clientiOptions=[];
+    _clientiOptions = [];
     print("get Clietni");
     final params = {
       'filters[id]': '$id',
@@ -82,8 +82,8 @@ class _InsertActivity extends State<InsertActivity> {
   }
 
   void getProgetti(sesid, id) async {
-    progetti=[];
-    _progettiOptions=[];
+    progetti = [];
+    _progettiOptions = [];
     final params = {
       "filters[project_or_customer]": '$id',
     };
@@ -107,13 +107,12 @@ class _InsertActivity extends State<InsertActivity> {
     for (var elem in deco["data"]) {
       progetti.add(elem);
       _progettiOptions.add(elem["code"] + " - " + elem["customer_companyname"]);
-
     }
   }
 
   void getLuoghi(sesid, id) async {
-    luoghi=[];
-    _luoghiOptions=[];
+    luoghi = [];
+    _luoghiOptions = [];
     final params = {
       'filters[customer_id]': '${id}',
     };
@@ -142,9 +141,10 @@ class _InsertActivity extends State<InsertActivity> {
           elem["location_city"]);
     }
   }
+
   void getActivity(sesid) async {
     activity = [];
-    _luoghiOptions=[];
+    _luoghiOptions = [];
     final params = {
       'filters[unity_type]': cate,
     };
@@ -172,6 +172,7 @@ class _InsertActivity extends State<InsertActivity> {
   void aggiornaTipo(String t) {
     tipo = t;
   }
+
   void FetchClienti() {}
   @override
   Widget build(BuildContext context) {
@@ -416,7 +417,7 @@ class _InsertActivity extends State<InsertActivity> {
                     onSubmitted: (text) {
                       // Handle the submission of the selected suggestion
                       // Implement the logic for the selection action
-                      fieldTextEditingController.text="";
+                      fieldTextEditingController.text = "";
                     },
                   );
                 }, onSelected: (String selection) {
@@ -425,7 +426,8 @@ class _InsertActivity extends State<InsertActivity> {
                     if (c["companyname"] == nomeC[2]) {
                       cliente = c;
                     }
-                  };
+                  }
+                  ;
                   if (id == 0) {
                     setState(() {
                       id = cliente["customer_id"];

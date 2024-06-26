@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:progetto/Events.dart';
-import 'package:progetto/Home.dart';
-import 'package:progetto/models/Reports.dart';
+import 'package:hyfix/Events.dart';
+import 'package:hyfix/Home.dart';
+import 'package:hyfix/models/Reports.dart';
 import 'package:provider/provider.dart';
 
 class ContainerEvents extends StatefulWidget {

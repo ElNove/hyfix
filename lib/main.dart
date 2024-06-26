@@ -116,7 +116,7 @@ class MainApp extends StatelessWidget {
         builder: (context, themeProvider, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'Material Color Utilities',
+            title: 'HyFix',
             theme: ThemeData.from(colorScheme: lightColorScheme),
             darkTheme: ThemeData.from(colorScheme: darkColorScheme),
             themeMode: themeProvider.themeMode,
@@ -169,22 +169,12 @@ class _AccessoState extends State<Accesso> {
       final isDark = prefs.getBool('isDark') ?? false;
       themeProvider.toggleTheme(isDark);
     });
-
-    // var client = http.Client();
-
-    // var uri = Uri.https('hyfix.test.nealis.it',
-    //     '/assets/1718265055508/images/hyfix_logo_basic_white.svg');
-    // var icon = await client
-    //     .get(uri, headers: {HttpHeaders.contentTypeHeader: 'image/svg+xml'});
-    // final Widget networkSvg = SvgPicture.network(
-    //     'https://hyfix.test.nealis.it/assets/1718265055508/images/hyfix_logo_basic_white.svg');
-    // globals.image = networkSvg;
   }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = context.watch<ThemeProvider>();
-    var img = globals.image;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -207,8 +197,8 @@ class _AccessoState extends State<Accesso> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // const Image(width: 100, image: AssetImage('lib/img/logo.png')),
-          SvgPicture.network(
-            'https://hyfix.test.nealis.it/assets/1718265055508/images/hyfix_logo_full_color.svg',
+          SvgPicture.asset(
+            'assets/full_logo.svg',
             colorFilter: ColorFilter.mode(
                 Theme.of(context).colorScheme.primaryContainer,
                 BlendMode.srcIn),
@@ -327,7 +317,14 @@ class _AccessoState extends State<Accesso> {
                 ),
               ),
             ],
-          )
+          ),
+          Text(
+            globals.sesid,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 100),
         ],
       ),
     );
