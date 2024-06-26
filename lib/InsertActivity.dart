@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -18,32 +20,25 @@ class InsertActivity extends StatefulWidget {
 }
 
 class _InsertActivity extends State<InsertActivity> {
-  static const List<String> _activityOptions = <String>[
-    'WORK',
-    'SMARTWORKING',
-    'TRASFERTA',
-  ];
-
-
-  
-  List<Map<String,dynamic>> clienti = <Map<String,dynamic>>[];
-  List <String> _clientiOptions=<String>[];
-
-  static const List<String> _locationOptions = <String>[
-    'SEDE',
-  ];
-  static const List<String> _progettoOptions = <String>[
-    'PRIMO',
-    'SECONDO',
-  ];
-  String attivita = "";
-  String luogo = "";
-  late Map<String,dynamic> cliente;
-  String progetto = "";
+  List<Map<String, dynamic>> activity = <Map<String, dynamic>>[];
+  List<String> _activityOptions = <String>[];
+  List<Map<String, dynamic>> clienti = <Map<String, dynamic>>[];
+  List<String> _clientiOptions = <String>[];
+  List<Map<String, dynamic>> progetti = <Map<String, dynamic>>[];
+  List<String> _progettiOptions = <String>[];
+  List<Map<String, dynamic>> luoghi = <Map<String, dynamic>>[];
+  List<String> _luoghiOptions = <String>[];
+  late Map<String, dynamic> cliente;
+  late Map<String, dynamic> luogo;
+  late Map<String, dynamic> progetto;
+  late Map<String, dynamic> attivita;
+  var id = 0;
   String tipo = "";
   String note = "";
   String cate = "";
-  int ore = 0;
+  int task = 0;
+  String task_type = "";
+  var indirizzo = "";
 
   void initState() {
     // verityFirstRun();
@@ -53,68 +48,128 @@ class _InsertActivity extends State<InsertActivity> {
       tipo = "R";
       cate = "T";
     }
-    getClienti(globals.sesid);
+    getClienti(globals.sesid, id);
+    getProgetti(globals.sesid, id);
+    getLuoghi(globals.sesid, id);
     super.initState();
   }
 
-  void getClienti(sesid) async {
-    final uri2 = Uri.https('hyfix.test.nealis.it', '/reports/customer/read');
-    final response2 = await http.get(uri2, headers: {
+  void getClienti(sesid, id) async {
+    clienti = [];
+    _clientiOptions=[];
+    print("get Clietni");
+    final params = {
+      'filters[id]': '$id',
+    };
+    final uri;
+    if (id == 0) {
+      uri = Uri.https('hyfix.test.nealis.it', '/reports/customer/read');
+    } else {
+      uri = Uri.https('hyfix.test.nealis.it', '/reports/customer/read', params);
+    }
+    final response = await http.get(uri, headers: {
       HttpHeaders.contentTypeHeader: 'application/json',
       HttpHeaders.cookieHeader: sesid,
     });
-    var deco = jsonDecode(response2.body);
+
+    var deco = jsonDecode(response.body);
     for (var elem in deco["data"]) {
-      
       clienti.add(elem);
-      print(elem["companyname"]);
-    _clientiOptions.add(elem["code"]+" - "+elem["companyname"]);
+      _clientiOptions.add(elem["code"] + " - " + elem["companyname"]);
     }
-    
-  }
-  void getProgetti(sesid) async {
-    final params={
-      'filters[code_or_companyname]':cliente["code"],
-    };
-    final uri2 = Uri.https('hyfix.test.nealis.it', '/reports/project/readactive');
-    final response2 = await http.get(uri2,
-    
-    headers: {
-      HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.cookieHeader: sesid,
-    },
-    );
-    var deco = jsonDecode(response2.body);
-    for (var elem in deco["data"]) {
-      
-      clienti.add(elem);
-      print(elem["companyname"]);
-    _clientiOptions.add(elem["code"]+" - "+elem["companyname"]);
-    }
-    
   }
 
-  void assegnaOre(int o) {
-    ore = o;
+  void getProgetti(sesid, id) async {
+    progetti=[];
+    _progettiOptions=[];
+    final params = {
+      "filters[project_or_customer]": '$id',
+    };
+    final uri;
+    if (id == 0) {
+      uri = Uri.https('hyfix.test.nealis.it', '/reports/project/readactive');
+    } else {
+      uri = Uri.https(
+          'hyfix.test.nealis.it', '/reports/project/readactive', params);
+    }
+
+    final response = await http.get(
+      uri,
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.cookieHeader: sesid,
+      },
+    );
+
+    var deco = jsonDecode(response.body);
+    for (var elem in deco["data"]) {
+      progetti.add(elem);
+      _progettiOptions.add(elem["code"] + " - " + elem["customer_companyname"]);
+    }
+  }
+
+  void getLuoghi(sesid, id) async {
+    luoghi=[];
+    _luoghiOptions=[];
+    final params = {
+      'filters[customer_id]': '${id}',
+    };
+
+    final uri;
+    if (id == 0) {
+      uri = Uri.https('hyfix.test.nealis.it', '/reports/customerlocation/read');
+    } else {
+      uri = Uri.https(
+          'hyfix.test.nealis.it', '/reports/customerlocation/read', params);
+    }
+    final response = await http.get(
+      uri,
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.cookieHeader: sesid,
+      },
+    );
+    var deco = jsonDecode(response.body);
+    for (var elem in deco["data"]) {
+      luoghi.add(elem);
+      _luoghiOptions.add(elem["location_code"] +
+          " - " +
+          elem["customer_code"] +
+          " - " +
+          elem["location_city"]);
+    }
+  }
+
+  void getActivity(sesid) async {
+    activity = [];
+    _luoghiOptions=[];
+    final params = {
+      'filters[unity_type]': cate,
+    };
+    print(params);
+    final uri =
+        Uri.https('hyfix.test.nealis.it', '/reports/tasktype/read', params);
+    final response = await http.get(
+      uri,
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.cookieHeader: sesid,
+      },
+    );
+    var deco = jsonDecode(response.body);
+    for (var elem in deco["data"]) {
+      activity.add(elem);
+      _activityOptions.add(elem["task_type_code"] + " - " + elem["unity_code"]);
+    }
+  }
+
+  void assegnaTask(int o) {
+    task = o;
   }
 
   void aggiornaTipo(String t) {
     tipo = t;
   }
-
-  void controllo() {
-    if (attivita == "" || tipo == "" || ore == 0) {
-    } else {
-      if (attivita.toUpperCase() != "WORK" &&
-          attivita.toUpperCase() != "SMARTWORKING" &&
-          attivita.toUpperCase() != "TRASFERTA") {
-      } else {
-        widget.addElement(cliente, luogo, progetto, attivita.toUpperCase(),
-            ore.toString(), widget.dataAttuale, note, tipo);
-      }
-    }
-  }
-
 
   void FetchClienti() {}
   @override
@@ -122,10 +177,12 @@ class _InsertActivity extends State<InsertActivity> {
     return Container(
         padding: const EdgeInsets.all(15),
         child: Column(children: [
-          const Text(
+          Text(
             "AGGIUNGI ",
             style: TextStyle(
-                color: Colors.red, fontSize: 50, fontWeight: FontWeight.bold),
+                color: Theme.of(context).colorScheme.primaryContainer,
+                fontSize: 50,
+                fontWeight: FontWeight.bold),
           ),
           const SizedBox(
             height: 40,
@@ -138,9 +195,10 @@ class _InsertActivity extends State<InsertActivity> {
                   child: TextButton(
                     style: ElevatedButton.styleFrom(
                       side: BorderSide(
-                          color: Color.fromARGB(255, 122, 213, 255), width: 3),
+                          color:
+                              Theme.of(context).colorScheme.primaryContainer),
                       backgroundColor: tipo == "R"
-                          ? Color.fromARGB(255, 122, 213, 255)
+                          ? Theme.of(context).colorScheme.primaryContainer
                           : null,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8), // <-- Radius
@@ -151,9 +209,13 @@ class _InsertActivity extends State<InsertActivity> {
                         tipo = "R";
                       });
                     },
-                    child: const Text(
+                    child: Text(
                       'Rapportino',
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(
+                        color: tipo == "R"
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : Theme.of(context).colorScheme.primaryContainer,
+                      ),
                     ),
                   )),
               const SizedBox(
@@ -164,9 +226,10 @@ class _InsertActivity extends State<InsertActivity> {
                   child: TextButton(
                     style: ElevatedButton.styleFrom(
                       side: BorderSide(
-                          color: Color.fromARGB(255, 122, 213, 255), width: 3),
+                          color:
+                              Theme.of(context).colorScheme.primaryContainer),
                       backgroundColor: tipo == "E"
-                          ? Color.fromARGB(255, 122, 213, 255)
+                          ? Theme.of(context).colorScheme.primaryContainer
                           : null,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8), // <-- Radius
@@ -177,9 +240,13 @@ class _InsertActivity extends State<InsertActivity> {
                         tipo = "E";
                       });
                     },
-                    child: const Text(
+                    child: Text(
                       'Evento',
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(
+                        color: tipo == "E"
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : Theme.of(context).colorScheme.primaryContainer,
+                      ),
                     ),
                   ))
             ],
@@ -196,10 +263,12 @@ class _InsertActivity extends State<InsertActivity> {
                         child: TextButton(
                           style: ElevatedButton.styleFrom(
                             side: BorderSide(
-                                color: Color.fromARGB(255, 122, 213, 255),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
                                 width: 3),
                             backgroundColor: cate == "T"
-                                ? Color.fromARGB(255, 122, 213, 255)
+                                ? Theme.of(context).colorScheme.primaryContainer
                                 : null,
                             shape: RoundedRectangleBorder(
                               borderRadius:
@@ -209,11 +278,20 @@ class _InsertActivity extends State<InsertActivity> {
                           onPressed: () {
                             setState(() {
                               cate = "T";
+                              getActivity(globals.sesid);
                             });
                           },
-                          child: const Text(
+                          child: Text(
                             'Tempo',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: cate == "T"
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                            ),
                           ),
                         )),
                     const SizedBox(
@@ -224,10 +302,12 @@ class _InsertActivity extends State<InsertActivity> {
                         child: TextButton(
                           style: ElevatedButton.styleFrom(
                             side: BorderSide(
-                                color: Color.fromARGB(255, 122, 213, 255),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
                                 width: 3),
                             backgroundColor: cate == "C"
-                                ? Color.fromARGB(255, 122, 213, 255)
+                                ? Theme.of(context).colorScheme.primaryContainer
                                 : null,
                             shape: RoundedRectangleBorder(
                               borderRadius:
@@ -237,11 +317,20 @@ class _InsertActivity extends State<InsertActivity> {
                           onPressed: () {
                             setState(() {
                               cate = "C";
+                              getActivity(globals.sesid);
                             });
                           },
-                          child: const Text(
+                          child: Text(
                             'Costo',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: cate == "C"
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                            ),
                           ),
                         )),
                     const SizedBox(
@@ -251,11 +340,13 @@ class _InsertActivity extends State<InsertActivity> {
                         width: 100,
                         child: TextButton(
                           style: ElevatedButton.styleFrom(
-                            side: const BorderSide(
-                                color: Color.fromARGB(255, 122, 213, 255),
+                            side: BorderSide(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
                                 width: 3),
                             backgroundColor: cate == "D"
-                                ? const Color.fromARGB(255, 122, 213, 255)
+                                ? Theme.of(context).colorScheme.primaryContainer
                                 : null,
                             shape: RoundedRectangleBorder(
                               borderRadius:
@@ -265,11 +356,20 @@ class _InsertActivity extends State<InsertActivity> {
                           onPressed: () {
                             setState(() {
                               cate = "D";
+                              getActivity(globals.sesid);
                             });
                           },
-                          child: const Text(
+                          child: Text(
                             'Distanza',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: cate == "D"
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                            ),
                           ),
                         ))
                   ],
@@ -279,8 +379,8 @@ class _InsertActivity extends State<InsertActivity> {
             height: 10,
           ),
           Text(
-            "Data: " + DateFormat('dd/MM/yyyy').format(widget.dataAttuale),
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            "Data: ${DateFormat('dd/MM/yyyy').format(widget.dataAttuale)}",
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(
             height: 10,
@@ -293,10 +393,11 @@ class _InsertActivity extends State<InsertActivity> {
                     optionsBuilder: (TextEditingValue textEditingValue) {
                   if (textEditingValue.text == '') {
                     return _clientiOptions;
-                    
                   }
                   return _clientiOptions.where((String option) {
-                    return option.toUpperCase().contains(textEditingValue.text.toUpperCase());
+                    return option
+                        .toUpperCase()
+                        .contains(textEditingValue.text.toUpperCase());
                   });
                 }, fieldViewBuilder: (BuildContext context,
                         TextEditingController fieldTextEditingController,
@@ -315,17 +416,24 @@ class _InsertActivity extends State<InsertActivity> {
                     onSubmitted: (text) {
                       // Handle the submission of the selected suggestion
                       // Implement the logic for the selection action
+                      fieldTextEditingController.text="";
                     },
                   );
                 }, onSelected: (String selection) {
-                  var nomeC=selection.split(" ");
-                  print(nomeC);
-                  for(var s in clienti){
-                    if(s["companyname"]==nomeC[2]){
-                      print(s);
-                      cliente = s;
-                    }  
+                  var nomeC = selection.split(" ");
+                  for (var c in clienti) {
+                    if (c["companyname"] == nomeC[2]) {
+                      cliente = c;
+                    }
+                  };
+                  if (id == 0) {
+                    setState(() {
+                      id = cliente["customer_id"];
+                    });
                   }
+
+                  getProgetti(globals.sesid, id);
+                  getLuoghi(globals.sesid, id);
                 }),
               ),
             ],
@@ -338,11 +446,13 @@ class _InsertActivity extends State<InsertActivity> {
             children: [
               Expanded(
                 child: Autocomplete<String>(
+
+                    //initialValue: TextEditingValue(text:progetti[0]["code"]+" - "+progetti[0]["customer_code"]),
                     optionsBuilder: (TextEditingValue textEditingValue) {
                   if (textEditingValue.text == '') {
-                    return _progettoOptions;
+                    return _progettiOptions;
                   }
-                  return _progettoOptions.where((String option) {
+                  return _progettiOptions.where((String option) {
                     return option.contains(textEditingValue.text.toUpperCase());
                   });
                 }, fieldViewBuilder: (BuildContext context,
@@ -357,7 +467,6 @@ class _InsertActivity extends State<InsertActivity> {
                     onChanged: (text) {
                       // Update suggestions based on user input
                       // Implement the logic to filter and refresh suggestions
-                      progetto = text;
                     },
                     onSubmitted: (text) {
                       // Handle the submission of the selected suggestion
@@ -365,7 +474,20 @@ class _InsertActivity extends State<InsertActivity> {
                     },
                   );
                 }, onSelected: (String selection) {
-                  progetto = selection;
+                  var nomeP = selection.split(" ");
+                  for (var p in progetti) {
+                    print(p);
+                    if (p["code"] == nomeP[0]) {
+                      progetto = p;
+                    }
+                  }
+                  if (id == 0) {
+                    setState(() {
+                      id = progetto["customer_id"];
+                    });
+                    getLuoghi(globals.sesid, id);
+                    getClienti(globals.sesid, id);
+                  }
                 }),
               ),
             ],
@@ -379,9 +501,9 @@ class _InsertActivity extends State<InsertActivity> {
                   child: Autocomplete<String>(
                       optionsBuilder: (TextEditingValue textEditingValue) {
                 if (textEditingValue.text == '') {
-                  return _locationOptions;
+                  return _luoghiOptions;
                 }
-                return _locationOptions.where((String option) {
+                return _luoghiOptions.where((String option) {
                   return option.contains(textEditingValue.text.toUpperCase());
                 });
               }, fieldViewBuilder: (BuildContext context,
@@ -396,16 +518,30 @@ class _InsertActivity extends State<InsertActivity> {
                   onChanged: (text) {
                     // Update suggestions based on user input
                     // Implement the logic to filter and refresh suggestions
-                    luogo = text;
                   },
                   onSubmitted: (text) {
                     // Handle the submission of the selected suggestion
                     // Implement the logic for the selection action
-                    luogo = text;
                   },
                 );
               }, onSelected: (String selection) {
-                luogo = selection;
+                var nomeL = selection.split(" ");
+                for (var l in luoghi) {
+                  if (l["location_code"] == nomeL[0]) {
+                    luogo = l;
+                    setState(() {
+                      indirizzo = l["location_fulladdress"];
+                    });
+                  }
+                }
+                ;
+                if (id == 0) {
+                  setState(() {
+                    id = luogo["customer_id"];
+                  });
+                }
+                getProgetti(globals.sesid, id);
+                getClienti(globals.sesid, id);
               })),
             ],
           ),
@@ -413,54 +549,82 @@ class _InsertActivity extends State<InsertActivity> {
             height: 10,
           ),
           Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Indirizzo: ",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
+              alignment: Alignment.centerLeft,
+              child: Container(
+                  margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: Row(
+                    children: [
+                      const Text(
+                        "INDIRIZZO: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "${indirizzo} ",
+                      ),
+                    ],
+                  ))),
           const SizedBox(
             height: 10,
           ),
           Row(
             children: [
               Expanded(
-                  child: Autocomplete<String>(
-                      optionsBuilder: (TextEditingValue textEditingValue) {
-                if (textEditingValue.text == '') {
-                  return _activityOptions;
-                }
-                return _activityOptions.where((String option) {
-                  return option.contains(textEditingValue.text.toUpperCase());
-                });
-              }, fieldViewBuilder: (BuildContext context,
-                          TextEditingController fieldTextEditingController,
-                          FocusNode fieldFocusNode,
-                          VoidCallback onFieldSubmitted) {
-                return TextField(
-                  controller: fieldTextEditingController,
-                  focusNode: fieldFocusNode,
-                  decoration: const InputDecoration(
-                      label: Text('Attività'), border: OutlineInputBorder()),
-                  onChanged: (text) {
-                    // Update suggestions based on user input
-                    // Implement the logic to filter and refresh suggestions
-                    attivita = text;
-                  },
-                  onSubmitted: (text) {
-                    // Handle the submission of the selected suggestion
-                    // Implement the logic for the selection action
-                  },
-                );
-              }, onSelected: (String selection) {
-                attivita = selection;
-              })),
+                child: Autocomplete<String>(
+                    optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text == '') {
+                    return _activityOptions;
+                  }
+                  return _activityOptions.where((String option) {
+                    return option.contains(textEditingValue.text.toUpperCase());
+                  });
+                }, fieldViewBuilder: (BuildContext context,
+                        TextEditingController fieldTextEditingController,
+                        FocusNode fieldFocusNode,
+                        VoidCallback onFieldSubmitted) {
+                  return TextField(
+                    controller: fieldTextEditingController,
+                    focusNode: fieldFocusNode,
+                    decoration: const InputDecoration(
+                        label: Text('Attività'), border: OutlineInputBorder()),
+                    onChanged: (text) {
+                      // Update suggestions based on user input
+                      // Implement the logic to filter and refresh suggestions
+                    },
+                    onSubmitted: (text) {
+                      // Handle the submission of the selected suggestion
+                      // Implement the logic for the selection action
+                    },
+                  );
+                }, onSelected: (String selection) {
+                  var nomeA = selection.split(" ");
+                  for (var a in activity) {
+                    if (a["task_type_code"] == nomeA[0]) {
+                      attivita = a;
+                      setState(() {
+                        task_type = a["unity_code"];
+                      });
+                      print(a);
+                    }
+                  }
+                  ;
+                }),
+              ),
               const SizedBox(
                 width: 10,
               ),
-              Ore(
-                ore: assegnaOre,
-              )
+              SizedBox(
+                width: 100,
+                child: Task(
+                  task: assegnaTask,
+                  task_type: task_type,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                task_type,
+              ),
             ],
           ),
           const SizedBox(
@@ -489,19 +653,19 @@ class _InsertActivity extends State<InsertActivity> {
             children: [
               TextButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 122, 213, 255),
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8), // <-- Radius
                   ),
                 ),
                 onPressed: () {
-                  controllo();
-
                   Navigator.pop(context);
                 },
-                child: const Text(
+                child: Text(
                   'Aggiungi',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer),
                 ),
               ),
               const SizedBox(
@@ -509,7 +673,8 @@ class _InsertActivity extends State<InsertActivity> {
               ),
               TextButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 122, 213, 255),
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8), // <-- Radius
                   ),
@@ -517,9 +682,10 @@ class _InsertActivity extends State<InsertActivity> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text(
+                child: Text(
                   'Chiudi',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer),
                 ),
               )
             ],
@@ -530,37 +696,26 @@ class _InsertActivity extends State<InsertActivity> {
 
 ////////////////     ORE     ///////////////////////
 
-class Ore extends StatefulWidget {
-  const Ore({super.key, required this.ore});
-  final Function ore;
+class Task extends StatefulWidget {
+  const Task({super.key, required this.task, required this.task_type});
+  final Function task;
+  final String task_type;
 
   @override
-  State<Ore> createState() => _OreState();
+  State<Task> createState() => _TaskState();
 }
 
-class _OreState extends State<Ore> {
-  int dropdownValue = _hoursOptions.first;
-
+class _TaskState extends State<Task> {
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu<int>(
-      label: Text("Ore"),
-      initialSelection: 0,
-      onSelected: (int? value) {
-        // This is called when the user selects an item.
-        setState(() {
-          dropdownValue = value!;
-        });
-        widget.ore(dropdownValue);
-      },
-      dropdownMenuEntries:
-          _hoursOptions.map<DropdownMenuEntry<int>>((int value) {
-        return DropdownMenuEntry<int>(
-          value: value,
-          label: '$value',
+    return TextField(
+        decoration: new InputDecoration(
+            labelText: "Quantità", border: OutlineInputBorder()),
+        keyboardType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ] // Only numbers can be entered
         );
-      }).toList(),
-    );
   }
 }
 
