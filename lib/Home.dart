@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -43,6 +42,7 @@ class _MyAppState extends State<MyApp> {
   DateTime _data = DateTime.now();
   bool visible = true;
   CalendarFormat _calendarFormat = CalendarFormat.month;
+  bool loading = true;
 
   int i = 0;
 
@@ -53,24 +53,38 @@ class _MyAppState extends State<MyApp> {
     var jobList = context.read<JobList>();
 
     Service().getReports(globals.sesid).then((report) {
+      print("ciao");
+      setState(() {
+        loading = false;
+      });
       jobList.lista = <Reports>[];
       for (var element in report) {
-        // print("element");
-        // print(element);
         Reports reports = Reports.fromJson(element);
-        // print("entrato");
         jobList.lista.add(reports);
-        // for (var i in jobList.lista) {
-        //   print(i.toJson());
-        // }
-        // print("reports");
-        // print(reports.toJson());
-        // JobList().addElement(reports);
       }
       setState(() {
         jobList.lista = jobList.lista;
       });
     });
+  }
+
+  void logout() async {
+    var client = http.Client();
+
+    var uri = Uri.https('hyfix.test.nealis.it', '/auth/logout');
+    await client.get(uri, headers: {
+      HttpHeaders.contentTypeHeader: 'application/json',
+      HttpHeaders.cookieHeader: globals.sesid,
+    }).then(
+      (response) {
+        JobList jobList = context.read<JobList>();
+        jobList.lista = <Reports>[];
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Accesso()),
+        );
+      },
+    );
   }
 
   void aggiornaData(DateTime data) {
@@ -102,35 +116,40 @@ class _MyAppState extends State<MyApp> {
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 75,
-          leading: Container(
-            child: IconButton(
-                onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Accesso()),
-                    ),
-                icon: const Icon(Icons.arrow_back)),
+          leading: IconButton(
+            onPressed: () {
+              themeProvider
+                  .toggleTheme(themeProvider.themeMode == ThemeMode.light);
+            },
+            icon: Icon(
+              themeProvider.themeMode == ThemeMode.light
+                  ? Icons.dark_mode
+                  : Icons.light_mode,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
           actions: [
-            IconButton(
-              onPressed: () {
-                themeProvider
-                    .toggleTheme(themeProvider.themeMode == ThemeMode.light);
-              },
-              icon: Icon(
-                themeProvider.themeMode == ThemeMode.light
-                    ? Icons.dark_mode
-                    : Icons.light_mode,
-                color: Theme.of(context).colorScheme.onSurface,
+            PopScope(
+              canPop: false,
+              child: IconButton(
+                onPressed: () {
+                  logout();
+                },
+                icon: Icon(
+                  Icons.logout,
+                  color: Theme.of(context).colorScheme.errorContainer,
+                ),
               ),
             ),
           ],
-          centerTitle: true,
-          title: Container(
-              child: Text('LE TUE ATTIVITÀ',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30))),
+          // centerTitle: true,
+          title: Center(
+            child: Text('LE TUE ATTIVITÀ',
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30)),
+          ),
         ),
         body: Container(
           padding: EdgeInsets.all(10),
@@ -145,6 +164,7 @@ class _MyAppState extends State<MyApp> {
               ),
               Expanded(
                 child: ContainerEvents(
+                  loading: loading,
                   selezionato: _data,
                   visible: visible,
                   lista: jobList.lista,

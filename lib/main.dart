@@ -248,159 +248,78 @@ class _AccessoState extends State<Accesso> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.primaryContainer,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8), // <-- Radius
+                    PopScope(
+                      canPop: false,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(8), // <-- Radius
+                          ),
                         ),
-                      ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          fetchUtente(
-                                  userController.text, passwordController.text)
-                              .then((res) => {
-                                    print(res),
-                                    if (res.contains('"success":false'))
-                                      {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: const Text(
-                                                'Username e/o Password Errati'),
-                                            action: SnackBarAction(
-                                              label: 'Chiudi',
-                                              onPressed: () {
-                                                // Code to execute.
-                                              },
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            fetchUtente(userController.text,
+                                    passwordController.text)
+                                .then((res) => {
+                                      if (res.contains('"success":false'))
+                                        {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: const Text(
+                                                  'Username e/o Password Errati'),
+                                              action: SnackBarAction(
+                                                label: 'Chiudi',
+                                                onPressed: () {
+                                                  // Code to execute.
+                                                },
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
                                             ),
-                                            behavior: SnackBarBehavior.floating,
                                           ),
-                                        ),
-                                      }
-                                    else
-                                      {
-                                        globals.username = userController.text,
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => MyApp()),
-                                        ),
-                                      }
-                                  });
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Riempi tutti i campi'),
-                              action: SnackBarAction(
-                                label: 'Chiudi',
-                                onPressed: () {
-                                  // Code to execute.
-                                },
+                                        }
+                                      else
+                                        {
+                                          globals.username =
+                                              userController.text,
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => MyApp()),
+                                          ),
+                                        }
+                                    });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('Riempi tutti i campi'),
+                                action: SnackBarAction(
+                                  label: 'Chiudi',
+                                  onPressed: () {
+                                    // Code to execute.
+                                  },
+                                ),
+                                behavior: SnackBarBehavior.floating,
                               ),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                        }
-                      },
-                      child: Text(
-                        'Submit',
-                        style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onPrimaryContainer),
+                            );
+                          }
+                        },
+                        child: Text(
+                          'Submit',
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     TextButton(
-              //       style: ElevatedButton.styleFrom(
-              //         backgroundColor:
-              //             Theme.of(context).colorScheme.primaryContainer,
-              //         shape: RoundedRectangleBorder(
-              //           borderRadius: BorderRadius.circular(8), // <-- Radius
-              //         ),
-              //       ),
-              //       onPressed: () async {
-              //         await fetchUtente().then((resp) => {
-              //               print(resp),
-              //               if (utente.isEmpty || password.isEmpty)
-              //                 {
-              //                   ScaffoldMessenger.of(context).showSnackBar(
-              //                     SnackBar(
-              //                       content: const Text('Riempi tutti i campi'),
-              //                       action: SnackBarAction(
-              //                         label: 'Chiudi',
-              //                         onPressed: () {
-              //                           // Code to execute.
-              //                         },
-              //                       ),
-              //                       behavior: SnackBarBehavior.floating,
-              //                     ),
-              //                   ),
-              //                 }
-              //               else if (resp.contains('"success":false'))
-              //                 {
-              //                   ScaffoldMessenger.of(context).showSnackBar(
-              //                     SnackBar(
-              //                       content:
-              //                           const Text('Username e/o Password Errati'),
-              //                       action: SnackBarAction(
-              //                         label: 'Chiudi',
-              //                         onPressed: () {
-              //                           // Code to execute.
-              //                         },
-              //                       ),
-              //                       behavior: SnackBarBehavior.floating,
-              //                     ),
-              //                   ),
-              //                 }
-              //               else
-              //                 {
-              //                   Navigator.push(
-              //                     context,
-              //                     MaterialPageRoute(builder: (context) => MyApp()),
-              //                   ),
-              //                 }
-              //             });
-              //       },
-              //       child: Text(
-              //         'Accedi',
-              //         style: TextStyle(
-              //             color: Theme.of(context).colorScheme.onPrimaryContainer),
-              //       ),
-              //     ),
-              //     const SizedBox(width: 20),
-              //     TextButton(
-              //       style: ElevatedButton.styleFrom(
-              //         backgroundColor:
-              //             Theme.of(context).colorScheme.primaryContainer,
-              //         shape: RoundedRectangleBorder(
-              //           borderRadius: BorderRadius.circular(8),
-              //         ),
-              //       ),
-              //       onPressed: () {
-              //         Navigator.push(
-              //           context,
-              //           MaterialPageRoute(builder: (context) => MyApp()),
-              //         );
-              //       },
-              //       child: Text(
-              //         'Prova Demo',
-              //         style: TextStyle(
-              //           color: Theme.of(context).colorScheme.onPrimaryContainer,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // const SizedBox(height: 100),
             ],
           ),
         ),
