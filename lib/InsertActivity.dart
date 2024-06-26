@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:progetto/models/Reports.dart';
 import 'Login.dart' as globals;
 
 const List<int> _hoursOptions = <int>[1, 2, 3, 4, 5, 6, 7, 8];
@@ -99,16 +100,77 @@ class _InsertActivity extends State<InsertActivity> {
   }
 
   void controllo() {
-    if (attivita == "" || tipo == "" || ore == 0) {
-    } else {
-      if (attivita.toUpperCase() != "WORK" &&
-          attivita.toUpperCase() != "SMARTWORKING" &&
-          attivita.toUpperCase() != "TRASFERTA") {
-      } else {
-        widget.addElement(cliente, luogo, progetto, attivita.toUpperCase(),
-            ore.toString(), widget.dataAttuale, note, tipo);
-      }
-    }
+    // if (attivita == "" || tipo == "" || ore == 0) {
+    // } else {
+    //   if (attivita.toUpperCase() != "WORK" &&
+    //       attivita.toUpperCase() != "SMARTWORKING" &&
+    //       attivita.toUpperCase() != "TRASFERTA") {
+    //   } else {
+    final rep = Reports(
+      id: 0,
+      reportType: tipo,
+      reportDate: widget.dataAttuale,
+      customerId: 1,
+      locationId: 1,
+      userId: 1,
+      note: note,
+      customerNote: "",
+      projectId: 1,
+      projectTaskId: "",
+      taskTypeId: 1,
+      quantity: "2",
+      customerQuantity: "2",
+      bill: "Y",
+      refund: "N",
+      refunded: "N",
+      reportPrint: "N",
+      billed: "N",
+      blockdate: "",
+      start: widget.dataAttuale,
+      blocked: 0,
+      typeDescription: attivita,
+      customerCode: "asd",
+      customerCompanyname: "asd",
+      locationCode: "SEDE",
+      locationAddress: "",
+      locationZip: "",
+      locationCity: "",
+      locationProvince: "",
+      locationCountry: "",
+      projectCode: "PRIMO",
+      projectDescription: "PRIMO",
+      projectExpire: "",
+      defaultProject: "Y",
+      projectPosition: 1,
+      projectPositionNotZero: 1,
+      projectTaskCode: "",
+      projectTaskDescription: "",
+      projectTaskExpire: "",
+      projectTaskEstimate: "",
+      projectTaskPosition: 0,
+      projectTaskPositionNotZero: 0,
+      taskTypeCode: "WORK",
+      unityId: 1,
+      taskTypeBill: "Y",
+      taskTypeRefund: "N",
+      taskTypeReportPrint: "N",
+      taskTypeColor: "BLUE",
+      color: "BLUE",
+      unityCode: "H",
+      unityType: "H",
+      firstOfTheMonth: DateTime(2024, 06, 01),
+      locationDistance: "",
+      locationFulladdress: "",
+      customerLocationId: 0,
+      username: "",
+      signature: "",
+      avatar: "",
+      userBlocked: 0,
+      title: "",
+    );
+    widget.addElement(rep);
+    //   }
+    // }
   }
 
   void FetchClienti() {}

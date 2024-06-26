@@ -1,3 +1,6 @@
 library progetto.globals;
 
-String sesid="";
+import 'package:flutter/material.dart';
+
+String sesid = "";
+Widget? image;
