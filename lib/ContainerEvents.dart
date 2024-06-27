@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:progetto/Events.dart';
-import 'package:progetto/Home.dart';
-import 'package:progetto/models/Reports.dart';
-import 'package:provider/provider.dart';
+import 'package:hyfix/Events.dart';
+import 'package:hyfix/models/Reports.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ContainerEvents extends StatefulWidget {
   const ContainerEvents(
       {required this.selezionato,
       required this.lista,
+      required this.loading,
       super.key,
       required this.visible});
   final DateTime selezionato;
   final bool visible;
   final List<Reports> lista;
+  final bool loading;
 
   _ContainerEvents createState() => _ContainerEvents();
 }
@@ -31,7 +32,9 @@ class _ContainerEvents extends State<ContainerEvents> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedVisibility(
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
+      child: AnimatedVisibility(
         enter: fadeIn(),
         exit: fadeOut(),
         child: Container(
@@ -42,13 +45,17 @@ class _ContainerEvents extends State<ContainerEvents> {
             ),
             child: controllo()
                 ? Events(data: widget.selezionato, lista: widget.lista)
-                : Center(
-                    child: Text(
-                    "NON CI SONO ATTIVITÀ",
-                    style: TextStyle(
-                        color:
-                            Theme.of(context).colorScheme.onPrimaryContainer),
-                  ))));
+                : widget.loading
+                    ? Center(
+                        child: LoadingAnimationWidget.staggeredDotsWave(
+                          color:
+                              Theme.of(context).colorScheme.onTertiaryContainer,
+                          size: 80,
+                        ),
+                      )
+                    : null),
+      ),
+    );
   }
 }
 

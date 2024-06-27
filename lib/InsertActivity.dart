@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:progetto/models/Reports.dart';
 import 'Login.dart' as globals;
 
 const List<int> _hoursOptions = <int>[1, 2, 3, 4, 5, 6, 7, 8];

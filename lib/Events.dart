@@ -1,7 +1,7 @@
 import 'package:diagonal_decoration/diagonal_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:progetto/models/Reports.dart';
+import 'package:hyfix/models/Reports.dart';
 
 extension HexColor on Color {
   static Color fromHex(String hexString) {
@@ -10,6 +10,15 @@ extension HexColor on Color {
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
   }
+}
+
+Color darken(Color color, [double amount = .1]) {
+  assert(amount >= 0 && amount <= 1);
+
+  final hsl = HSLColor.fromColor(color);
+  final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
+
+  return hslDark.toColor();
 }
 
 class Events extends StatefulWidget {
@@ -50,24 +59,20 @@ class _EventsState extends State<Events> {
                     borderRadius: BorderRadius.circular(8),
                     color: HexColor.fromHex(i.color),
                   )
-                : BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: HexColor.fromHex(i.color).withOpacity(0.5),
+                : DiagonalDecoration(
+                    radius: Radius.circular(8),
+                    lineColor: darken(HexColor.fromHex(i.color), .1),
+                    lineWidth: 8,
+                    backgroundColor: HexColor.fromHex(i.color),
+                    distanceBetweenLines: 140,
                   ),
-            // DiagonalDecoration(
-            //     radius: Radius.circular(8),
-            //     lineColor: HexColor.fromHex(i.color),
-            //     lineWidth: 8,
-            //     backgroundColor: HexColor.fromHex(i.color).withOpacity(0.2),
-            //     distanceBetweenLines: 140,
-            //   ),
             child: Row(
               children: [
                 Row(
                   children: [
                     Icon(
                       i.reportType == "R" ? Icons.assignment : Icons.bookmark,
-                      color: Theme.of(context).colorScheme.onTertiaryContainer,
+                      color: Colors.white,
                     ),
                     const SizedBox(
                       width: 10,
@@ -77,9 +82,8 @@ class _EventsState extends State<Events> {
                 Center(
                   child: Text(
                     "[  ${int.parse(i.quantity).toStringAsFixed(2)} ${i.unityCode}  ]",
-                    style: TextStyle(
-                        color:
-                            Theme.of(context).colorScheme.onTertiaryContainer,
+                    style: const TextStyle(
+                        color: Colors.white,
                         fontSize: 17,
                         fontWeight: FontWeight.bold),
                   ),
@@ -89,8 +93,8 @@ class _EventsState extends State<Events> {
                 ),
                 Text(
                   "${i.customerCode} - ${i.taskTypeCode}",
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.onTertiaryContainer,
+                  style: const TextStyle(
+                      color: Colors.white,
                       fontSize: 17,
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
