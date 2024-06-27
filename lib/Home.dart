@@ -25,7 +25,7 @@ class Cliente {
 class JobList with ChangeNotifier {
   List<Reports> lista = <Reports>[];
 
-  void addElement(Reports report) {
+  void fetchCalendar(Reports report) {
     lista.add(report);
     notifyListeners();
   }
@@ -50,8 +50,12 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    var jobList = context.read<JobList>();
+    fetchRep();
+    
+  }
 
+  void fetchRep(){
+    var jobList = context.read<JobList>();
     Service().getReports(globals.sesid).then((report) {
       print("ciao");
       setState(() {
@@ -186,7 +190,7 @@ class _MyAppState extends State<MyApp> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               InsertActivity(
-                                addElement: jobList.addElement,
+                                fetchCalendar: fetchRep,
                                 dataAttuale: _data,
                               ),
                               const SizedBox(height: 15),
