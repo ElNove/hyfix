@@ -1,6 +1,7 @@
 import 'package:diagonal_decoration/diagonal_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hyfix/DialogEvent.dart';
 import 'package:hyfix/models/Reports.dart';
 
 extension HexColor on Color {
@@ -46,6 +47,9 @@ class _EventsState extends State<Events> {
       if (DateUtils.isSameDay(i.reportDate, widget.data)) {
         var con = new GestureDetector(
           onTap: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => DialogEvent(report: i));
           },
           child: Container(
             padding: EdgeInsets.all(12),
