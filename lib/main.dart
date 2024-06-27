@@ -116,7 +116,7 @@ class MainApp extends StatelessWidget {
         builder: (context, themeProvider, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'Material Color Utilities',
+            title: 'HyFix',
             theme: ThemeData.from(colorScheme: lightColorScheme),
             darkTheme: ThemeData.from(colorScheme: darkColorScheme),
             themeMode: themeProvider.themeMode,
@@ -136,12 +136,9 @@ class Accesso extends StatefulWidget {
 }
 
 class _AccessoState extends State<Accesso> {
-  String utente = "";
-  String password = "";
-
-  Future<String> fetchUtente() async {
+  Future<String> fetchUtente(user, password) async {
     final queryParameters = {
-      'username': utente,
+      'username': user,
       'password': password,
     };
     final uri =
@@ -169,22 +166,16 @@ class _AccessoState extends State<Accesso> {
       final isDark = prefs.getBool('isDark') ?? false;
       themeProvider.toggleTheme(isDark);
     });
-
-    // var client = http.Client();
-
-    // var uri = Uri.https('hyfix.test.nealis.it',
-    //     '/assets/1718265055508/images/hyfix_logo_basic_white.svg');
-    // var icon = await client
-    //     .get(uri, headers: {HttpHeaders.contentTypeHeader: 'image/svg+xml'});
-    // final Widget networkSvg = SvgPicture.network(
-    //     'https://hyfix.test.nealis.it/assets/1718265055508/images/hyfix_logo_basic_white.svg');
-    // globals.image = networkSvg;
   }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = context.watch<ThemeProvider>();
-    var img = globals.image;
+
+    final _formKey = GlobalKey<FormState>();
+    TextEditingController userController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -203,63 +194,106 @@ class _AccessoState extends State<Accesso> {
           ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // const Image(width: 100, image: AssetImage('lib/img/logo.png')),
-          SvgPicture.network(
-            'https://hyfix.test.nealis.it/assets/1718265055508/images/hyfix_logo_full_color.svg',
-            colorFilter: ColorFilter.mode(
-                Theme.of(context).colorScheme.primaryContainer,
-                BlendMode.srcIn),
-          ),
-          const SizedBox(height: 50),
-          SizedBox(
-            width: 250,
-            child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Nome Utente',
-                ),
-                onChanged: (String newText) {
-                  setState(() {
-                    utente = newText;
-                  });
-                }),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            width: 250,
-            child: TextField(
-              obscureText: true,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-              ),
-              onChanged: (String newText) {
-                setState(() {
-                  password = newText;
-                });
-              },
-            ),
-          ),
-          const SizedBox(height: 10),
-          Row(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 100),
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              TextButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8), // <-- Radius
-                  ),
-                ),
-                onPressed: () async {
-                  await fetchUtente().then((resp) => {
-                        print(resp),
-                        if (utente.isEmpty || password.isEmpty)
-                          {
+              // const Image(width: 100, image: AssetImage('lib/img/logo.png')),
+              SvgPicture.asset(
+                'assets/full_logo.svg',
+                colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.primaryContainer,
+                    BlendMode.srcIn),
+                width: 250,
+              ),
+              const SizedBox(height: 50),
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 250,
+                      child: TextFormField(
+                        controller: userController,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Nome Utente"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Inserisci il tuo nome utente';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: 250,
+                      child: TextFormField(
+                        controller: passwordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Password"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Inserisci la tua password';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    PopScope(
+                      canPop: false,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(8), // <-- Radius
+                          ),
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            fetchUtente(userController.text,
+                                    passwordController.text)
+                                .then((res) => {
+                                      if (res.contains('"success":false'))
+                                        {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: const Text(
+                                                  'Username e/o Password Errati'),
+                                              action: SnackBarAction(
+                                                label: 'Chiudi',
+                                                onPressed: () {
+                                                  // Code to execute.
+                                                },
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                            ),
+                                          ),
+                                        }
+                                      else
+                                        {
+                                          globals.username =
+                                              userController.text,
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => MyApp()),
+                                          ),
+                                        }
+                                    });
+                          } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: const Text('Riempi tutti i campi'),
@@ -271,64 +305,24 @@ class _AccessoState extends State<Accesso> {
                                 ),
                                 behavior: SnackBarBehavior.floating,
                               ),
-                            ),
+                            );
                           }
-                        else if (resp.contains('"success":false'))
-                          {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content:
-                                    const Text('Username e/o Password Errati'),
-                                action: SnackBarAction(
-                                  label: 'Chiudi',
-                                  onPressed: () {
-                                    // Code to execute.
-                                  },
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            ),
-                          }
-                        else
-                          {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => MyApp()),
-                            ),
-                          }
-                      });
-                },
-                child: Text(
-                  'Accedi',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer),
-                ),
-              ),
-              const SizedBox(width: 20),
-              TextButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyApp()),
-                  );
-                },
-                child: Text(
-                  'Prova Demo',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  ),
+                        },
+                        child: Text(
+                          'Submit',
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
-          )
-        ],
+          ),
+        ),
       ),
     );
   }
