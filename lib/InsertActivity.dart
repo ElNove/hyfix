@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hyfix/models/Reports.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'Login.dart' as globals;
@@ -778,8 +779,9 @@ class _InsertActivity extends State<InsertActivity> {
               ),
               Row(
                 children: [
-                  Expanded(child: RefundButton(),)
-                 
+                  Expanded(
+                    child: RefundButton(),
+                  )
                 ],
               ),
               const SizedBox(
@@ -904,7 +906,6 @@ class _TaskState extends State<Task> {
 
 ////////////////////   REFUND   //////////////////////
 
-
 class RefundButton extends StatefulWidget {
   const RefundButton({super.key});
 
@@ -913,32 +914,28 @@ class RefundButton extends StatefulWidget {
 }
 
 class _RadioExampleState extends State<RefundButton> {
-  String s="N";
-    @override
+  String s = "N";
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         ListTile(
-          title: const Text('Rimborso'),
-          leading: Radio<String>(
-            value: s,
-            toggleable: true,
-            groupValue: "Rimborso",
-            onChanged: (String? value) {
-              setState(() {
-                if(s=="S"){
-                  s="N";
-                }else{
-                  s="S";
-                }
-              });
-                print(value);
-              }
-              
-            )
-          ),
+            title: const Text('Rimborso'),
+            leading: Radio<String>(
+                value: s,
+                toggleable: true,
+                groupValue: "Rimborso",
+                onChanged: (String? value) {
+                  setState(() {
+                    if (s == "S") {
+                      s = "N";
+                    } else {
+                      s = "S";
+                    }
+                  });
+                  print(value);
+                })),
       ],
     );
   }
 }
-
