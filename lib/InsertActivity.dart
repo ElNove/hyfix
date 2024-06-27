@@ -162,7 +162,6 @@ class _InsertActivity extends State<InsertActivity> {
   }
 
   void getActivity(sesid) async {
-    print("via");
     activity = [];
     _activityOptions = [];
     final params = {
@@ -171,8 +170,6 @@ class _InsertActivity extends State<InsertActivity> {
     final uri =
         Uri.https('hyfix.test.nealis.it', '/reports/tasktype/read', params);
 
-    print("uri");
-    print(uri);
     final response = await http.get(
       uri,
       headers: {
@@ -686,8 +683,6 @@ class _InsertActivity extends State<InsertActivity> {
                   Expanded(
                     child: Autocomplete<String>(
                         optionsBuilder: (TextEditingValue textEditingValue) {
-                      print("attivita");
-                      print(_activityOptions);
                       if (textEditingValue.text == '') {
                         return _activityOptions;
                       }
@@ -726,7 +721,6 @@ class _InsertActivity extends State<InsertActivity> {
                           setState(() {
                             task_type = a["unity_code"];
                           });
-                          print(a);
                         }
                       }
                       ;
@@ -806,7 +800,6 @@ class _InsertActivity extends State<InsertActivity> {
                         insert();
                         Navigator.pop(context);
                       } else {
-                        print("ok");
                         showDialog<void>(
                           context: context,
                           barrierDismissible: false, // user must tap button!
@@ -933,7 +926,6 @@ class _RadioExampleState extends State<RefundButton> {
                       s = "S";
                     }
                   });
-                  print(value);
                 })),
       ],
     );

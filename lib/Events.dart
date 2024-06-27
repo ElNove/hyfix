@@ -47,9 +47,6 @@ class _EventsState extends State<Events> {
       if (DateUtils.isSameDay(i.reportDate, widget.data)) {
         var con = new GestureDetector(
           onTap: () {
-            print(i.toJson());
-            print(
-                "[${int.parse(i.quantity).toStringAsFixed(2)} ${i.unityCode}] ${i.customerCode} - ${i.taskTypeCode}");
             showDialog(
                 context: context,
                 builder: (BuildContext context) => DialogEvent(report: i));

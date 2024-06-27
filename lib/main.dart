@@ -291,7 +291,8 @@ class _AccessoState extends State<Accesso> {
     prefs.setString('expires', parseDate.toString());
 
     var sesid = response.headers["set-cookie"];
-    globals.sesid = sesid!;
+    prefs.setString('sesid', sesid!);
+    globals.sesid = sesid;
 
     return response.body;
   }
@@ -311,12 +312,11 @@ class _AccessoState extends State<Accesso> {
       themeProvider.toggleTheme(isDark);
     });
 
-    print(prefs.getString('expires'));
-    if (prefs.getString('expires') != null) {
+    if (prefs.getString('expires') != null &&
+        prefs.getString('sesid') != null) {
       var expires = prefs.getString('expires');
-      var parseDate = parse(expires!);
+      var parseDate = DateTime.parse(expires!);
       var now = DateTime.now();
-      print(parseDate.isBefore(now));
       if (parseDate.isBefore(now)) {
         prefs.remove('expires');
         prefs.remove('sesid');
@@ -328,6 +328,8 @@ class _AccessoState extends State<Accesso> {
         );
       }
     }
+    prefs.remove('expires');
+    prefs.remove('sesid');
   }
 
   @override
