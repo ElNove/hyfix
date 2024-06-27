@@ -380,10 +380,14 @@ class _AccessoState extends State<Accesso> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 250,
+                      width: 300,
                       child: TextFormField(
                         controller: userController,
-                        decoration: const InputDecoration(
+                        decoration:  InputDecoration(
+                          suffixIcon: IconButton(onPressed:()=>{
+                              userController.clear()
+                            }
+                             , icon: Icon(Icons.clear)),
                             border: OutlineInputBorder(),
                             labelText: "Nome Utente"),
                         validator: (value) {
@@ -396,11 +400,15 @@ class _AccessoState extends State<Accesso> {
                     ),
                     const SizedBox(height: 10),
                     SizedBox(
-                      width: 250,
+                      width: 300,
                       child: TextFormField(
                         controller: passwordController,
                         obscureText: true,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
+                            suffixIcon: IconButton(onPressed:()=>{
+                              passwordController.clear()
+                            }
+                             , icon: Icon(Icons.clear)),
                             border: OutlineInputBorder(),
                             labelText: "Password"),
                         validator: (value) {
