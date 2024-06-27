@@ -38,7 +38,7 @@ class _InsertActivity extends State<InsertActivity> {
   bool rimborso = false;
   String tipo = "";
   String note = "";
-  String cate = "";
+  String cate = "T";
   int task = 0;
   String task_type = "";
   var indirizzo = "";
@@ -49,7 +49,6 @@ class _InsertActivity extends State<InsertActivity> {
       tipo = "E";
     } else {
       tipo = "R";
-      cate = "T";
     }
     getUtente(globals.sesid);
     getClienti(globals.sesid, id);
@@ -73,7 +72,6 @@ class _InsertActivity extends State<InsertActivity> {
         utente = elem;
       }
     }
-    print(utente);
   }
 
   void getClienti(sesid, id) async {
@@ -253,7 +251,7 @@ class _InsertActivity extends State<InsertActivity> {
             },
             body: ReportSaveToJson(rep))
         .then((report) {
-      widget.fetchCalendar;
+      widget.fetchCalendar();
       Navigator.pop(context);
     });
   }
@@ -337,6 +335,7 @@ class _InsertActivity extends State<InsertActivity> {
                         onPressed: () {
                           setState(() {
                             tipo = "E";
+                            cate = "T";
                           });
                         },
                         child: Text(
@@ -898,7 +897,7 @@ class _TaskState extends State<Task> {
         FilteringTextInputFormatter.digitsOnly
       ],
       onChanged: (value) {
-        widget.task(value!=''?int.parse(value):0);
+        widget.task(value != '' ? int.parse(value) : 0);
       }, // Only numbers can be entered
     );
   }
@@ -935,9 +934,8 @@ class _RefundButtonState extends State<RefundButton> {
       onChanged: (bool? value) {
         widget.assegnaRimborso(value!);
         setState(() {
-          isChecked = value!;
+          isChecked = value;
         });
-        print(isChecked);
       },
     );
   }

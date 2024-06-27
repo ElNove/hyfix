@@ -57,7 +57,6 @@ class _MyAppState extends State<MyApp> {
   void fetchRep(){
     var jobList = context.read<JobList>();
     Service().getReports(globals.sesid).then((report) {
-      print("ciao");
       setState(() {
         loading = false;
       });
