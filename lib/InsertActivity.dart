@@ -8,13 +8,14 @@ import 'package:hyfix/models/Reports.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'Login.dart' as globals;
+import './models/ReportSave.dart';
 
 const List<int> _hoursOptions = <int>[1, 2, 3, 4, 5, 6, 7, 8];
 
 class InsertActivity extends StatefulWidget {
   const InsertActivity(
-      {super.key, required this.addElement, required this.dataAttuale});
-  final Function addElement;
+      {super.key, required this.fetchCalendar, required this.dataAttuale});
+  final Function fetchCalendar;
   final DateTime dataAttuale;
 
   _InsertActivity createState() => _InsertActivity();
@@ -35,13 +36,12 @@ class _InsertActivity extends State<InsertActivity> {
   late Map<String, dynamic> progetto;
   late Map<String, dynamic> attivita;
   var id = 0;
-
+  bool rimborso = false;
   String tipo = "";
   String note = "";
-  String cate = "";
+  String cate = "T";
   int task = 0;
   String task_type = "";
-  String refund = "N";
   var indirizzo = "";
 
   void initState() {
@@ -50,7 +50,6 @@ class _InsertActivity extends State<InsertActivity> {
       tipo = "E";
     } else {
       tipo = "R";
-      cate = "T";
     }
     getUtente(globals.sesid);
     getClienti(globals.sesid, id);
@@ -188,70 +187,74 @@ class _InsertActivity extends State<InsertActivity> {
     task = o;
   }
 
-  void insert() {
-    final rep = Reports(
+  void assegnaRimborso(bool r) {
+    rimborso = r;
+  }
+
+  String getRimborso() {
+    if (rimborso == true) {
+      return "Y";
+    } else {
+      return "N";
+    }
+  }
+
+  void insert() async {
+    final rep = ReportSave(
       id: 0,
       reportType: tipo,
       reportDate: widget.dataAttuale,
       customerId: cliente["customer_id"],
-      locationId: luogo["location_id"],
-      userId: 1,
-      note: note,
-      customerNote: "",
-      projectId: progetto["project_id"],
-      projectTaskId: "",
-      taskTypeId: attivita["task_type_id"],
-      quantity: "$task",
-      customerQuantity: "$task",
-      bill: attivita["bill"],
-      refund: refund,
-      refunded: "N",
-      reportPrint: "${attivita["reportPrint"]}",
-      billed: "N",
-      blockdate: "",
-      start: widget.dataAttuale,
-      blocked: 0,
-      typeDescription: "",
+      customerLocationId: luogo["customer_location_id"],
       customerCode: cliente["customer_code"],
-      customerCompanyname: cliente["companyname"],
+      locationId: luogo["location_id"],
       locationCode: luogo["location_code"],
+      locationFulladdress: luogo["location_fulladdress"],
+      locationDistance: luogo["location_distance"],
+      projectId: progetto["project_id"],
+      defaultProject: progetto["default_project"],
+      projectTaskId: 0,
+      taskTypeId: attivita["task_type_id"],
+      taskTypeCode: attivita["task_type_code"],
+      quantity: task,
+      customerQuantity: task,
+      note: "",
+      customerNote: note,
+      userId: utente["id"],
+      signature: utente["signature"],
+      username: utente["username"],
+      bill: "Y",
+      billed: "N",
+      refund: getRimborso(),
+      refunded: "N",
+      reportPrint: "N",
+      unityCode: attivita["unity_code"],
+      unityType: attivita["unity_type"],
+      reportUnityType: cate,
+      userBlocked: utente["is_active"],
+      locationCity: luogo["location_city"],
+      customerCompanyname: progetto["customer_companyname"],
       locationAddress: luogo["location_address"],
       locationZip: luogo["location_zip"],
-      locationCity: luogo["location_city"],
       locationProvince: luogo["location_province"],
       locationCountry: luogo["location_country"],
       projectCode: progetto["project_code"],
-      projectDescription: progetto["project_code"],
-      projectExpire: progetto["expire"],
-      defaultProject: "${progetto["default"]}",
-      projectPosition: progetto["position"],
-      projectPositionNotZero: progetto["project_position_not_zero"],
-      projectTaskCode: "",
-      projectTaskDescription: "",
-      projectTaskExpire: "",
-      projectTaskEstimate: "",
-      projectTaskPosition: 0,
-      projectTaskPositionNotZero: 0,
-      taskTypeCode: attivita["code"],
+      projectExpire: progetto["expire"].toString(),
+      projectActive: progetto["active"],
       unityId: attivita["unity_id"],
-      taskTypeBill: attivita["bill"],
-      taskTypeRefund: attivita["refund"],
-      taskTypeReportPrint: attivita["report_print"],
-      taskTypeColor: attivita["color_code"],
-      color: attivita["color_code"],
-      unityCode: attivita["unity_code"],
-      unityType: attivita["unity_type"],
-      firstOfTheMonth: DateTime(2024, 06, 01),
-      locationDistance: luogo["location_distance"],
-      locationFulladdress: luogo["location_fulladdress"],
-      customerLocationId: luogo["customer_location_id"],
-      username: utente["username"],
-      signature: utente["signature"],
-      avatar: "",
-      userBlocked: 0,
-      title: "",
     );
-    widget.addElement(rep);
+    var uri = Uri.https('hyfix.test.nealis.it', '/reports/report/save');
+    await http
+        .post(uri,
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Cookie': globals.sesid,
+            },
+            body: ReportSaveToJson(rep))
+        .then((report) {
+      widget.fetchCalendar();
+      Navigator.pop(context);
+    });
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -282,7 +285,8 @@ class _InsertActivity extends State<InsertActivity> {
                           side: BorderSide(
                               color: Theme.of(context)
                                   .colorScheme
-                                  .primaryContainer),
+                                  .primaryContainer,
+                              width: 3),
                           backgroundColor: tipo == "R"
                               ? Theme.of(context).colorScheme.primaryContainer
                               : null,
@@ -319,7 +323,8 @@ class _InsertActivity extends State<InsertActivity> {
                           side: BorderSide(
                               color: Theme.of(context)
                                   .colorScheme
-                                  .primaryContainer),
+                                  .primaryContainer,
+                              width: 3),
                           backgroundColor: tipo == "E"
                               ? Theme.of(context).colorScheme.primaryContainer
                               : null,
@@ -331,6 +336,7 @@ class _InsertActivity extends State<InsertActivity> {
                         onPressed: () {
                           setState(() {
                             tipo = "E";
+                            cate = "T";
                           });
                         },
                         child: Text(
@@ -771,13 +777,15 @@ class _InsertActivity extends State<InsertActivity> {
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: RefundButton(),
-                  )
-                ],
-              ),
+              cate == "T"
+                  ? Text("")
+                  : Row(
+                      children: [
+                        Expanded(
+                          child: RefundButton(assegnaRimborso: assegnaRimborso),
+                        )
+                      ],
+                    ),
               const SizedBox(
                 height: 30,
               ),
@@ -798,7 +806,6 @@ class _InsertActivity extends State<InsertActivity> {
                         // you'd often call a server or save the information in a database.
 
                         insert();
-                        Navigator.pop(context);
                       } else {
                         showDialog<void>(
                           context: context,
@@ -884,50 +891,53 @@ class _TaskState extends State<Task> {
         }
         return null;
       },
-      decoration: new InputDecoration(
+      decoration: const InputDecoration(
           labelText: "Quantità", border: OutlineInputBorder()),
       keyboardType: TextInputType.number,
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.digitsOnly
       ],
       onChanged: (value) {
-        widget.task(int.parse(value));
+        widget.task(value != '' ? int.parse(value) : 0);
       }, // Only numbers can be entered
     );
   }
 }
 
 ////////////////////   REFUND   //////////////////////
-
 class RefundButton extends StatefulWidget {
-  const RefundButton({super.key});
+  const RefundButton({super.key, required this.assegnaRimborso});
+
+  final Function assegnaRimborso;
 
   @override
-  State<RefundButton> createState() => _RadioExampleState();
+  State<RefundButton> createState() => _RefundButtonState();
 }
 
-class _RadioExampleState extends State<RefundButton> {
-  String s = "N";
+class _RefundButtonState extends State<RefundButton> {
+  bool isChecked = false;
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        ListTile(
-            title: const Text('Rimborso'),
-            leading: Radio<String>(
-                value: s,
-                toggleable: true,
-                groupValue: "Rimborso",
-                onChanged: (String? value) {
-                  setState(() {
-                    if (s == "S") {
-                      s = "N";
-                    } else {
-                      s = "S";
-                    }
-                  });
-                })),
-      ],
+    Color getColor(Set<WidgetState> states) {
+      if (isChecked) {
+        return Theme.of(context).colorScheme.primary;
+      }
+      return Colors.white;
+    }
+
+    return CheckboxListTile(
+      title: Text("Rimborso"),
+      controlAffinity: ListTileControlAffinity.leading,
+      checkColor: Colors.white,
+      fillColor: WidgetStateProperty.resolveWith(getColor),
+      value: isChecked,
+      onChanged: (bool? value) {
+        widget.assegnaRimborso(value!);
+        setState(() {
+          isChecked = value;
+        });
+      },
     );
   }
 }

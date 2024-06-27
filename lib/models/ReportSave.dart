@@ -1,81 +1,111 @@
 // To parse this JSON data, do
 //
-//     final reportSave = reportSaveFromJson(jsonString);
+//     final welcome = welcomeFromJson(jsonString);
 
 import 'dart:convert';
 
-ReportSave reportSaveFromJson(String str) =>
-    ReportSave.fromJson(json.decode(str));
+ReportSave ReportSaveFromJson(String str) => ReportSave.fromJson(json.decode(str));
 
-String reportSaveToJson(ReportSave data) => json.encode(data.toJson());
+String ReportSaveToJson(ReportSave data) => json.encode(data.toJson());
 
 class ReportSave {
-  dynamic id;
-  String reportType;
-  DateTime reportDate;
-  dynamic projectId;
-  String defaultProject;
-  dynamic projectTaskId;
-  dynamic taskTypeId;
-  String taskTypeCode;
-  int quantity;
-  int customerQuantity;
-  String note;
-  String customerNote;
-  String userId;
-  String receiverUserId;
-  String signature;
-  String username;
-  String signatureReceiver;
-  String bill;
-  String billed;
-  String refund;
-  String refunded;
-  String reportPrint;
-  String unityCode;
-  String unityType;
-  String reportUnityType;
-  String assigned;
-  String assignee;
-  int userBlocked;
-  bool isReportManager;
+    int id;
+    String reportType;
+    DateTime reportDate;
+    int customerId;
+    int customerLocationId;
+    String customerCode;
+    int locationId;
+    String locationCode;
+    String locationFulladdress;
+    String locationDistance;
+    int projectId;
+    String defaultProject;
+    int projectTaskId;
+    int taskTypeId;
+    String taskTypeCode;
+    int quantity;
+    int customerQuantity;
+    String note;
+    String customerNote;
+    int userId;
+    String signature;
+    String username;
+    String bill;
+    String billed;
+    String refund;
+    String refunded;
+    String reportPrint;
+    String unityCode;
+    String unityType;
+    String reportUnityType;
+    int userBlocked;
+    String locationCity;
+    String customerCompanyname;
+    String locationAddress;
+    String locationZip;
+    String locationProvince;
+    String locationCountry;
+    String projectCode;
+    String projectExpire;
+    String projectActive;
+    int unityId;
 
-  ReportSave({
-    required this.id,
-    required this.reportType,
-    required this.reportDate,
-    required this.projectId,
-    required this.defaultProject,
-    required this.projectTaskId,
-    required this.taskTypeId,
-    required this.taskTypeCode,
-    required this.quantity,
-    required this.customerQuantity,
-    required this.note,
-    required this.customerNote,
-    required this.userId,
-    required this.receiverUserId,
-    required this.signature,
-    required this.username,
-    required this.signatureReceiver,
-    required this.bill,
-    required this.billed,
-    required this.refund,
-    required this.refunded,
-    required this.reportPrint,
-    required this.unityCode,
-    required this.unityType,
-    required this.reportUnityType,
-    required this.assigned,
-    required this.assignee,
-    required this.userBlocked,
-    required this.isReportManager,
-  });
+    ReportSave({
+        required this.id,
+        required this.reportType,
+        required this.reportDate,
+        required this.customerId,
+        required this.customerLocationId,
+        required this.customerCode,
+        required this.locationId,
+        required this.locationCode,
+        required this.locationFulladdress,
+        required this.locationDistance,
+        required this.projectId,
+        required this.defaultProject,
+        required this.projectTaskId,
+        required this.taskTypeId,
+        required this.taskTypeCode,
+        required this.quantity,
+        required this.customerQuantity,
+        required this.note,
+        required this.customerNote,
+        required this.userId,
+        required this.signature,
+        required this.username,
+        required this.bill,
+        required this.billed,
+        required this.refund,
+        required this.refunded,
+        required this.reportPrint,
+        required this.unityCode,
+        required this.unityType,
+        required this.reportUnityType,
+        required this.userBlocked,
+        required this.locationCity,
+        required this.customerCompanyname,
+        required this.locationAddress,
+        required this.locationZip,
+        required this.locationProvince,
+        required this.locationCountry,
+        required this.projectCode,
+        required this.projectExpire,
+        required this.projectActive,
+        required this.unityId,
+    });
 
-  factory ReportSave.fromJson(Map<String, dynamic> json) => ReportSave(
+    factory ReportSave.fromJson(Map<String, dynamic> json) => ReportSave(
         id: json["id"],
         reportType: json["report_type"],
         reportDate: DateTime.parse(json["report_date"]),
+        customerId: json["customer_id"],
+        customerLocationId: json["customer_location_id"],
+        customerCode: json["customer_code"],
+        locationId: json["location_id"],
+        locationCode: json["location_code"],
+        locationFulladdress: json["location_fulladdress"],
+        locationDistance: json["location_distance"],
         projectId: json["project_id"],
         defaultProject: json["default_project"],
         projectTaskId: json["project_task_id"],
@@ -86,10 +116,8 @@ class ReportSave {
         note: json["note"],
         customerNote: json["customer_note"],
         userId: json["user_id"],
-        receiverUserId: json["receiver_user_id"],
         signature: json["signature"],
         username: json["username"],
-        signatureReceiver: json["signature_receiver"],
         bill: json["bill"],
         billed: json["billed"],
         refund: json["refund"],
@@ -98,17 +126,30 @@ class ReportSave {
         unityCode: json["unity_code"],
         unityType: json["unity_type"],
         reportUnityType: json["report_unity_type"],
-        assigned: json["assigned"],
-        assignee: json["assignee"],
         userBlocked: json["user_blocked"],
-        isReportManager: json["is_report_manager"],
-      );
+        locationCity: json["location_city"],
+        customerCompanyname: json["customer_companyname"],
+        locationAddress: json["location_address"],
+        locationZip: json["location_zip"],
+        locationProvince: json["location_province"],
+        locationCountry: json["location_country"],
+        projectCode: json["project_code"],
+        projectExpire: json["project_expire"],
+        projectActive: json["project_active"],
+        unityId: json["unity_id"],
+    );
 
-  Map<String, dynamic> toJson() => {
+    Map<String, dynamic> toJson() => {
         "id": id,
         "report_type": reportType,
-        "report_date":
-            "${reportDate.year.toString().padLeft(4, '0')}-${reportDate.month.toString().padLeft(2, '0')}-${reportDate.day.toString().padLeft(2, '0')}",
+        "report_date": "${reportDate.year.toString().padLeft(4, '0')}-${reportDate.month.toString().padLeft(2, '0')}-${reportDate.day.toString().padLeft(2, '0')}",
+        "customer_id": customerId,
+        "customer_location_id": customerLocationId,
+        "customer_code": customerCode,
+        "location_id": locationId,
+        "location_code": locationCode,
+        "location_fulladdress": locationFulladdress,
+        "location_distance": locationDistance,
         "project_id": projectId,
         "default_project": defaultProject,
         "project_task_id": projectTaskId,
@@ -119,10 +160,8 @@ class ReportSave {
         "note": note,
         "customer_note": customerNote,
         "user_id": userId,
-        "receiver_user_id": receiverUserId,
         "signature": signature,
         "username": username,
-        "signature_receiver": signatureReceiver,
         "bill": bill,
         "billed": billed,
         "refund": refund,
@@ -131,9 +170,16 @@ class ReportSave {
         "unity_code": unityCode,
         "unity_type": unityType,
         "report_unity_type": reportUnityType,
-        "assigned": assigned,
-        "assignee": assignee,
         "user_blocked": userBlocked,
-        "is_report_manager": isReportManager,
-      };
+        "location_city": locationCity,
+        "customer_companyname": customerCompanyname,
+        "location_address": locationAddress,
+        "location_zip": locationZip,
+        "location_province": locationProvince,
+        "location_country": locationCountry,
+        "project_code": projectCode,
+        "project_expire": projectExpire,
+        "project_active": projectActive,
+        "unity_id": unityId,
+    };
 }
