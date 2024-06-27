@@ -311,10 +311,12 @@ class _AccessoState extends State<Accesso> {
       themeProvider.toggleTheme(isDark);
     });
 
+    print(prefs.getString('expires'));
     if (prefs.getString('expires') != null) {
       var expires = prefs.getString('expires');
       var parseDate = parse(expires!);
       var now = DateTime.now();
+      print(parseDate.isBefore(now));
       if (parseDate.isBefore(now)) {
         prefs.remove('expires');
         prefs.remove('sesid');
