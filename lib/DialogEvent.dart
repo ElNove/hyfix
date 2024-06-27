@@ -16,110 +16,175 @@ class _DialogEventState extends State<DialogEvent> {
     return Center(
       child: AlertDialog(
         title: Text('${rep.customerCode} - ${rep.taskTypeCode}'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Row(
-              children: [
-                const Text(
-                  'Tipo: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+        content: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.values[3],
+                children: [
+                  const Text(
+                    'Tipo: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                Text(rep.typeDescription),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Utente: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    rep.typeDescription,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                Text(rep.signature),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Cliente: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.values[3],
+                children: [
+                  const Text(
+                    'Utente: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                Text(rep.customerCode),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Luogo: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    rep.signature,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                Text(rep.locationCode),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Progetto: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.values[3],
+                children: [
+                  const Text(
+                    'Cliente: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                Text(rep.projectCode),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Attività: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    rep.customerCode,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                Text('${rep.projectTaskCode ?? "-"}'),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Tipo Attività: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.values[3],
+                children: [
+                  const Text(
+                    'Luogo: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                Text(rep.taskTypeCode),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Quantita: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    rep.locationCode,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                Text(
-                    '${int.parse(rep.quantity).toStringAsFixed(2)} ${rep.unityCode}'),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Note Cliente: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.values[3],
+                children: [
+                  const Text(
+                    'Progetto: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                Text(rep.customerNote),
-              ],
-            ),
-          ],
+                  Text(
+                    rep.projectCode,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.values[3],
+                children: [
+                  const Text(
+                    'Attività: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    '${rep.projectTaskCode ?? "-"}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.values[3],
+                children: [
+                  const Text(
+                    'Tipo Attività: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    rep.taskTypeCode,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.values[3],
+                children: [
+                  const Text(
+                    'Quantita: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    '${int.parse(rep.quantity).toStringAsFixed(2)} ${rep.unityCode}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.values[3],
+                children: [
+                  const Text(
+                    'Note Cliente: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    rep.customerNote,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
         actions: <Widget>[
           TextButton(
