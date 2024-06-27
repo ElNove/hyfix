@@ -25,7 +25,7 @@ class Cliente {
 class JobList with ChangeNotifier {
   List<Reports> lista = <Reports>[];
 
-  void fetchCalendar(Reports report) {
+  void addElement(Reports report) {
     lista.add(report);
     notifyListeners();
   }
