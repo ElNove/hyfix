@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/models/Reports.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class TableBasic extends StatefulWidget {
@@ -10,12 +12,14 @@ class TableBasic extends StatefulWidget {
       required this.lista,
       required this.onDaySelected,
       required this.calendarFormat,
+      required this.fetchCalendar,
       required this.updateFormat,
       required this.visible});
   final Function(DateTime) onDaySelected;
   final Function(CalendarFormat) updateFormat;
   final CalendarFormat calendarFormat;
   final bool visible;
+  final Function fetchCalendar;
   final List<Reports> lista;
 
   @override
@@ -63,11 +67,6 @@ class _TableBasicState extends State<TableBasic> {
             color: Theme.of(context).colorScheme.secondaryContainer,
             shape: BoxShape.circle),
       ),
-      onFormatChanged: (format) {
-        setState(() {
-          widget.updateFormat(format);
-        });
-      },
       selectedDayPredicate: (day) {
         return isSameDay(_selectedDay, day);
       },
@@ -87,8 +86,19 @@ class _TableBasicState extends State<TableBasic> {
         }
         return [];
       },
+      onFormatChanged: (format) {
+        setState(() {
+          widget.updateFormat(format);
+        });
+      },
       onPageChanged: (focusedDay) {
-        _focusedDay = focusedDay;
+        if (_selectedDay?.month == focusedDay.month) {
+          _focusedDay = _selectedDay ?? focusedDay;
+        } else {
+          _focusedDay = focusedDay;
+        }
+        List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
+        widget.fetchCalendar(weeks.first.first, weeks.last.last);
       },
     );
   }

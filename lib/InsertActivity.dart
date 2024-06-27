@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hyfix/models/Reports.dart';
+import 'package:hyfix/WeeksDay.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'Login.dart' as globals;
@@ -252,447 +252,380 @@ class _InsertActivity extends State<InsertActivity> {
             },
             body: ReportSaveToJson(rep))
         .then((report) {
-      widget.fetchCalendar();
+      DateTime focusedDay = DateTime.now();
+
+      List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
+
+      widget.fetchCalendar(weeks.first.first, weeks.last.last);
       Navigator.pop(context);
     });
   }
 
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    return Form(
-        key: _formKey,
-        child: Container(
-            padding: const EdgeInsets.all(15),
-            child: Column(children: [
-              Text(
-                "AGGIUNGI ",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                    fontSize: 50,
-                    fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                      width: 150,
-                      child: TextButton(
-                        style: ElevatedButton.styleFrom(
-                          side: BorderSide(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .primaryContainer,
-                              width: 3),
-                          backgroundColor: tipo == "R"
-                              ? Theme.of(context).colorScheme.primaryContainer
-                              : null,
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(8), // <-- Radius
-                          ),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            tipo = "R";
-                          });
-                        },
-                        child: Text(
-                          'Rapportino',
-                          style: TextStyle(
-                            color: tipo == "R"
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .onPrimaryContainer
-                                : Theme.of(context)
+    return ScaffoldMessenger(
+      key: _scaffoldKey,
+      child: Form(
+          key: _formKey,
+          child: Container(
+              padding: const EdgeInsets.all(15),
+              child: Column(children: [
+                Text(
+                  "AGGIUNGI ",
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      fontSize: 50,
+                      fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        width: 150,
+                        child: TextButton(
+                          style: ElevatedButton.styleFrom(
+                            side: BorderSide(
+                                color: Theme.of(context)
                                     .colorScheme
                                     .primaryContainer,
+                                width: 3),
+                            backgroundColor: tipo == "R"
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : null,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8), // <-- Radius
+                            ),
                           ),
-                        ),
-                      )),
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  SizedBox(
-                      width: 150,
-                      child: TextButton(
-                        style: ElevatedButton.styleFrom(
-                          side: BorderSide(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .primaryContainer,
-                              width: 3),
-                          backgroundColor: tipo == "E"
-                              ? Theme.of(context).colorScheme.primaryContainer
-                              : null,
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(8), // <-- Radius
+                          onPressed: () {
+                            setState(() {
+                              tipo = "R";
+                            });
+                          },
+                          child: Text(
+                            'Rapportino',
+                            style: TextStyle(
+                              color: tipo == "R"
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                            ),
                           ),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            tipo = "E";
-                            cate = "T";
-                          });
-                        },
-                        child: Text(
-                          'Evento',
-                          style: TextStyle(
-                            color: tipo == "E"
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .onPrimaryContainer
-                                : Theme.of(context)
+                        )),
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    SizedBox(
+                        width: 150,
+                        child: TextButton(
+                          style: ElevatedButton.styleFrom(
+                            side: BorderSide(
+                                color: Theme.of(context)
                                     .colorScheme
                                     .primaryContainer,
+                                width: 3),
+                            backgroundColor: tipo == "E"
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : null,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8), // <-- Radius
+                            ),
                           ),
-                        ),
-                      ))
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              tipo == 'R'
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                            width: 100,
-                            child: TextButton(
-                              style: ElevatedButton.styleFrom(
-                                side: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                    width: 3),
-                                backgroundColor: cate == "T"
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer
-                                    : null,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(8), // <-- Radius
-                                ),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  cate = "T";
-                                });
-                                getActivity(globals.sesid);
-                              },
-                              child: Text(
-                                'Tempo',
-                                style: TextStyle(
-                                  color: cate == "T"
-                                      ? Theme.of(context)
-                                          .colorScheme
-                                          .onPrimaryContainer
-                                      : Theme.of(context)
+                          onPressed: () {
+                            setState(() {
+                              tipo = "E";
+                              cate = "T";
+                            });
+                          },
+                          child: Text(
+                            'Evento',
+                            style: TextStyle(
+                              color: tipo == "E"
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                            ),
+                          ),
+                        ))
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                tipo == 'R'
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              width: 100,
+                              child: TextButton(
+                                style: ElevatedButton.styleFrom(
+                                  side: BorderSide(
+                                      color: Theme.of(context)
                                           .colorScheme
                                           .primaryContainer,
-                                ),
-                              ),
-                            )),
-                        const SizedBox(
-                          width: 30,
-                        ),
-                        SizedBox(
-                            width: 100,
-                            child: TextButton(
-                              style: ElevatedButton.styleFrom(
-                                side: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                    width: 3),
-                                backgroundColor: cate == "C"
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer
-                                    : null,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(8), // <-- Radius
-                                ),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  cate = "C";
-                                });
-                                getActivity(globals.sesid);
-                              },
-                              child: Text(
-                                'Costo',
-                                style: TextStyle(
-                                  color: cate == "C"
+                                      width: 3),
+                                  backgroundColor: cate == "T"
                                       ? Theme.of(context)
                                           .colorScheme
-                                          .onPrimaryContainer
-                                      : Theme.of(context)
+                                          .primaryContainer
+                                      : null,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(8), // <-- Radius
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    cate = "T";
+                                  });
+                                  getActivity(globals.sesid);
+                                },
+                                child: Text(
+                                  'Tempo',
+                                  style: TextStyle(
+                                    color: cate == "T"
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .primaryContainer,
+                                  ),
+                                ),
+                              )),
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          SizedBox(
+                              width: 100,
+                              child: TextButton(
+                                style: ElevatedButton.styleFrom(
+                                  side: BorderSide(
+                                      color: Theme.of(context)
                                           .colorScheme
                                           .primaryContainer,
-                                ),
-                              ),
-                            )),
-                        const SizedBox(
-                          width: 30,
-                        ),
-                        SizedBox(
-                            width: 100,
-                            child: TextButton(
-                              style: ElevatedButton.styleFrom(
-                                side: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                    width: 3),
-                                backgroundColor: cate == "D"
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer
-                                    : null,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(8), // <-- Radius
-                                ),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  cate = "D";
-                                });
-                                getActivity(globals.sesid);
-                              },
-                              child: Text(
-                                'Distanza',
-                                style: TextStyle(
-                                  color: cate == "D"
+                                      width: 3),
+                                  backgroundColor: cate == "C"
                                       ? Theme.of(context)
                                           .colorScheme
-                                          .onPrimaryContainer
-                                      : Theme.of(context)
+                                          .primaryContainer
+                                      : null,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(8), // <-- Radius
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    cate = "C";
+                                  });
+                                  getActivity(globals.sesid);
+                                },
+                                child: Text(
+                                  'Costo',
+                                  style: TextStyle(
+                                    color: cate == "C"
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .primaryContainer,
+                                  ),
+                                ),
+                              )),
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          SizedBox(
+                              width: 100,
+                              child: TextButton(
+                                style: ElevatedButton.styleFrom(
+                                  side: BorderSide(
+                                      color: Theme.of(context)
                                           .colorScheme
                                           .primaryContainer,
+                                      width: 3),
+                                  backgroundColor: cate == "D"
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer
+                                      : null,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(8), // <-- Radius
+                                  ),
                                 ),
-                              ),
-                            ))
-                      ],
-                    )
-                  : Text(""),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                "Data: ${DateFormat('dd/MM/yyyy').format(widget.dataAttuale)}",
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Autocomplete<String>(
-                        optionsBuilder: (TextEditingValue textEditingValue) {
-                      if (textEditingValue.text == '') {
-                        return _clientiOptions;
-                      }
-                      return _clientiOptions.where((String option) {
-                        return option
-                            .toUpperCase()
-                            .contains(textEditingValue.text.toUpperCase());
-                      });
-                    }, fieldViewBuilder: (BuildContext context,
-                            TextEditingController fieldTextEditingController,
-                            FocusNode fieldFocusNode,
-                            VoidCallback onFieldSubmitted) {
-                      return TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Inserisci il cliente';
-                          }
-                          return null;
-                        },
-                        controller: fieldTextEditingController,
-                        focusNode: fieldFocusNode,
-                        decoration: const InputDecoration(
-                            label: Text('Cliente'),
-                            border: OutlineInputBorder()),
-                        onChanged: (text) {
-                          // Update suggestions based on user input
-                          // Implement the logic to filter and refresh suggestions
-                        },
-                      );
-                    }, onSelected: (String selection) {
-                      var nomeC = selection.split(" ");
-                      for (var c in clienti) {
-                        if (c["companyname"] == nomeC[2]) {
-                          cliente = c;
-                        }
-                      }
-                      ;
-                      if (id == 0) {
-                        setState(() {
-                          id = cliente["customer_id"];
-                        });
-                      }
-
-                      getProgetti(globals.sesid, id);
-                      getLuoghi(globals.sesid, id);
-                    }),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Autocomplete<String>(
-
-                        //initialValue: TextEditingValue(text:progetti[0]["code"]+" - "+progetti[0]["customer_code"]),
-                        optionsBuilder: (TextEditingValue textEditingValue) {
-                      if (textEditingValue.text == '') {
-                        return _progettiOptions;
-                      }
-                      return _progettiOptions.where((String option) {
-                        return option
-                            .contains(textEditingValue.text.toUpperCase());
-                      });
-                    }, fieldViewBuilder: (BuildContext context,
-                            TextEditingController fieldTextEditingController,
-                            FocusNode fieldFocusNode,
-                            VoidCallback onFieldSubmitted) {
-                      return TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Inserisci il progetto';
-                          }
-                          return null;
-                        },
-                        controller: fieldTextEditingController,
-                        focusNode: fieldFocusNode,
-                        decoration: const InputDecoration(
-                            label: Text('Progetto'),
-                            border: OutlineInputBorder()),
-                        onChanged: (text) {
-                          // Update suggestions based on user input
-                          // Implement the logic to filter and refresh suggestions
-                        },
-                      );
-                    }, onSelected: (String selection) {
-                      var nomeP = selection.split(" ");
-                      for (var p in progetti) {
-                        if (p["code"] == nomeP[0]) {
-                          progetto = p;
-                        }
-                      }
-                      if (id == 0) {
-                        setState(() {
-                          id = progetto["customer_id"];
-                        });
-                        getLuoghi(globals.sesid, id);
-                        getClienti(globals.sesid, id);
-                      }
-                    }),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Expanded(
+                                onPressed: () {
+                                  setState(() {
+                                    cate = "D";
+                                  });
+                                  getActivity(globals.sesid);
+                                },
+                                child: Text(
+                                  'Distanza',
+                                  style: TextStyle(
+                                    color: cate == "D"
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .primaryContainer,
+                                  ),
+                                ),
+                              ))
+                        ],
+                      )
+                    : Text(""),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  "Data: ${DateFormat('dd/MM/yyyy').format(widget.dataAttuale)}",
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
                       child: Autocomplete<String>(
                           optionsBuilder: (TextEditingValue textEditingValue) {
-                    if (textEditingValue.text == '') {
-                      return _luoghiOptions;
-                    }
-                    return _luoghiOptions.where((String option) {
-                      return option
-                          .contains(textEditingValue.text.toUpperCase());
-                    });
-                  }, fieldViewBuilder: (BuildContext context,
+                        if (textEditingValue.text == '') {
+                          return _clientiOptions;
+                        }
+                        return _clientiOptions.where((String option) {
+                          return option
+                              .toUpperCase()
+                              .contains(textEditingValue.text.toUpperCase());
+                        });
+                      }, fieldViewBuilder: (BuildContext context,
                               TextEditingController fieldTextEditingController,
                               FocusNode fieldFocusNode,
                               VoidCallback onFieldSubmitted) {
-                    return TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Inserisci il luogo';
+                        return TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Inserisci il cliente';
+                            }
+                            return null;
+                          },
+                          controller: fieldTextEditingController,
+                          focusNode: fieldFocusNode,
+                          decoration: const InputDecoration(
+                              label: Text('Cliente'),
+                              border: OutlineInputBorder()),
+                          onChanged: (text) {
+                            // Update suggestions based on user input
+                            // Implement the logic to filter and refresh suggestions
+                          },
+                        );
+                      }, onSelected: (String selection) {
+                        var nomeC = selection.split(" ");
+                        for (var c in clienti) {
+                          if (c["companyname"] == nomeC[2]) {
+                            cliente = c;
+                          }
                         }
-                        return null;
-                      },
-                      controller: fieldTextEditingController,
-                      focusNode: fieldFocusNode,
-                      decoration: const InputDecoration(
-                          label: Text('Luogo'), border: OutlineInputBorder()),
-                      onChanged: (text) {
-                        // Update suggestions based on user input
-                        // Implement the logic to filter and refresh suggestions
-                      },
-                    );
-                  }, onSelected: (String selection) {
-                    var nomeL = selection.split(" ");
-                    for (var l in luoghi) {
-                      if (l["location_code"] == nomeL[0]) {
-                        luogo = l;
-                        setState(() {
-                          indirizzo = l["location_fulladdress"];
+                        ;
+                        if (id == 0) {
+                          setState(() {
+                            id = cliente["customer_id"];
+                          });
+                        }
+
+                        getProgetti(globals.sesid, id);
+                        getLuoghi(globals.sesid, id);
+                      }),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Autocomplete<String>(
+
+                          //initialValue: TextEditingValue(text:progetti[0]["code"]+" - "+progetti[0]["customer_code"]),
+                          optionsBuilder: (TextEditingValue textEditingValue) {
+                        if (textEditingValue.text == '') {
+                          return _progettiOptions;
+                        }
+                        return _progettiOptions.where((String option) {
+                          return option
+                              .contains(textEditingValue.text.toUpperCase());
                         });
-                      }
-                    }
-                    ;
-                    if (id == 0) {
-                      setState(() {
-                        id = luogo["customer_id"];
-                      });
-                    }
-                    getProgetti(globals.sesid, id);
-                    getClienti(globals.sesid, id);
-                  })),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                      margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                      child: Row(
-                        children: [
-                          const Text(
-                            "INDIRIZZO: ",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "${indirizzo} ",
-                          ),
-                        ],
-                      ))),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Autocomplete<String>(
-                        optionsBuilder: (TextEditingValue textEditingValue) {
+                      }, fieldViewBuilder: (BuildContext context,
+                              TextEditingController fieldTextEditingController,
+                              FocusNode fieldFocusNode,
+                              VoidCallback onFieldSubmitted) {
+                        return TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Inserisci il progetto';
+                            }
+                            return null;
+                          },
+                          controller: fieldTextEditingController,
+                          focusNode: fieldFocusNode,
+                          decoration: const InputDecoration(
+                              label: Text('Progetto'),
+                              border: OutlineInputBorder()),
+                          onChanged: (text) {
+                            // Update suggestions based on user input
+                            // Implement the logic to filter and refresh suggestions
+                          },
+                        );
+                      }, onSelected: (String selection) {
+                        var nomeP = selection.split(" ");
+                        for (var p in progetti) {
+                          if (p["code"] == nomeP[0]) {
+                            progetto = p;
+                          }
+                        }
+                        if (id == 0) {
+                          setState(() {
+                            id = progetto["customer_id"];
+                          });
+                          getLuoghi(globals.sesid, id);
+                          getClienti(globals.sesid, id);
+                        }
+                      }),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                        child: Autocomplete<String>(optionsBuilder:
+                            (TextEditingValue textEditingValue) {
                       if (textEditingValue.text == '') {
-                        return _activityOptions;
+                        return _luoghiOptions;
                       }
-                      return _activityOptions.where((String option) {
+                      return _luoghiOptions.where((String option) {
                         return option
                             .contains(textEditingValue.text.toUpperCase());
                       });
@@ -703,170 +636,245 @@ class _InsertActivity extends State<InsertActivity> {
                       return TextFormField(
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Inserisci l'attività";
+                            return 'Inserisci il luogo';
                           }
                           return null;
                         },
                         controller: fieldTextEditingController,
                         focusNode: fieldFocusNode,
                         decoration: const InputDecoration(
-                            label: Text('Attività'),
-                            border: OutlineInputBorder()),
+                            label: Text('Luogo'), border: OutlineInputBorder()),
                         onChanged: (text) {
                           // Update suggestions based on user input
                           // Implement the logic to filter and refresh suggestions
-                          fieldTextEditingController.value =
-                              TextEditingValue(text: text);
                         },
                       );
                     }, onSelected: (String selection) {
-                      var nomeA = selection.split(" ");
-                      for (var a in activity) {
-                        if (a["task_type_code"] == nomeA[0]) {
-                          attivita = a;
+                      var nomeL = selection.split(" ");
+                      for (var l in luoghi) {
+                        if (l["location_code"] == nomeL[0]) {
+                          luogo = l;
                           setState(() {
-                            task_type = a["unity_code"];
+                            indirizzo = l["location_fulladdress"];
                           });
                         }
                       }
                       ;
-                    }),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  SizedBox(
-                    width: 100,
-                    child: Task(
-                      task: assegnaTask,
-                      task_type: task_type,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    task_type,
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Inserisci le note';
-                          }
-                          return null;
-                        },
-                        maxLines: 4,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Note',
-                        ),
-                        onChanged: (String newText) {
-                          note = newText;
-                        }),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              cate == "T"
-                  ? Text("")
-                  : Row(
-                      children: [
-                        Expanded(
-                          child: RefundButton(assegnaRimborso: assegnaRimborso),
-                        )
-                      ],
-                    ),
-              const SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Theme.of(context).colorScheme.primaryContainer,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8), // <-- Radius
-                      ),
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // If the form is valid, display a snackbar. In the real world,
-                        // you'd often call a server or save the information in a database.
-
-                        insert();
-                      } else {
-                        showDialog<void>(
-                          context: context,
-                          barrierDismissible: false, // user must tap button!
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Attenzione'),
-                              content: const SingleChildScrollView(
-                                child: ListBody(
-                                  children: <Widget>[
-                                    Text('Devi riempire tutti i campi!'),
-                                  ],
-                                ),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: const Text('OK'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
+                      if (id == 0) {
+                        setState(() {
+                          id = luogo["customer_id"];
+                        });
+                      }
+                      getProgetti(globals.sesid, id);
+                      getClienti(globals.sesid, id);
+                    })),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                        margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                        child: Row(
+                          children: [
+                            const Text(
+                              "INDIRIZZO: ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "${indirizzo} ",
+                            ),
+                          ],
+                        ))),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Autocomplete<String>(
+                          optionsBuilder: (TextEditingValue textEditingValue) {
+                        if (textEditingValue.text == '') {
+                          return _activityOptions;
+                        }
+                        return _activityOptions.where((String option) {
+                          return option
+                              .contains(textEditingValue.text.toUpperCase());
+                        });
+                      }, fieldViewBuilder: (BuildContext context,
+                              TextEditingController fieldTextEditingController,
+                              FocusNode fieldFocusNode,
+                              VoidCallback onFieldSubmitted) {
+                        return TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Inserisci l'attività";
+                            }
+                            return null;
+                          },
+                          controller: fieldTextEditingController,
+                          focusNode: fieldFocusNode,
+                          decoration: const InputDecoration(
+                              label: Text('Attività'),
+                              border: OutlineInputBorder()),
+                          onChanged: (text) {
+                            // Update suggestions based on user input
+                            // Implement the logic to filter and refresh suggestions
+                            fieldTextEditingController.value =
+                                TextEditingValue(text: text);
                           },
                         );
-                      }
-                      /*
-                    
-                  }*/
-                    },
-                    child: Text(
-                      'Aggiungi',
-                      style: TextStyle(
-                          color:
-                              Theme.of(context).colorScheme.onPrimaryContainer),
+                      }, onSelected: (String selection) {
+                        var nomeA = selection.split(" ");
+                        for (var a in activity) {
+                          if (a["task_type_code"] == nomeA[0]) {
+                            attivita = a;
+                            setState(() {
+                              task_type = a["unity_code"];
+                            });
+                          }
+                        }
+                        ;
+                      }),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  TextButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Theme.of(context).colorScheme.primaryContainer,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8), // <-- Radius
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 100,
+                      child: Task(
+                        task: assegnaTask,
+                        task_type: task_type,
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      'Chiudi',
-                      style: TextStyle(
-                          color:
-                              Theme.of(context).colorScheme.onPrimaryContainer),
+                    const SizedBox(
+                      width: 10,
                     ),
-                  )
-                ],
-              ),
-            ])));
+                    Text(
+                      task_type,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Inserisci le note';
+                            }
+                            return null;
+                          },
+                          maxLines: 4,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Note',
+                          ),
+                          onChanged: (String newText) {
+                            note = newText;
+                          }),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                cate == "T"
+                    ? Text("")
+                    : Row(
+                        children: [
+                          Expanded(
+                            child:
+                                RefundButton(assegnaRimborso: assegnaRimborso),
+                          )
+                        ],
+                      ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primaryContainer,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // <-- Radius
+                        ),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          // If the form is valid, display a snackbar. In the real world,
+                          // you'd often call a server or save the information in a database.
+
+                          insert();
+                        } else {
+                          showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Attenzione'),
+                                content: const SingleChildScrollView(
+                                  child: ListBody(
+                                    children: <Widget>[
+                                      Text('Devi riempire tutti i campi!'),
+                                    ],
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text('OK'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      },
+                      child: Text(
+                        'Aggiungi',
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    TextButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primaryContainer,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // <-- Radius
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Chiudi',
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer),
+                      ),
+                    )
+                  ],
+                ),
+              ]))),
+    );
   }
 }
 

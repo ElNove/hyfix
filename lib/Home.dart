@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/main.dart';
 import 'package:hyfix/models/Reports.dart';
 import 'package:hyfix/services/service.dart';
@@ -50,13 +51,20 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    fetchRep();
-    
+    DateTime focusedDay = DateTime.now();
+
+    List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
+
+    fetchRep(weeks.first.first, weeks.last.last);
   }
 
-  void fetchRep(){
+  void fetchRep(first, last) {
     var jobList = context.read<JobList>();
-    Service().getReports(globals.sesid).then((report) {
+    jobList.lista.clear();
+    setState(() {
+      loading = true;
+    });
+    Service().getReports(globals.sesid, first, last).then((report) {
       setState(() {
         loading = false;
       });
@@ -163,6 +171,7 @@ class _MyAppState extends State<MyApp> {
                 onDaySelected: aggiornaData,
                 calendarFormat: _calendarFormat,
                 updateFormat: updateFormat,
+                fetchCalendar: fetchRep,
                 visible: visible,
               ),
               Expanded(

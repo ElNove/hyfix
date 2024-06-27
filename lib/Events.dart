@@ -107,6 +107,6 @@ class _EventsState extends State<Events> {
         righe.add(con);
       }
     }
-    return righe;
+    return righe.reversed.toList();
   }
 }
