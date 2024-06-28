@@ -3,12 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Home.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:http/http.dart' as http;
 import 'Login.dart' as globals;
+import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth_darwin/local_auth_darwin.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -281,26 +284,31 @@ class _AccessoState extends State<Accesso> {
     final response = await http.get(uri, headers: {
       HttpHeaders.contentTypeHeader: 'application/json',
     });
-    var expires = response.headers["set-cookie"]!
-        .split("; ")[1]
-        .substring(8)
-        .replaceAll(RegExp(r'-'), ' ');
-    var parseDate = parse(expires);
-
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('expires', parseDate.toString());
 
     var sesid = response.headers["set-cookie"];
-    prefs.setString('sesid', sesid!);
-    globals.sesid = sesid;
+    globals.sesid = sesid!;
+
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString('sesid', sesid);
+    prefs.setString('username', user);
 
     return response.body;
   }
+
+  late final LocalAuthentication auth;
+  bool isLogged = false;
 
   @override
   void initState() {
     super.initState();
     _loadPreferences();
+
+    auth = LocalAuthentication();
+    auth.isDeviceSupported().then((bool isSupported) {
+      if (isLogged && isSupported) {
+        _authenticate();
+      }
+    });
   }
 
   void _loadPreferences() async {
@@ -312,33 +320,34 @@ class _AccessoState extends State<Accesso> {
       themeProvider.toggleTheme(isDark);
     });
 
-    if (prefs.getString('expires') != null &&
-        prefs.getString('sesid') != null) {
-      var expires = prefs.getString('expires');
-      var parseDate = DateTime.parse(expires!);
-      var now = DateTime.now();
-      if (parseDate.isBefore(now)) {
-        prefs.remove('expires');
-        prefs.remove('sesid');
-      } else {
-        globals.sesid = prefs.getString('sesid')!;
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MyApp()),
-        );
-      }
+    if (prefs.getString('sesid') != null) {
+      var sesid = prefs.getString('sesid');
+      sesid?.split('; ').forEach((element) {
+        if (element.contains('expires')) {
+          var data = parse(element.split('=')[1].replaceAll(RegExp(r'-'), ' '));
+          if (data.isBefore(DateTime.now())) {
+            prefs.remove('sesid');
+            prefs.remove('username');
+            return;
+          }
+        }
+      });
+      userController.text = prefs.getString('username')!;
+      setState(() {
+        globals.sesid = sesid!;
+        isLogged = true;
+      });
     }
-    prefs.remove('expires');
-    prefs.remove('sesid');
   }
+
+  TextEditingController userController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = context.watch<ThemeProvider>();
 
     final _formKey = GlobalKey<FormState>();
-    TextEditingController userController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -383,11 +392,10 @@ class _AccessoState extends State<Accesso> {
                       width: 300,
                       child: TextFormField(
                         controller: userController,
-                        decoration:  InputDecoration(
-                          suffixIcon: IconButton(onPressed:()=>{
-                              userController.clear()
-                            }
-                             , icon: Icon(Icons.clear)),
+                        decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                                onPressed: () => {userController.clear()},
+                                icon: Icon(Icons.clear)),
                             border: OutlineInputBorder(),
                             labelText: "Nome Utente"),
                         validator: (value) {
@@ -405,10 +413,9 @@ class _AccessoState extends State<Accesso> {
                         controller: passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
-                            suffixIcon: IconButton(onPressed:()=>{
-                              passwordController.clear()
-                            }
-                             , icon: Icon(Icons.clear)),
+                            suffixIcon: IconButton(
+                                onPressed: () => {passwordController.clear()},
+                                icon: Icon(Icons.clear)),
                             border: OutlineInputBorder(),
                             labelText: "Password"),
                         validator: (value) {
@@ -481,7 +488,7 @@ class _AccessoState extends State<Accesso> {
                           }
                         },
                         child: Text(
-                          'Submit',
+                          'Accedi',
                           style: TextStyle(
                               color: Theme.of(context)
                                   .colorScheme
@@ -497,5 +504,39 @@ class _AccessoState extends State<Accesso> {
         ),
       ),
     );
+  }
+
+  Future<void> _authenticate() async {
+    try {
+      bool authenticated = await auth.authenticate(
+        authMessages: const <AuthMessages>[
+          AndroidAuthMessages(
+            signInTitle: 'Autenticazione richiesta',
+            biometricHint: 'Verifica identità',
+            biometricNotRecognized: 'Impronta non riconosciuta',
+            biometricSuccess: 'Autenticazione riuscita',
+            biometricRequiredTitle: 'Tocca il sensore',
+            cancelButton: 'Chiudi',
+          ),
+          IOSAuthMessages(
+            cancelButton: 'Chiudi',
+            
+          ),
+        ],
+        localizedReason: 'Autenticazione richiesta per accedere a HyFix',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: true,
+        ),
+      );
+      if (authenticated) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MyApp()),
+        );
+      }
+    } on PlatformException catch (e) {
+      print(e);
+    }
   }
 }
