@@ -340,7 +340,9 @@ class _AccessoState extends State<Accesso> {
     TextEditingController userController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
 
-    return Scaffold(
+    return
+    MaterialApp(
+      home: Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
@@ -496,6 +498,8 @@ class _AccessoState extends State<Accesso> {
           ),
         ),
       ),
+    ),
     );
+    
   }
 }
