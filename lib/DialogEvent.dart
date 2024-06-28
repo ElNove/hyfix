@@ -13,17 +13,18 @@ class _DialogEventState extends State<DialogEvent> {
   @override
   Widget build(BuildContext context) {
     Reports rep = widget.report;
-    return Center(
-      child: AlertDialog(
-        title: Text('${rep.customerCode} - ${rep.taskTypeCode}'),
-        content: Padding(
-          padding: const EdgeInsets.all(10),
+    return AlertDialog(
+      title: Text('${rep.customerCode} - ${rep.taskTypeCode}'),
+      content: Padding(
+        padding: const EdgeInsets.all(10),
+        child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.values[3],
-                children: [
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                children:  [
                   const Text(
                     'Tipo: ',
                     style: TextStyle(
@@ -32,6 +33,7 @@ class _DialogEventState extends State<DialogEvent> {
                     ),
                   ),
                   Text(
+                    softWrap: true,
                     rep.typeDescription,
                     style: const TextStyle(
                       fontSize: 16,
@@ -39,8 +41,9 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.values[3],
+              SizedBox(height: 10,),
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
                     'Utente: ',
@@ -50,6 +53,7 @@ class _DialogEventState extends State<DialogEvent> {
                     ),
                   ),
                   Text(
+                    softWrap: true,
                     rep.signature,
                     style: const TextStyle(
                       fontSize: 16,
@@ -57,8 +61,10 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.values[3],
+              SizedBox(height: 10,),
+              Wrap(
+                
+                alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
                     'Cliente: ',
@@ -68,6 +74,7 @@ class _DialogEventState extends State<DialogEvent> {
                     ),
                   ),
                   Text(
+                    softWrap: true,
                     rep.customerCode,
                     style: const TextStyle(
                       fontSize: 16,
@@ -75,8 +82,10 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.values[3],
+              SizedBox(height: 10,),
+              Wrap(
+                
+                alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
                     'Luogo: ',
@@ -86,6 +95,7 @@ class _DialogEventState extends State<DialogEvent> {
                     ),
                   ),
                   Text(
+                    softWrap: true,
                     rep.locationCode,
                     style: const TextStyle(
                       fontSize: 16,
@@ -93,8 +103,10 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.values[3],
+              SizedBox(height: 10,),
+              Wrap(
+                
+                alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
                     'Progetto: ',
@@ -104,6 +116,7 @@ class _DialogEventState extends State<DialogEvent> {
                     ),
                   ),
                   Text(
+                    softWrap: true,
                     rep.projectCode,
                     style: const TextStyle(
                       fontSize: 16,
@@ -111,8 +124,10 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.values[3],
+              SizedBox(height: 10,),
+              Wrap(
+                
+                alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
                     'Attività: ',
@@ -122,6 +137,7 @@ class _DialogEventState extends State<DialogEvent> {
                     ),
                   ),
                   Text(
+                    softWrap: true,
                     '${rep.projectTaskCode ?? "-"}',
                     style: const TextStyle(
                       fontSize: 16,
@@ -129,8 +145,9 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.values[3],
+              SizedBox(height: 10,),
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
                     'Tipo Attività: ',
@@ -144,11 +161,13 @@ class _DialogEventState extends State<DialogEvent> {
                     style: const TextStyle(
                       fontSize: 16,
                     ),
+                    softWrap: true,
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.values[3],
+              SizedBox(height: 10,),
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
                     'Quantita: ',
@@ -158,6 +177,7 @@ class _DialogEventState extends State<DialogEvent> {
                     ),
                   ),
                   Text(
+                    softWrap: true,
                     '${int.parse(rep.quantity).toStringAsFixed(2)} ${rep.unityCode}',
                     style: const TextStyle(
                       fontSize: 16,
@@ -165,8 +185,9 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.values[3],
+              SizedBox(height: 10,),
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
                     'Note Cliente: ',
@@ -176,6 +197,7 @@ class _DialogEventState extends State<DialogEvent> {
                     ),
                   ),
                   Text(
+                    softWrap: true,
                     rep.customerNote,
                     style: const TextStyle(
                       fontSize: 16,
@@ -186,15 +208,15 @@ class _DialogEventState extends State<DialogEvent> {
             ],
           ),
         ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Close'),
-          ),
-        ],
       ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 }

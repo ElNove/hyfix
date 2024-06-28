@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hyfix/DialogEvent.dart';
 import 'package:hyfix/models/Reports.dart';
+import 'dart:math' as math;
 
 extension HexColor on Color {
   static Color fromHex(String hexString) {
@@ -54,20 +55,45 @@ class _EventsState extends State<Events> {
                 builder: (BuildContext context) => DialogEvent(report: i));
           },
           child: Container(
-            padding: EdgeInsets.all(screenHeight/100),
+            padding: EdgeInsets.all(screenHeight / 100),
             margin: const EdgeInsets.fromLTRB(10, 3, 10, 3),
-            height: screenHeight/100*5,
+            height: screenHeight / 100 * 5,
             decoration: i.reportType == "R"
                 ? BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: HexColor.fromHex(i.color),
                   )
-                : DiagonalDecoration(
-                    radius: Radius.circular(8),
-                    lineColor: darken(HexColor.fromHex(i.color), .1),
-                    lineWidth: 8,
-                    backgroundColor: HexColor.fromHex(i.color),
-                    distanceBetweenLines: 140,
+                : BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                    gradient: LinearGradient(
+                      transform: GradientRotation(math.pi / 8),
+                      begin: Alignment(-1.0, -4.0),
+                      end: Alignment(1.0, 4.0),
+                      colors: List.generate(66, (index) {
+                        if (index % 4 == 0 || index % 4 == 1) {
+                          return HexColor.fromHex(i.color);
+                        } else {
+                          return darken(HexColor.fromHex(i.color), .1);
+                        }
+                      }),
+                      stops: () {
+                        final List<double> stops = [];
+                        double i = 0;
+                        double increment = 0.05;
+                        while (i < 1) {
+                          stops.add(i);
+                          i += increment;
+                          if (i >= 1) {
+                            stops.add(1);
+                            break;
+                          }
+                          increment = increment == 0.05 ? 0.01 : 0.05;
+                          stops.add(i);
+                        }
+                        print(stops.length);
+                        return stops;
+                      }(),
+                    ),
                   ),
             child: Row(
               children: [
@@ -76,7 +102,7 @@ class _EventsState extends State<Events> {
                     Icon(
                       i.reportType == "R" ? Icons.assignment : Icons.bookmark,
                       color: Colors.white,
-                      size: screenHeight/100*2.5,
+                      size: screenHeight / 100 * 2.5,
                     ),
                     const SizedBox(
                       width: 10,
@@ -86,22 +112,27 @@ class _EventsState extends State<Events> {
                 Center(
                   child: Text(
                     "[  ${int.parse(i.quantity).toStringAsFixed(2)} ${i.unityCode}  ]",
-                    style:  TextStyle(
+                    style: TextStyle(
                         color: Colors.white,
-                        fontSize: screenHeight/100*2,
+                        fontSize: screenHeight / 100 * 2,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(
-                  width: 30,
+                  width: 20,
                 ),
-                Text(
-                  "${i.customerCode} - ${i.taskTypeCode}",
-                  style:  TextStyle(
-                      color: Colors.white,
-                      fontSize: screenHeight/100*2,
-                      fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
+                Expanded(
+                  child: Container(
+                    child: Text(
+                      "${i.customerCode} - ${i.taskTypeCode}",
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenHeight / 100 * 2,
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
               ],
             ),

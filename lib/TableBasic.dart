@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/models/Reports.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class TableBasic extends StatefulWidget {
@@ -29,7 +30,6 @@ class _TableBasicState extends State<TableBasic> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay = DateTime.now();
   DateTime selezionato = DateTime.now();
-  List days = [];
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +46,7 @@ class _TableBasicState extends State<TableBasic> {
       focusedDay: _focusedDay,
       calendarFormat: widget.calendarFormat,
       headerStyle: HeaderStyle(
+        headerPadding:EdgeInsets.fromLTRB(0, 4, 0, 4),
         leftChevronIcon: Icon(Icons.chevron_left,
             color: Theme.of(context).colorScheme.onSurface),
         rightChevronIcon: Icon(Icons.chevron_right,
@@ -80,7 +81,6 @@ class _TableBasicState extends State<TableBasic> {
         });
       },
       eventLoader: (day) {
-        days.add(day);
         for (var i = 0; i < widget.lista.length; i++) {
           if (isSameDay(day, widget.lista[i].reportDate)) {
             return [widget.lista[i]];
@@ -94,7 +94,6 @@ class _TableBasicState extends State<TableBasic> {
         });
       },
       onPageChanged: (focusedDay) {
-        print(days);
         if (_selectedDay?.month == focusedDay.month) {
           _focusedDay = _selectedDay ?? focusedDay;
         } else {
