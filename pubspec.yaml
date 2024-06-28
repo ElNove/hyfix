@@ -49,6 +49,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   rename_app: ^1.6.1
   loading_animation_widget: ^1.2.1
+  local_auth: ^2.2.0
   
 
 

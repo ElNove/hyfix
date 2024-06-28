@@ -5,6 +5,7 @@ import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/main.dart';
 import 'package:hyfix/models/Reports.dart';
 import 'package:hyfix/services/service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'TableBasic.dart';
 import 'ContainerEvents.dart';
 import 'InsertActivity.dart';
@@ -87,9 +88,14 @@ class _MyAppState extends State<MyApp> {
       HttpHeaders.contentTypeHeader: 'application/json',
       HttpHeaders.cookieHeader: globals.sesid,
     }).then(
-      (response) {
+      (response) async {
         JobList jobList = context.read<JobList>();
         jobList.lista = <Reports>[];
+
+        var prefs = await SharedPreferences.getInstance();
+        prefs.remove('username');
+        prefs.remove('sesid');
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const Accesso()),
@@ -120,13 +126,16 @@ class _MyAppState extends State<MyApp> {
     var themeProvider = context.watch<ThemeProvider>();
     var jobList = context.watch<JobList>();
 
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => JobList()),
       ],
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 75,
+          //toolbarHeight: screenHeight/100*10,
           leading: IconButton(
             onPressed: () {
               themeProvider
@@ -159,11 +168,11 @@ class _MyAppState extends State<MyApp> {
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.primaryContainer,
                     fontWeight: FontWeight.bold,
-                    fontSize: 30)),
+                    fontSize: screenWidth/100*7,)),
           ),
         ),
         body: Container(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.all(15),
           child: Column(
             children: [
               TableBasic(

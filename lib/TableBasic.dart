@@ -56,6 +56,7 @@ class _TableBasicState extends State<TableBasic> {
         ),
       ),
       calendarStyle: CalendarStyle(
+        
         markerDecoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary,
           shape: BoxShape.circle,
