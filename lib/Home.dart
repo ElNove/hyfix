@@ -5,6 +5,7 @@ import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/main.dart';
 import 'package:hyfix/models/Reports.dart';
 import 'package:hyfix/services/service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'TableBasic.dart';
 import 'ContainerEvents.dart';
 import 'InsertActivity.dart';
@@ -87,9 +88,14 @@ class _MyAppState extends State<MyApp> {
       HttpHeaders.contentTypeHeader: 'application/json',
       HttpHeaders.cookieHeader: globals.sesid,
     }).then(
-      (response) {
+      (response) async {
         JobList jobList = context.read<JobList>();
         jobList.lista = <Reports>[];
+
+        var prefs = await SharedPreferences.getInstance();
+        prefs.remove('username');
+        prefs.remove('sesid');
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const Accesso()),
