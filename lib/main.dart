@@ -520,13 +520,12 @@ class _AccessoState extends State<Accesso> {
           ),
           IOSAuthMessages(
             cancelButton: 'Chiudi',
-            
           ),
         ],
         localizedReason: 'Autenticazione richiesta per accedere a HyFix',
         options: const AuthenticationOptions(
           stickyAuth: true,
-          biometricOnly: true,
+          biometricOnly: false,
         ),
       );
       if (authenticated) {
