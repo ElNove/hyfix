@@ -265,18 +265,22 @@ class _InsertActivity extends State<InsertActivity> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return ScaffoldMessenger(
       key: _scaffoldKey,
       child: Form(
           key: _formKey,
           child: Container(
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.all(20),
               child: Column(children: [
                 Text(
                   "AGGIUNGI ",
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.primaryContainer,
-                      fontSize: 50,
+                      fontSize: screenHeight/100*5,
                       fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
@@ -286,7 +290,7 @@ class _InsertActivity extends State<InsertActivity> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                        width: 150,
+                        width: screenWidth/100*40,
                         child: TextButton(
                           style: ElevatedButton.styleFrom(
                             side: BorderSide(
@@ -324,7 +328,7 @@ class _InsertActivity extends State<InsertActivity> {
                       width: 30,
                     ),
                     SizedBox(
-                        width: 150,
+                        width: screenWidth/100*40,
                         child: TextButton(
                           style: ElevatedButton.styleFrom(
                             side: BorderSide(
@@ -369,7 +373,7 @@ class _InsertActivity extends State<InsertActivity> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                              width: 100,
+                              width: screenWidth/100*23,
                               child: TextButton(
                                 style: ElevatedButton.styleFrom(
                                   side: BorderSide(
@@ -410,7 +414,7 @@ class _InsertActivity extends State<InsertActivity> {
                             width: 30,
                           ),
                           SizedBox(
-                              width: 100,
+                              width: screenWidth/100*23,
                               child: TextButton(
                                 style: ElevatedButton.styleFrom(
                                   side: BorderSide(
@@ -451,7 +455,7 @@ class _InsertActivity extends State<InsertActivity> {
                             width: 30,
                           ),
                           SizedBox(
-                              width: 100,
+                              width: screenWidth/100*23,
                               child: TextButton(
                                 style: ElevatedButton.styleFrom(
                                   side: BorderSide(
@@ -496,8 +500,9 @@ class _InsertActivity extends State<InsertActivity> {
                 ),
                 Text(
                   "Data: ${DateFormat('dd/MM/yyyy').format(widget.dataAttuale)}",
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
+                  style:  TextStyle(
+                      fontSize: screenHeight/100*2
+                      , fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 10,

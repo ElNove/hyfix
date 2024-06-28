@@ -126,13 +126,16 @@ class _MyAppState extends State<MyApp> {
     var themeProvider = context.watch<ThemeProvider>();
     var jobList = context.watch<JobList>();
 
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => JobList()),
       ],
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 75,
+          //toolbarHeight: screenHeight/100*10,
           leading: IconButton(
             onPressed: () {
               themeProvider
@@ -165,11 +168,11 @@ class _MyAppState extends State<MyApp> {
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.primaryContainer,
                     fontWeight: FontWeight.bold,
-                    fontSize: 30)),
+                    fontSize: screenWidth/100*7,)),
           ),
         ),
         body: Container(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.all(15),
           child: Column(
             children: [
               TableBasic(

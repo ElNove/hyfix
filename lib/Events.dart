@@ -42,6 +42,8 @@ class _EventsState extends State<Events> {
   }
 
   createRow() {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     var righe = <GestureDetector>[];
     for (var i in widget.lista) {
       if (DateUtils.isSameDay(i.reportDate, widget.data)) {
@@ -52,9 +54,9 @@ class _EventsState extends State<Events> {
                 builder: (BuildContext context) => DialogEvent(report: i));
           },
           child: Container(
-            padding: EdgeInsets.all(12),
+            padding: EdgeInsets.all(screenHeight/100),
             margin: const EdgeInsets.fromLTRB(10, 3, 10, 3),
-            height: 50,
+            height: screenHeight/100*5,
             decoration: i.reportType == "R"
                 ? BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
@@ -74,6 +76,7 @@ class _EventsState extends State<Events> {
                     Icon(
                       i.reportType == "R" ? Icons.assignment : Icons.bookmark,
                       color: Colors.white,
+                      size: screenHeight/100*2.5,
                     ),
                     const SizedBox(
                       width: 10,
@@ -83,9 +86,9 @@ class _EventsState extends State<Events> {
                 Center(
                   child: Text(
                     "[  ${int.parse(i.quantity).toStringAsFixed(2)} ${i.unityCode}  ]",
-                    style: const TextStyle(
+                    style:  TextStyle(
                         color: Colors.white,
-                        fontSize: 17,
+                        fontSize: screenHeight/100*2,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -94,9 +97,9 @@ class _EventsState extends State<Events> {
                 ),
                 Text(
                   "${i.customerCode} - ${i.taskTypeCode}",
-                  style: const TextStyle(
+                  style:  TextStyle(
                       color: Colors.white,
-                      fontSize: 17,
+                      fontSize: screenHeight/100*2,
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
