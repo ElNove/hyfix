@@ -349,7 +349,9 @@ class _AccessoState extends State<Accesso> {
 
     final _formKey = GlobalKey<FormState>();
 
-    return Scaffold(
+    return
+    MaterialApp(
+      home: Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
@@ -503,7 +505,9 @@ class _AccessoState extends State<Accesso> {
           ),
         ),
       ),
+    ),
     );
+    
   }
 
   Future<void> _authenticate() async {

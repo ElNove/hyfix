@@ -198,24 +198,9 @@ class _MyAppState extends State<MyApp> {
                   child: FloatingActionButton(
                     backgroundColor:
                         Theme.of(context).colorScheme.primaryContainer,
-                    onPressed: () => showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => Dialog.fullscreen(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              InsertActivity(
-                                fetchCalendar: fetchRep,
-                                dataAttuale: _data,
-                              ),
-                              const SizedBox(height: 15),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(_createRoute(fetchRep, _data));
+                    },
                     child: const Icon(Icons.add_rounded),
                   ),
                 ),
@@ -226,4 +211,25 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+}
+
+Route _createRoute(fetchRep, _data) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => InsertActivity(
+      fetchCalendar: fetchRep,
+      dataAttuale: _data,
+    ),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }
