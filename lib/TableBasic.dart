@@ -29,7 +29,6 @@ class _TableBasicState extends State<TableBasic> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay = DateTime.now();
   DateTime selezionato = DateTime.now();
-  List days = [];
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +55,6 @@ class _TableBasicState extends State<TableBasic> {
         ),
       ),
       calendarStyle: CalendarStyle(
-        
         markerDecoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary,
           shape: BoxShape.circle,
@@ -80,7 +78,6 @@ class _TableBasicState extends State<TableBasic> {
         });
       },
       eventLoader: (day) {
-        days.add(day);
         for (var i = 0; i < widget.lista.length; i++) {
           if (isSameDay(day, widget.lista[i].reportDate)) {
             return [widget.lista[i]];
@@ -94,12 +91,21 @@ class _TableBasicState extends State<TableBasic> {
         });
       },
       onPageChanged: (focusedDay) {
-        print(days);
-        if (_selectedDay?.month == focusedDay.month) {
-          _focusedDay = _selectedDay ?? focusedDay;
-        } else {
-          _focusedDay = focusedDay;
+        switch (widget.calendarFormat) {
+          case CalendarFormat.month:
+            if (_selectedDay?.month == focusedDay.month) {
+              _focusedDay = _selectedDay ?? focusedDay;
+            } else {
+              _focusedDay = focusedDay;
+            }
+            break;
+          default:
+            _focusedDay = focusedDay;
+            break;
         }
+
+        print(_focusedDay);
+        print(focusedDay);
         List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
         widget.fetchCalendar(weeks.first.first, weeks.last.last);
       },

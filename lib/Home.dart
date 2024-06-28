@@ -135,7 +135,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: Scaffold(
         appBar: AppBar(
-          //toolbarHeight: screenHeight/100*10,
+          toolbarHeight: screenHeight / 100 * 6,
           leading: IconButton(
             onPressed: () {
               themeProvider
