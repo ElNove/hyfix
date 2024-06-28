@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/models/Reports.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class TableBasic extends StatefulWidget {
@@ -45,6 +46,7 @@ class _TableBasicState extends State<TableBasic> {
       focusedDay: _focusedDay,
       calendarFormat: widget.calendarFormat,
       headerStyle: HeaderStyle(
+        headerPadding: EdgeInsets.fromLTRB(0, 4, 0, 4),
         leftChevronIcon: Icon(Icons.chevron_left,
             color: Theme.of(context).colorScheme.onSurface),
         rightChevronIcon: Icon(Icons.chevron_right,
@@ -104,8 +106,6 @@ class _TableBasicState extends State<TableBasic> {
             break;
         }
 
-        print(_focusedDay);
-        print(focusedDay);
         List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
         widget.fetchCalendar(weeks.first.first, weeks.last.last);
       },
