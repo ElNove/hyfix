@@ -29,6 +29,7 @@ class _TableBasicState extends State<TableBasic> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay = DateTime.now();
   DateTime selezionato = DateTime.now();
+  List days = [];
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +80,7 @@ class _TableBasicState extends State<TableBasic> {
         });
       },
       eventLoader: (day) {
+        days.add(day);
         for (var i = 0; i < widget.lista.length; i++) {
           if (isSameDay(day, widget.lista[i].reportDate)) {
             return [widget.lista[i]];
@@ -92,6 +94,7 @@ class _TableBasicState extends State<TableBasic> {
         });
       },
       onPageChanged: (focusedDay) {
+        print(days);
         if (_selectedDay?.month == focusedDay.month) {
           _focusedDay = _selectedDay ?? focusedDay;
         } else {
