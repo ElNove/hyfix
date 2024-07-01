@@ -160,12 +160,35 @@ class _InsertActivity extends State<InsertActivity> {
     }
   }
 
-  void getResolve(sesid, id, code) async {
-    final params = {
-      'data[customer_id]': '$id',
-      'data[customer_code]': '$code',
-      'fieldsNames[]': ['customer_id', 'customer_code'],
-    };
+  void getResolve(sesid, id, code, tipo) async {
+    var params;
+    switch (tipo) {
+      case "C":
+        lController.clear();
+        params = {
+          'data[customer_id]': '$id',
+          'data[customer_code]': '$code',
+          'fieldsNames[]': ['customer_id', 'customer_code'],
+        };
+        break;
+      case "L":
+        cController.clear();
+        params = {
+          'data[customer_location_id]': '$id',
+          'data[location_code]': '$code',
+          'fieldsNames[]': ['customer_location_id', 'location_code'],
+        };
+        break;
+      case "P":
+        cController.clear();
+        lController.clear();
+        params = {
+          'data[project_id]': '$id',
+          'data[project_code]': '$code',
+          'fieldsNames[]': ['project_id', 'project_code'],
+        };
+        break;
+    }
 
     final uri;
     uri = Uri.https('hyfix.test.nealis.it', '/reports/report/resolve', params);
@@ -175,9 +198,49 @@ class _InsertActivity extends State<InsertActivity> {
         HttpHeaders.contentTypeHeader: 'application/json',
         HttpHeaders.cookieHeader: sesid,
       },
-    );
-    var deco = jsonDecode(response.body);
-    print(deco);
+    ).then((response) async {
+      var deco = jsonDecode(response.body);
+      var data = deco["data"];
+      switch (tipo) {
+        case "C":
+          var loc = (data["location_code"] +
+              " - " +
+              data["customer_code"] +
+              " - " +
+              data["location_city"]);
+          setState(() {
+            lController.text = loc;
+
+            indirizzo = data["location_fulladdress"];
+          });
+
+          break;
+        case "L":
+          final params = {
+            'filters[id]': '${data["customer_id"]}',
+          };
+          final uri;
+            uri = Uri.https(
+                'hyfix.test.nealis.it', '/reports/customer/read', params);
+          
+          final response_cli = await http.get(uri, headers: {
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.cookieHeader: globals.sesid,
+          });
+
+          var deco2 = jsonDecode(response_cli.body);
+  var d=deco2["data"];
+          var cli2 = (data["customer_code"] + " - " + d["companyname"]);
+
+          setState(() {
+            cController.text=cli2;
+          });
+          break;
+        case "P":
+          print(data);
+          break;
+      }
+    });
   }
 
   void getActivity(sesid) async {
@@ -283,7 +346,10 @@ class _InsertActivity extends State<InsertActivity> {
 
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  TextEditingController clientController = TextEditingController();
+  TextEditingController cController = TextEditingController();
+  TextEditingController pController = TextEditingController();
+  TextEditingController lController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -549,7 +615,7 @@ class _InsertActivity extends State<InsertActivity> {
                                   textEditingValue.text.toUpperCase());
                             });
                           }, fieldViewBuilder: (BuildContext context,
-                              clientController,
+                              customerController,
                               FocusNode clientFocus,
                               VoidCallback onFieldSubmitted) {
                             return TextFormField(
@@ -559,13 +625,12 @@ class _InsertActivity extends State<InsertActivity> {
                                 }
                                 return null;
                               },
-                              controller: clientController,
+                              controller: cController,
                               focusNode: clientFocus,
                               decoration: const InputDecoration(
                                   label: Text('Cliente'),
                                   border: OutlineInputBorder()),
                               onChanged: (text) {
-                                print(clientController.text);
                                 // Update suggestions based on user input
                                 // Implement the logic to filter and refresh suggestions
                               },
@@ -573,28 +638,27 @@ class _InsertActivity extends State<InsertActivity> {
                                 print(clienti);
                                 clienti.forEach((element) {
                                   if (element
-                                      .containsValue(clientController.text)) {
-                                    clientController.text = _clientiOptions[
+                                      .containsValue(customerController.text)) {
+                                    customerController.text = _clientiOptions[
                                         clienti.indexOf(element)];
                                     clientFocus.unfocus();
                                   } else {
                                     if (_clientiOptions
-                                        .contains(clientController.text)) {
+                                        .contains(customerController.text)) {
                                       clientFocus.unfocus();
                                     } else {
-                                      clientController.text = "";
+                                      customerController.text = "";
                                       clientFocus.unfocus();
                                     }
                                   }
                                 });
                               },
                               onTap: () => {
-                                clientController.clear(),
+                                customerController.clear(),
                               },
                             );
                           }, onSelected: (String selection) {
-                            clientController.text = selection;
-
+                            cController.text = selection;
                             var nomeC = selection.split(" ");
                             for (var c in clienti) {
                               if (c["companyname"] == nomeC[2]) {
@@ -606,9 +670,147 @@ class _InsertActivity extends State<InsertActivity> {
                                 id = cliente["customer_id"];
                               });
                             }
+                            getResolve(globals.sesid, id,
+                                cliente["customer_code"], "C");
                             FocusScope.of(context).unfocus();
-                            // getResolve(
-                            //     globals.sesid, id, cliente["customer_code"]);
+
+                            // getProgetti(globals.sesid, id);
+                            // getLuoghi(globals.sesid, id);
+                          }),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        // Expanded(
+                        //     child: Autocomplete<String>(optionsBuilder:
+                        //         (TextEditingValue textEditingValue2) {
+                        //   if (textEditingValue2.text == '') {
+                        //     return _luoghiOptions;
+                        //   }
+                        //   return _luoghiOptions.where((String option) {
+                        //     return option.toUpperCase()
+                        //         .contains(textEditingValue2.text.toUpperCase());
+                        //   });
+                        // }, fieldViewBuilder: (BuildContext context,
+                        //         locationController,
+                        //         FocusNode fieldFocusNode,
+                        //         VoidCallback onFieldSubmitted) {
+                        //   return TextFormField(
+                        //     validator: (value) {
+                        //       if (value == null || value.isEmpty) {
+                        //         return 'Inserisci il luogo';
+                        //       }
+                        //       return null;
+                        //     },
+                        //     controller: lController,
+                        //     focusNode: fieldFocusNode,
+                        //     decoration: const InputDecoration(
+                        //         label: Text('Luogo'),
+                        //         border: OutlineInputBorder()),
+                        //     onChanged: (text) {
+                        //       // Update suggestions based on user input
+                        //       // Implement the logic to filter and refresh suggestions
+                        //     },
+                        //     //onTap: () => print(_luoghiOptions),
+                        //   );
+                        // }, onSelected: (String selection) {
+                        //   var nomeL = selection.split(" ");
+                        //   for (var l in luoghi) {
+                        //     if (l["location_code"] == nomeL[0]) {
+                        //       luogo = l;
+                        //       setState(() {
+                        //         indirizzo = l["location_fulladdress"];
+                        //       });
+                        //     }
+                        //   }
+                        //   ;
+                        //   if (id == 0) {
+                        //     setState(() {
+                        //       id = luogo["customer_id"];
+                        //     });
+                        //   }
+                        //   getProgetti(globals.sesid, id);
+                        //   getClienti(globals.sesid, id);
+                        // })),
+
+                        Expanded(
+                          child: Autocomplete<String>(optionsBuilder:
+                              (TextEditingValue textEditingValue) {
+                            if (textEditingValue.text == '') {
+                              return _luoghiOptions;
+                            }
+                            return _luoghiOptions.where((String option) {
+                              return option.contains(
+                                  textEditingValue.text.toUpperCase());
+                            });
+                          }, fieldViewBuilder: (BuildContext context,
+                              locationController,
+                              FocusNode locationFocus,
+                              VoidCallback onFieldSubmitted) {
+                            return TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Inserisci il luogo';
+                                }
+                                return null;
+                              },
+                              controller: lController,
+                              focusNode: locationFocus,
+                              decoration: const InputDecoration(
+                                  label: Text('Luogo'),
+                                  border: OutlineInputBorder()),
+                              onChanged: (text) {
+                                // Update suggestions based on user input
+                                // Implement the logic to filter and refresh suggestions
+                              },
+                              onEditingComplete: () {
+                                print(luoghi);
+                                luoghi.forEach((element) {
+                                  if (element
+                                      .containsValue(locationController.text)) {
+                                    locationController.text =
+                                        _luoghiOptions[luoghi.indexOf(element)];
+                                    locationFocus.unfocus();
+                                  } else {
+                                    if (_luoghiOptions
+                                        .contains(locationController.text)) {
+                                      locationFocus.unfocus();
+                                    } else {
+                                      locationController.text = "";
+                                      locationFocus.unfocus();
+                                    }
+                                  }
+                                });
+                              },
+                              onTap: () => {
+                                locationController.clear(),
+                              },
+                            );
+                          }, onSelected: (String selection) {
+                            lController.text = selection;
+                            var nomeL = selection.split(" ");
+                            for (var l in luoghi) {
+                              if (l["location_code"] == nomeL[0]) {
+                                luogo = l;
+                                setState(() {
+                                  indirizzo = l["location_fulladdress"];
+                                });
+                              }
+                            }
+                            ;
+                            if (id == 0) {
+                              setState(() {
+                                id = luogo["customer_location_id"];
+                              });
+                            }
+                            getResolve(
+                                globals.sesid, id, luogo["location_code"], "L");
+                            FocusScope.of(context).unfocus();
+
                             // getProgetti(globals.sesid, id);
                             // getLuoghi(globals.sesid, id);
                           }),
@@ -635,8 +837,7 @@ class _InsertActivity extends State<InsertActivity> {
                                   textEditingValue.text.toUpperCase());
                             });
                           }, fieldViewBuilder: (BuildContext context,
-                                  TextEditingController
-                                      fieldTextEditingController,
+                                  projectController,
                                   FocusNode fieldFocusNode,
                                   VoidCallback onFieldSubmitted) {
                             return TextFormField(
@@ -646,7 +847,7 @@ class _InsertActivity extends State<InsertActivity> {
                                 }
                                 return null;
                               },
-                              controller: fieldTextEditingController,
+                              controller: pController,
                               focusNode: fieldFocusNode,
                               decoration: const InputDecoration(
                                   label: Text('Progetto'),
@@ -672,64 +873,6 @@ class _InsertActivity extends State<InsertActivity> {
                             }
                           }),
                         ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                            child: Autocomplete<String>(optionsBuilder:
-                                (TextEditingValue textEditingValue) {
-                          if (textEditingValue.text == '') {
-                            return _luoghiOptions;
-                          }
-                          return _luoghiOptions.where((String option) {
-                            return option
-                                .contains(textEditingValue.text.toUpperCase());
-                          });
-                        }, fieldViewBuilder: (BuildContext context,
-                                TextEditingController
-                                    fieldTextEditingController,
-                                FocusNode fieldFocusNode,
-                                VoidCallback onFieldSubmitted) {
-                          return TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Inserisci il luogo';
-                              }
-                              return null;
-                            },
-                            controller: fieldTextEditingController,
-                            focusNode: fieldFocusNode,
-                            decoration: const InputDecoration(
-                                label: Text('Luogo'),
-                                border: OutlineInputBorder()),
-                            onChanged: (text) {
-                              // Update suggestions based on user input
-                              // Implement the logic to filter and refresh suggestions
-                            },
-                          );
-                        }, onSelected: (String selection) {
-                          var nomeL = selection.split(" ");
-                          for (var l in luoghi) {
-                            if (l["location_code"] == nomeL[0]) {
-                              luogo = l;
-                              setState(() {
-                                indirizzo = l["location_fulladdress"];
-                              });
-                            }
-                          }
-                          ;
-                          if (id == 0) {
-                            setState(() {
-                              id = luogo["customer_id"];
-                            });
-                          }
-                          getProgetti(globals.sesid, id);
-                          getClienti(globals.sesid, id);
-                        })),
                       ],
                     ),
                     const SizedBox(
