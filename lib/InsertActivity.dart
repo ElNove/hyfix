@@ -216,24 +216,24 @@ class _InsertActivity extends State<InsertActivity> {
 
           break;
         case "L":
+          print(data);
           final params = {
             'filters[id]': '${data["customer_id"]}',
           };
           final uri;
-            uri = Uri.https(
-                'hyfix.test.nealis.it', '/reports/customer/read', params);
-          
-          final response_cli = await http.get(uri, headers: {
+          uri = Uri.https(
+              'hyfix.test.nealis.it', '/reports/customer/read', params);
+
+          await http.get(uri, headers: {
             HttpHeaders.contentTypeHeader: 'application/json',
             HttpHeaders.cookieHeader: globals.sesid,
-          });
-
-          var deco2 = jsonDecode(response_cli.body);
-  var d=deco2["data"];
-          var cli2 = (data["customer_code"] + " - " + d["companyname"]);
-
-          setState(() {
-            cController.text=cli2;
+          }).then((resp) {
+            var deco2 = jsonDecode(resp.body);
+            var d = deco2["data"];
+            var cli2 = (data["customer_code"] + " - " + d[0]["companyname"]);
+            setState(() {
+              cController.text = cli2;
+            });
           });
           break;
         case "P":
@@ -635,7 +635,6 @@ class _InsertActivity extends State<InsertActivity> {
                                 // Implement the logic to filter and refresh suggestions
                               },
                               onEditingComplete: () {
-                                print(clienti);
                                 clienti.forEach((element) {
                                   if (element
                                       .containsValue(customerController.text)) {
@@ -673,6 +672,9 @@ class _InsertActivity extends State<InsertActivity> {
                             getResolve(globals.sesid, id,
                                 cliente["customer_code"], "C");
                             FocusScope.of(context).unfocus();
+                            setState(() {
+                              id = 0;
+                            });
 
                             // getProgetti(globals.sesid, id);
                             // getLuoghi(globals.sesid, id);
@@ -768,7 +770,6 @@ class _InsertActivity extends State<InsertActivity> {
                                 // Implement the logic to filter and refresh suggestions
                               },
                               onEditingComplete: () {
-                                print(luoghi);
                                 luoghi.forEach((element) {
                                   if (element
                                       .containsValue(locationController.text)) {
@@ -793,7 +794,10 @@ class _InsertActivity extends State<InsertActivity> {
                           }, onSelected: (String selection) {
                             lController.text = selection;
                             var nomeL = selection.split(" ");
+                            print("nomeL");
+                            print(nomeL[0]);
                             for (var l in luoghi) {
+                              print(l["location_code"]);
                               if (l["location_code"] == nomeL[0]) {
                                 luogo = l;
                                 setState(() {
@@ -807,10 +811,15 @@ class _InsertActivity extends State<InsertActivity> {
                                 id = luogo["customer_location_id"];
                               });
                             }
+                            print("asssssssssssssdasdas");
+                            print(id);
                             getResolve(
                                 globals.sesid, id, luogo["location_code"], "L");
                             FocusScope.of(context).unfocus();
 
+                            setState(() {
+                              id = 0;
+                            });
                             // getProgetti(globals.sesid, id);
                             // getLuoghi(globals.sesid, id);
                           }),
