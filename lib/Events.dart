@@ -1,6 +1,4 @@
-import 'package:diagonal_decoration/diagonal_decoration.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hyfix/DialogEvent.dart';
 import 'package:hyfix/models/Reports.dart';
 import 'dart:math' as math;
@@ -43,7 +41,6 @@ class _EventsState extends State<Events> {
   }
 
   createRow() {
-    double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     var righe = <GestureDetector>[];
     for (var i in widget.lista) {
@@ -58,16 +55,15 @@ class _EventsState extends State<Events> {
             padding: EdgeInsets.all(screenHeight / 100),
             margin: const EdgeInsets.fromLTRB(10, 3, 10, 3),
             height: screenHeight / 100 * 5,
-            
             decoration: i.reportType == "R"
                 ? BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.white,width: 1),
+                    border: Border.all(color: Colors.white, width: 1),
                     color: HexColor.fromHex(i.color),
                   )
                 : BoxDecoration(
-                  border: Border.all(color: Colors.white,width: 1),
-                  borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.white, width: 1),
+                    borderRadius: BorderRadius.circular(8),
                     gradient: LinearGradient(
                       transform: GradientRotation(math.pi / 8),
                       begin: Alignment(-1.0, -4.0),
@@ -93,7 +89,6 @@ class _EventsState extends State<Events> {
                           increment = increment == 0.05 ? 0.01 : 0.05;
                           stops.add(i);
                         }
-                        print(stops.length);
                         return stops;
                       }(),
                     ),

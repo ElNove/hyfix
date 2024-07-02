@@ -31,10 +31,10 @@ class _InsertActivity extends State<InsertActivity> {
   List<String> _progettiOptions = <String>[];
   List<Map<String, dynamic>> luoghi = <Map<String, dynamic>>[];
   List<String> _luoghiOptions = <String>[];
-  late Map<String, dynamic> utente={};
+  late Map<String, dynamic> utente = {};
   late Map<String, dynamic> cliente = {};
-  late Map<String, dynamic> luogo={};
-  late Map<String, dynamic> progetto= {};
+  late Map<String, dynamic> luogo = {};
+  late Map<String, dynamic> progetto = {};
   late Map<String, dynamic> attivita;
   var id = 0;
   bool rimborso = false;
@@ -70,7 +70,6 @@ class _InsertActivity extends State<InsertActivity> {
   }
 
   void getUtente(sesid) async {
-    print(globals.username);
     final uri = Uri.https('hyfix.test.nealis.it', '/auth/user/read');
 
     final response = await http.get(uri, headers: {
@@ -161,11 +160,11 @@ class _InsertActivity extends State<InsertActivity> {
       },
     );
     var deco = jsonDecode(response.body);
-    
+
     for (var elem in deco["data"]) {
-      if(id!=0){
-        if(elem["default_location"]=="Y"){
-          luogo=elem;
+      if (id != 0) {
+        if (elem["default_location"] == "Y") {
+          luogo = elem;
         }
       }
       luoghi.add(elem);
@@ -262,7 +261,6 @@ class _InsertActivity extends State<InsertActivity> {
           });
           break;
         case "P":
-          print(data);
           var pro = (data["project_code"] + " - " + data["customer_code"]);
           setState(() {
             pController.text = pro;
@@ -306,7 +304,7 @@ class _InsertActivity extends State<InsertActivity> {
         _clear("L");
       });
       getLuoghi(globals.sesid, cliente["customer_id"]);
-      getProgetti(globals.sesid,cliente["customer_id"]);
+      getProgetti(globals.sesid, cliente["customer_id"]);
       setState(() {
         loading = true;
       });
@@ -405,7 +403,6 @@ class _InsertActivity extends State<InsertActivity> {
             },
             body: ReportSaveToJson(rep))
         .then((report) {
-          print(report.body);
       DateTime focusedDay = DateTime.now();
 
       List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
@@ -450,17 +447,16 @@ class _InsertActivity extends State<InsertActivity> {
         });
         break;
       case "P":
-      setState(() {
+        setState(() {
           _progettiOptions.clear();
         });
         for (var element in progetti) {
-          _progettiOptions.add(element["project_code"] +
-              " - " +
-              element["customer_code"]);
+          _progettiOptions
+              .add(element["project_code"] + " - " + element["customer_code"]);
         }
         setState(() {
           _progettiOptions = _progettiOptions;
-          _activityOptions=[];
+          _activityOptions = [];
         });
         break;
     }
@@ -713,7 +709,6 @@ class _InsertActivity extends State<InsertActivity> {
                       style: TextStyle(
                           fontSize: screenHeight / 100 * 2,
                           fontWeight: FontWeight.bold),
-                          
                     ),
                     const SizedBox(
                       height: 10,
@@ -1014,7 +1009,6 @@ class _InsertActivity extends State<InsertActivity> {
                                 for (var element in progetti) {
                                   if (element["project_code"].contains(text) ||
                                       element["customer_code"].contains(text)) {
-                                    print(element);
                                     _progettiOptions.add(
                                         element["project_code"] +
                                             " - " +
@@ -1066,10 +1060,9 @@ class _InsertActivity extends State<InsertActivity> {
                           }, onSelected: (String selection) {
                             pController.text = selection;
                             var nomeC = selection.split(" - ");
-                            for (var c in progetti) {print(c);
+                            for (var c in progetti) {
                               if (c["project_code"] == nomeC[0] &&
                                   c["customer_code"] == nomeC[1]) {
-                                    
                                 progetto = c;
                               }
                             }
@@ -1108,11 +1101,11 @@ class _InsertActivity extends State<InsertActivity> {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Expanded(
-                                  child:Text(softWrap:true,
-                                  "${indirizzo} ",
-                                ),
+                                  child: Text(
+                                    softWrap: true,
+                                    "${indirizzo} ",
+                                  ),
                                 )
-                                
                               ],
                             ))),
                     const SizedBox(

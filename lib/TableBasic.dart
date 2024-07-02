@@ -1,9 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/models/Reports.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class TableBasic extends StatefulWidget {
@@ -95,7 +92,8 @@ class _TableBasicState extends State<TableBasic> {
       onPageChanged: (focusedDay) {
         switch (widget.calendarFormat) {
           case CalendarFormat.month:
-            if (_selectedDay?.month == focusedDay.month) {
+            if (_selectedDay?.month == focusedDay.month &&
+                _selectedDay?.year == focusedDay.year) {
               _focusedDay = _selectedDay ?? focusedDay;
             } else {
               _focusedDay = focusedDay;

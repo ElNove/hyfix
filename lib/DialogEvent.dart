@@ -14,6 +14,7 @@ class _DialogEventState extends State<DialogEvent> {
   Widget build(BuildContext context) {
     Reports rep = widget.report;
     return AlertDialog(
+      insetPadding: const EdgeInsets.fromLTRB(25, 50, 25, 50),
       title: Text('${rep.customerCode} - ${rep.taskTypeCode}'),
       content: Padding(
         padding: const EdgeInsets.all(10),
@@ -24,7 +25,7 @@ class _DialogEventState extends State<DialogEvent> {
             children: <Widget>[
               Wrap(
                 alignment: WrapAlignment.spaceBetween,
-                children:  [
+                children: [
                   const Text(
                     'Tipo: ',
                     style: TextStyle(
@@ -41,7 +42,9 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Wrap(
                 alignment: WrapAlignment.spaceBetween,
                 children: [
@@ -61,9 +64,10 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Wrap(
-                
                 alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
@@ -82,9 +86,10 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Wrap(
-                
                 alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
@@ -103,9 +108,10 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Wrap(
-                
                 alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
@@ -124,9 +130,10 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Wrap(
-                
                 alignment: WrapAlignment.spaceBetween,
                 children: [
                   const Text(
@@ -145,7 +152,9 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Wrap(
                 alignment: WrapAlignment.spaceBetween,
                 children: [
@@ -165,7 +174,9 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Wrap(
                 alignment: WrapAlignment.spaceBetween,
                 children: [
@@ -185,7 +196,9 @@ class _DialogEventState extends State<DialogEvent> {
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Wrap(
                 alignment: WrapAlignment.spaceBetween,
                 children: [
