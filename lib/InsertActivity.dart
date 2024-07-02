@@ -643,17 +643,16 @@ class _InsertActivity extends State<InsertActivity> {
                                     _clientiOptions.clear();
                                   });
                                   clienti.forEach((element) {
-                                    setState(() {
-                                      _clientiOptions.add(element["code"] +
-                                          " - " +
-                                          element["companyname"]);
-                                    });
+                                    _clientiOptions.add(element["code"] +
+                                        " - " +
+                                        element["companyname"]);
                                   });
                                   setState(() {
                                     _clientiOptions = _clientiOptions;
                                   });
                                   return;
                                 }
+
                                 clienti.forEach((element) {
                                   if (element.containsValue(text)) {
                                     // customerController.text = _clientiOptions[
