@@ -653,29 +653,21 @@ class _InsertActivity extends State<InsertActivity> {
                                   return;
                                 }
 
+                                setState(() {
+                                  _clientiOptions.clear();
+                                });
                                 clienti.forEach((element) {
-                                  if (element.containsValue(text)) {
-                                    // customerController.text = _clientiOptions[
-                                    //     clienti.indexOf(element)];
-                                    // clientFocus.unfocus();
-                                    _clientiOptions.clear();
+                                  if (element["companyname"].contains(text) ||
+                                      element["code"].contains(text)) {
+                                    print("entra");
                                     _clientiOptions.add(element["code"] +
                                         " - " +
                                         element["companyname"]);
-                                  } else {
-                                    setState(() {
-                                      _clientiOptions.clear();
-                                    });
+                                    print(_clientiOptions);
                                   }
-                                  // else {
-                                  //   if (_clientiOptions
-                                  //       .contains(customerController.text)) {
-                                  //     clientFocus.unfocus();
-                                  //   } else {
-                                  //     customerController.text = "";
-                                  //     clientFocus.unfocus();
-                                  //   }
-                                  // }
+                                });
+                                setState(() {
+                                  _clientiOptions = _clientiOptions;
                                 });
                               },
                               onEditingComplete: () {
