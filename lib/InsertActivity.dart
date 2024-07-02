@@ -173,6 +173,7 @@ class _InsertActivity extends State<InsertActivity> {
         break;
       case "L":
         cController.clear();
+        // print(id);
         params = {
           'data[customer_location_id]': '$id',
           'data[location_code]': '$code',
@@ -216,7 +217,7 @@ class _InsertActivity extends State<InsertActivity> {
 
           break;
         case "L":
-          print(data);
+          // print(data);
           final params = {
             'filters[id]': '${data["customer_id"]}',
           };
@@ -607,6 +608,9 @@ class _InsertActivity extends State<InsertActivity> {
                         Expanded(
                           child: Autocomplete<String>(optionsBuilder:
                               (TextEditingValue textEditingValue) {
+                            print(
+                                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                            print(_clientiOptions);
                             if (textEditingValue.text == '') {
                               return _clientiOptions;
                             }
@@ -633,24 +637,65 @@ class _InsertActivity extends State<InsertActivity> {
                               onChanged: (text) {
                                 // Update suggestions based on user input
                                 // Implement the logic to filter and refresh suggestions
+                                print(text);
+                                if (text == "") {
+                                  setState(() {
+                                    _clientiOptions.clear();
+                                  });
+                                  clienti.forEach((element) {
+                                    setState(() {
+                                      _clientiOptions.add(element["code"] +
+                                          " - " +
+                                          element["companyname"]);
+                                    });
+                                  });
+                                  setState(() {
+                                    _clientiOptions = _clientiOptions;
+                                  });
+                                  return;
+                                }
+                                clienti.forEach((element) {
+                                  if (element.containsValue(text)) {
+                                    // customerController.text = _clientiOptions[
+                                    //     clienti.indexOf(element)];
+                                    // clientFocus.unfocus();
+                                    _clientiOptions.clear();
+                                    _clientiOptions.add(element["code"] +
+                                        " - " +
+                                        element["companyname"]);
+                                  } else {
+                                    setState(() {
+                                      _clientiOptions.clear();
+                                    });
+                                  }
+                                  // else {
+                                  //   if (_clientiOptions
+                                  //       .contains(customerController.text)) {
+                                  //     clientFocus.unfocus();
+                                  //   } else {
+                                  //     customerController.text = "";
+                                  //     clientFocus.unfocus();
+                                  //   }
+                                  // }
+                                });
                               },
                               onEditingComplete: () {
-                                clienti.forEach((element) {
-                                  if (element
-                                      .containsValue(customerController.text)) {
-                                    customerController.text = _clientiOptions[
-                                        clienti.indexOf(element)];
-                                    clientFocus.unfocus();
-                                  } else {
-                                    if (_clientiOptions
-                                        .contains(customerController.text)) {
-                                      clientFocus.unfocus();
-                                    } else {
-                                      customerController.text = "";
-                                      clientFocus.unfocus();
-                                    }
-                                  }
-                                });
+                                // clienti.forEach((element) {
+                                //   if (element
+                                //       .containsValue(customerController.text)) {
+                                //     customerController.text = _clientiOptions[
+                                //         clienti.indexOf(element)];
+                                //     clientFocus.unfocus();
+                                //   } else {
+                                //     if (_clientiOptions
+                                //         .contains(customerController.text)) {
+                                //       clientFocus.unfocus();
+                                //     } else {
+                                //       customerController.text = "";
+                                //       clientFocus.unfocus();
+                                //     }
+                                //   }
+                                // });
                               },
                               onTap: () => {
                                 customerController.clear(),
@@ -672,9 +717,6 @@ class _InsertActivity extends State<InsertActivity> {
                             getResolve(globals.sesid, id,
                                 cliente["customer_code"], "C");
                             FocusScope.of(context).unfocus();
-                            setState(() {
-                              id = 0;
-                            });
 
                             // getProgetti(globals.sesid, id);
                             // getLuoghi(globals.sesid, id);
@@ -687,58 +729,6 @@ class _InsertActivity extends State<InsertActivity> {
                     ),
                     Row(
                       children: [
-                        // Expanded(
-                        //     child: Autocomplete<String>(optionsBuilder:
-                        //         (TextEditingValue textEditingValue2) {
-                        //   if (textEditingValue2.text == '') {
-                        //     return _luoghiOptions;
-                        //   }
-                        //   return _luoghiOptions.where((String option) {
-                        //     return option.toUpperCase()
-                        //         .contains(textEditingValue2.text.toUpperCase());
-                        //   });
-                        // }, fieldViewBuilder: (BuildContext context,
-                        //         locationController,
-                        //         FocusNode fieldFocusNode,
-                        //         VoidCallback onFieldSubmitted) {
-                        //   return TextFormField(
-                        //     validator: (value) {
-                        //       if (value == null || value.isEmpty) {
-                        //         return 'Inserisci il luogo';
-                        //       }
-                        //       return null;
-                        //     },
-                        //     controller: lController,
-                        //     focusNode: fieldFocusNode,
-                        //     decoration: const InputDecoration(
-                        //         label: Text('Luogo'),
-                        //         border: OutlineInputBorder()),
-                        //     onChanged: (text) {
-                        //       // Update suggestions based on user input
-                        //       // Implement the logic to filter and refresh suggestions
-                        //     },
-                        //     //onTap: () => print(_luoghiOptions),
-                        //   );
-                        // }, onSelected: (String selection) {
-                        //   var nomeL = selection.split(" ");
-                        //   for (var l in luoghi) {
-                        //     if (l["location_code"] == nomeL[0]) {
-                        //       luogo = l;
-                        //       setState(() {
-                        //         indirizzo = l["location_fulladdress"];
-                        //       });
-                        //     }
-                        //   }
-                        //   ;
-                        //   if (id == 0) {
-                        //     setState(() {
-                        //       id = luogo["customer_id"];
-                        //     });
-                        //   }
-                        //   getProgetti(globals.sesid, id);
-                        //   getClienti(globals.sesid, id);
-                        // })),
-
                         Expanded(
                           child: Autocomplete<String>(optionsBuilder:
                               (TextEditingValue textEditingValue) {
@@ -766,39 +756,40 @@ class _InsertActivity extends State<InsertActivity> {
                                   label: Text('Luogo'),
                                   border: OutlineInputBorder()),
                               onChanged: (text) {
+                                print(locationController);
+                                print(lController);
                                 // Update suggestions based on user input
                                 // Implement the logic to filter and refresh suggestions
                               },
                               onEditingComplete: () {
                                 luoghi.forEach((element) {
-                                  if (element
-                                      .containsValue(locationController.text)) {
-                                    locationController.text =
+                                  if (element.containsValue(lController.text)) {
+                                    lController.text =
                                         _luoghiOptions[luoghi.indexOf(element)];
                                     locationFocus.unfocus();
                                   } else {
                                     if (_luoghiOptions
-                                        .contains(locationController.text)) {
+                                        .contains(lController.text)) {
                                       locationFocus.unfocus();
                                     } else {
-                                      locationController.text = "";
+                                      lController.text = "";
                                       locationFocus.unfocus();
                                     }
                                   }
                                 });
                               },
                               onTap: () => {
-                                locationController.clear(),
+                                lController.clear(),
                               },
                             );
                           }, onSelected: (String selection) {
                             lController.text = selection;
-                            var nomeL = selection.split(" ");
-                            print("nomeL");
-                            print(nomeL[0]);
+                            var nomeL = selection.split(" - ");
+                            print(nomeL);
                             for (var l in luoghi) {
-                              print(l["location_code"]);
-                              if (l["location_code"] == nomeL[0]) {
+                              if (l["location_code"] == nomeL[0] &&
+                                  l["customer_code"] == nomeL[1] &&
+                                  l["location_city"] == nomeL[2]) {
                                 luogo = l;
                                 setState(() {
                                   indirizzo = l["location_fulladdress"];
@@ -811,15 +802,15 @@ class _InsertActivity extends State<InsertActivity> {
                                 id = luogo["customer_location_id"];
                               });
                             }
-                            print("asssssssssssssdasdas");
-                            print(id);
+                            // print("asssssssssssssdasdas");
+                            print(luogo);
                             getResolve(
-                                globals.sesid, id, luogo["location_code"], "L");
+                                globals.sesid,
+                                luogo["customer_location_id"],
+                                luogo["location_code"],
+                                "L");
                             FocusScope.of(context).unfocus();
 
-                            setState(() {
-                              id = 0;
-                            });
                             // getProgetti(globals.sesid, id);
                             // getLuoghi(globals.sesid, id);
                           }),
