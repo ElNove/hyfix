@@ -1107,11 +1107,12 @@ class _InsertActivity extends State<InsertActivity> {
                                   "INDIRIZZO: ",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                
-                                Text(
+                                Expanded(
+                                  child:Text(softWrap:true,
                                   "${indirizzo} ",
-                                  style: TextStyle(overflow: TextOverflow.ellipsis),
                                 ),
+                                )
+                                
                               ],
                             ))),
                     const SizedBox(
