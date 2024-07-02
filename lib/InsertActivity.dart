@@ -31,13 +31,13 @@ class _InsertActivity extends State<InsertActivity> {
   List<String> _progettiOptions = <String>[];
   List<Map<String, dynamic>> luoghi = <Map<String, dynamic>>[];
   List<String> _luoghiOptions = <String>[];
-  late Map<String, dynamic> utente;
+  late Map<String, dynamic> utente={};
   late Map<String, dynamic> cliente = {};
-  late Map<String, dynamic> luogo;
-  late Map<String, dynamic> progetto;
+  late Map<String, dynamic> luogo={};
+  late Map<String, dynamic> progetto= {};
   late Map<String, dynamic> attivita;
   var id = 0;
-  bool rimborso = true;
+  bool rimborso = false;
   String tipo = "";
   String note = "";
   String cate = "T";
@@ -62,7 +62,6 @@ class _InsertActivity extends State<InsertActivity> {
     getClienti(globals.sesid, id);
     getProgetti(globals.sesid, id);
     getLuoghi(globals.sesid, id);
-    getActivity(globals.sesid);
 
     setState(() {
       loading = true;
@@ -71,6 +70,7 @@ class _InsertActivity extends State<InsertActivity> {
   }
 
   void getUtente(sesid) async {
+    print(globals.username);
     final uri = Uri.https('hyfix.test.nealis.it', '/auth/user/read');
 
     final response = await http.get(uri, headers: {
@@ -114,7 +114,7 @@ class _InsertActivity extends State<InsertActivity> {
     progetti = [];
     _progettiOptions = [];
     final params = {
-      "filters[project_or_customer]": '$id',
+      "filters[customer_id]": '$id',
     };
     final uri;
     if (id == 0) {
@@ -135,7 +135,7 @@ class _InsertActivity extends State<InsertActivity> {
     var deco = jsonDecode(response.body);
     for (var elem in deco["data"]) {
       progetti.add(elem);
-      _progettiOptions.add(elem["code"] + " - " + elem["customer_companyname"]);
+      _progettiOptions.add(elem["code"] + " - " + elem["customer_code"]);
     }
   }
 
@@ -161,7 +161,13 @@ class _InsertActivity extends State<InsertActivity> {
       },
     );
     var deco = jsonDecode(response.body);
+    
     for (var elem in deco["data"]) {
+      if(id!=0){
+        if(elem["default_location"]=="Y"){
+          luogo=elem;
+        }
+      }
       luoghi.add(elem);
       _luoghiOptions.add(elem["location_code"] +
           " - " +
@@ -230,6 +236,7 @@ class _InsertActivity extends State<InsertActivity> {
           setState(() {
             lController.text = loc;
             indirizzo = data["location_fulladdress"];
+            pController.clear();
           });
 
           break;
@@ -256,10 +263,40 @@ class _InsertActivity extends State<InsertActivity> {
           break;
         case "P":
           print(data);
-          var loc = (data["project_code"] + " - " + data["customer_code"]);
+          var pro = (data["project_code"] + " - " + data["customer_code"]);
           setState(() {
-            pController.text = loc;
+            pController.text = pro;
           });
+          var loc = (data["location_code"] +
+              " - " +
+              data["customer_code"] +
+              " - " +
+              data["location_city"]);
+          setState(() {
+            lController.text = loc;
+            indirizzo = data["location_fulladdress"];
+          });
+
+          final params = {
+            'filters[id]': '${data["customer_id"]}',
+          };
+          final uri;
+          uri = Uri.https(
+              'hyfix.test.nealis.it', '/reports/customer/read', params);
+
+          await http.get(uri, headers: {
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.cookieHeader: globals.sesid,
+          }).then((resp) {
+            var deco2 = jsonDecode(resp.body);
+            var d = deco2["data"];
+            var cli2 = (data["customer_code"] + " - " + d[0]["companyname"]);
+            setState(() {
+              cliente = d[0];
+              cController.text = cli2;
+            });
+          });
+          getActivity(globals.sesid);
           break;
       }
 
@@ -269,6 +306,7 @@ class _InsertActivity extends State<InsertActivity> {
         _clear("L");
       });
       getLuoghi(globals.sesid, cliente["customer_id"]);
+      getProgetti(globals.sesid,cliente["customer_id"]);
       setState(() {
         loading = true;
       });
@@ -307,7 +345,7 @@ class _InsertActivity extends State<InsertActivity> {
   }
 
   String getRimborso() {
-    if (rimborso == true) {
+    if (rimborso) {
       return "Y";
     } else {
       return "N";
@@ -367,6 +405,7 @@ class _InsertActivity extends State<InsertActivity> {
             },
             body: ReportSaveToJson(rep))
         .then((report) {
+          print(report.body);
       DateTime focusedDay = DateTime.now();
 
       List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
@@ -409,6 +448,21 @@ class _InsertActivity extends State<InsertActivity> {
         setState(() {
           _luoghiOptions = _luoghiOptions;
         });
+        break;
+      case "P":
+      setState(() {
+          _progettiOptions.clear();
+        });
+        for (var element in progetti) {
+          _progettiOptions.add(element["project_code"] +
+              " - " +
+              element["customer_code"]);
+        }
+        setState(() {
+          _progettiOptions = _progettiOptions;
+          _activityOptions=[];
+        });
+        break;
     }
   }
 
@@ -659,6 +713,7 @@ class _InsertActivity extends State<InsertActivity> {
                       style: TextStyle(
                           fontSize: screenHeight / 100 * 2,
                           fontWeight: FontWeight.bold),
+                          
                     ),
                     const SizedBox(
                       height: 10,
@@ -1011,9 +1066,10 @@ class _InsertActivity extends State<InsertActivity> {
                           }, onSelected: (String selection) {
                             pController.text = selection;
                             var nomeC = selection.split(" - ");
-                            for (var c in progetti) {
+                            for (var c in progetti) {print(c);
                               if (c["project_code"] == nomeC[0] &&
                                   c["customer_code"] == nomeC[1]) {
+                                    
                                 progetto = c;
                               }
                             }
@@ -1042,6 +1098,8 @@ class _InsertActivity extends State<InsertActivity> {
                     Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
+                            //color:Colors.white,
+                            width: screenWidth,
                             margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
                             child: Row(
                               children: [
@@ -1049,8 +1107,10 @@ class _InsertActivity extends State<InsertActivity> {
                                   "INDIRIZZO: ",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
+                                
                                 Text(
                                   "${indirizzo} ",
+                                  style: TextStyle(overflow: TextOverflow.ellipsis),
                                 ),
                               ],
                             ))),
