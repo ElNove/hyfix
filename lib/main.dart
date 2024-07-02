@@ -465,8 +465,12 @@ class _AccessoState extends State<Accesso> {
                                             }
                                           else
                                             {
-                                              globals.username =
-                                                  userController.text,
+                                              setState(() {
+                                                 globals.username =
+                                                  userController.text;
+                                              }),
+                                             
+                                                
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
