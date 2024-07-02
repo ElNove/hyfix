@@ -47,6 +47,7 @@ class _InsertActivity extends State<InsertActivity> {
   var tempCli = "";
   var tempLoc = "";
   var tempPro = "";
+  var tempAct = "";
 
   void initState() {
     // verityFirstRun();
@@ -80,7 +81,9 @@ class _InsertActivity extends State<InsertActivity> {
     var deco = jsonDecode(response.body);
     for (var elem in deco["data"]) {
       if (elem["username"] == globals.username) {
-        utente = elem;
+        setState(() {
+          utente = elem;
+        });
       }
     }
   }
@@ -111,7 +114,7 @@ class _InsertActivity extends State<InsertActivity> {
 
   void getProgetti(sesid, id) async {
     progetti = [];
-    _progettiOptions = [];
+    _progettiOptions.clear();
     final params = {
       "filters[customer_id]": '$id',
     };
@@ -140,7 +143,7 @@ class _InsertActivity extends State<InsertActivity> {
 
   void getLuoghi(sesid, id) async {
     luoghi = [];
-    _luoghiOptions = [];
+    _luoghiOptions.clear();
     final params = {
       'filters[customer_id]': '${id}',
     };
@@ -160,11 +163,12 @@ class _InsertActivity extends State<InsertActivity> {
       },
     );
     var deco = jsonDecode(response.body);
-
     for (var elem in deco["data"]) {
       if (id != 0) {
         if (elem["default_location"] == "Y") {
-          luogo = elem;
+          setState(() {
+            luogo = elem;
+          });
         }
       }
       luoghi.add(elem);
@@ -176,6 +180,7 @@ class _InsertActivity extends State<InsertActivity> {
     }
     setState(() {
       _luoghiOptions = _luoghiOptions;
+      luoghi = luoghi;
     });
   }
 
@@ -235,6 +240,7 @@ class _InsertActivity extends State<InsertActivity> {
           setState(() {
             lController.text = loc;
             indirizzo = data["location_fulladdress"];
+            aController.clear();
             pController.clear();
           });
 
@@ -257,6 +263,7 @@ class _InsertActivity extends State<InsertActivity> {
             setState(() {
               cliente = d[0];
               cController.text = cli2;
+              aController.clear();
             });
           });
           break;
@@ -294,14 +301,17 @@ class _InsertActivity extends State<InsertActivity> {
               cController.text = cli2;
             });
           });
-          getActivity(globals.sesid);
           break;
       }
 
       setState(() {
-        _clientiOptions.clear();
-        luoghi.clear();
+        // _clientiOptions.clear();
+        // _activityOptions.clear();
+        // _progettiOptions.clear();
+        // luoghi.clear();
         _clear("L");
+        _clear("P");
+        _clear("A");
       });
       getLuoghi(globals.sesid, cliente["customer_id"]);
       getProgetti(globals.sesid, cliente["customer_id"]);
@@ -417,6 +427,7 @@ class _InsertActivity extends State<InsertActivity> {
   TextEditingController cController = TextEditingController();
   TextEditingController pController = TextEditingController();
   TextEditingController lController = TextEditingController();
+  TextEditingController aController = TextEditingController();
 
   void _clear(type) {
     switch (type) {
@@ -456,8 +467,20 @@ class _InsertActivity extends State<InsertActivity> {
         }
         setState(() {
           _progettiOptions = _progettiOptions;
-          _activityOptions = [];
         });
+        break;
+      case "A":
+        setState(() {
+          _activityOptions.clear();
+        });
+        for (var element in activity) {
+          _activityOptions
+              .add(element["task_type_code"] + " - " + element["unity_code"]);
+        }
+        setState(() {
+          _activityOptions = _activityOptions;
+        });
+
         break;
     }
   }
@@ -554,6 +577,7 @@ class _InsertActivity extends State<InsertActivity> {
                                 setState(() {
                                   tipo = "E";
                                   cate = "T";
+                                  rimborso = false;
                                 });
                               },
                               child: Text(
@@ -600,6 +624,7 @@ class _InsertActivity extends State<InsertActivity> {
                                     onPressed: () {
                                       setState(() {
                                         cate = "T";
+                                        rimborso = false;
                                       });
                                       getActivity(globals.sesid);
                                     },
@@ -964,6 +989,29 @@ class _InsertActivity extends State<InsertActivity> {
                     const SizedBox(
                       height: 10,
                     ),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                            //color:Colors.white,
+                            width: screenWidth,
+                            margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                            child: Row(
+                              children: [
+                                const Text(
+                                  "INDIRIZZO: ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    softWrap: true,
+                                    "${indirizzo} ",
+                                  ),
+                                )
+                              ],
+                            ))),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -998,7 +1046,7 @@ class _InsertActivity extends State<InsertActivity> {
                                 // Update suggestions based on user input
                                 // Implement the logic to filter and refresh suggestions
                                 if (text == "") {
-                                  _clear("P"); //TODO: Handle Project Clear
+                                  _clear("P");
                                   return;
                                 }
 
@@ -1071,9 +1119,12 @@ class _InsertActivity extends State<InsertActivity> {
                                 id = progetto["project_id"];
                               });
                             }
-                            getResolve(globals.sesid, id,
-                                progetto["project_code"], "P");
+                            if (cliente.isEmpty) {
+                              getResolve(globals.sesid, id,
+                                  progetto["project_code"], "P");
+                            }
 
+                            getActivity(globals.sesid);
                             FocusScope.of(context).unfocus();
 
                             setState(() {
@@ -1088,29 +1139,6 @@ class _InsertActivity extends State<InsertActivity> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            //color:Colors.white,
-                            width: screenWidth,
-                            margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                            child: Row(
-                              children: [
-                                const Text(
-                                  "INDIRIZZO: ",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    softWrap: true,
-                                    "${indirizzo} ",
-                                  ),
-                                )
-                              ],
-                            ))),
-                    const SizedBox(
-                      height: 10,
-                    ),
                     Row(
                       children: [
                         Expanded(
@@ -1120,44 +1148,112 @@ class _InsertActivity extends State<InsertActivity> {
                               return _activityOptions;
                             }
                             return _activityOptions.where((String option) {
-                              return option.contains(
+                              return option.toUpperCase().contains(
                                   textEditingValue.text.toUpperCase());
                             });
                           }, fieldViewBuilder: (BuildContext context,
-                              TextEditingController fieldTextEditingController,
-                              FocusNode fieldFocusNode,
+                              activityController,
+                              FocusNode activityFocus,
                               VoidCallback onFieldSubmitted) {
                             return TextFormField(
                               enabled: loading,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return "Inserisci l'attività";
+                                  return 'Inserisci il attività';
                                 }
                                 return null;
                               },
-                              controller: fieldTextEditingController,
-                              focusNode: fieldFocusNode,
+                              controller: aController,
+                              focusNode: activityFocus,
                               decoration: const InputDecoration(
                                   label: Text('Attività'),
                                   border: OutlineInputBorder()),
                               onChanged: (text) {
                                 // Update suggestions based on user input
                                 // Implement the logic to filter and refresh suggestions
-                                fieldTextEditingController.value =
-                                    TextEditingValue(text: text);
+                                if (text == "") {
+                                  _clear("A");
+                                  return;
+                                }
+
+                                setState(() {
+                                  _activityOptions.clear();
+                                });
+
+                                for (var element in activity) {
+                                  // c["task_type_code"] == nomeC[0] &&
+                                  // c["unity_code"] == nomeC[1]
+                                  if (element["task_type_code"]
+                                          .contains(text) ||
+                                      element["unity_code"].contains(text)) {
+                                    _activityOptions.add(
+                                        element["task_type_code"] +
+                                            " - " +
+                                            element["unity_code"]);
+                                  }
+                                }
+                                setState(() {
+                                  _activityOptions = _activityOptions;
+                                });
+                              },
+                              onEditingComplete: () {
+                                if (aController.text == "" && tempAct.isEmpty) {
+                                  aController.clear();
+                                  activityFocus.unfocus();
+                                  _clear("A");
+                                  return;
+                                }
+
+                                for (var element in activity) {
+                                  if (element.containsValue(aController.text)) {
+                                    aController.text = _activityOptions[
+                                        activity.indexOf(element)];
+                                    activityFocus.unfocus();
+                                  } else {
+                                    if (_activityOptions
+                                        .contains(aController.text)) {
+                                      activityFocus.unfocus();
+                                    } else {
+                                      if (tempAct.isNotEmpty) {
+                                        aController.text = tempAct;
+                                      } else {
+                                        aController.clear();
+                                      }
+                                      activityFocus.unfocus();
+                                      _clear("A");
+                                    }
+                                  }
+                                }
+                              },
+                              onTap: () => {
+                                activityController.clear(),
+                                setState(() {
+                                  tempAct = aController.text;
+                                }),
+                                aController.clear(),
+                                _clear("A")
                               },
                             );
                           }, onSelected: (String selection) {
-                            var nomeA = selection.split(" ");
-                            for (var a in activity) {
-                              if (a["task_type_code"] == nomeA[0]) {
-                                attivita = a;
+                            aController.text = selection;
+                            var nomeC = selection.split(" - ");
+                            for (var c in activity) {
+                              if (c["task_type_code"] == nomeC[0] &&
+                                  c["unity_code"] == nomeC[1]) {
+                                attivita = c;
                                 setState(() {
-                                  task_type = a["unity_code"];
+                                  task_type = c["unity_code"];
                                 });
                               }
                             }
-                            ;
+
+                            FocusScope.of(context).unfocus();
+
+                            setState(() {
+                              id = 0;
+                            });
+                            // getProgetti(globals.sesid, id);
+                            // getLuoghi(globals.sesid, id);
                           }),
                         ),
                         const SizedBox(
@@ -1207,7 +1303,7 @@ class _InsertActivity extends State<InsertActivity> {
                       height: 10,
                     ),
                     cate == "T"
-                        ? Text("")
+                        ? const Text("")
                         : Row(
                             children: [
                               Expanded(
@@ -1357,15 +1453,15 @@ class _RefundButtonState extends State<RefundButton> {
   Widget build(BuildContext context) {
     Color getColor(Set<WidgetState> states) {
       if (isChecked) {
-        return Theme.of(context).colorScheme.primary;
+        return Theme.of(context).colorScheme.primaryContainer;
       }
-      return Colors.white;
+      return Theme.of(context).colorScheme.onPrimaryContainer;
     }
 
     return CheckboxListTile(
       title: Text("Rimborso"),
       controlAffinity: ListTileControlAffinity.leading,
-      checkColor: Colors.white,
+      checkColor: Theme.of(context).colorScheme.onPrimaryContainer,
       fillColor: WidgetStateProperty.resolveWith(getColor),
       value: isChecked,
       onChanged: (bool? value) {
