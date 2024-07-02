@@ -58,12 +58,15 @@ class _EventsState extends State<Events> {
             padding: EdgeInsets.all(screenHeight / 100),
             margin: const EdgeInsets.fromLTRB(10, 3, 10, 3),
             height: screenHeight / 100 * 5,
+            
             decoration: i.reportType == "R"
                 ? BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.white,width: 1),
                     color: HexColor.fromHex(i.color),
                   )
                 : BoxDecoration(
+                  border: Border.all(color: Colors.white,width: 1),
                   borderRadius: BorderRadius.circular(8),
                     gradient: LinearGradient(
                       transform: GradientRotation(math.pi / 8),
