@@ -35,7 +35,7 @@ class _InsertActivity extends State<InsertActivity> {
   late Map<String, dynamic> cliente = {};
   late Map<String, dynamic> luogo = {};
   late Map<String, dynamic> progetto = {};
-  late Map<String, dynamic> attivita;
+  late Map<String, dynamic> attivita={};
   var id = 0;
   bool rimborso = false;
   String tipo = "";
@@ -216,6 +216,14 @@ class _InsertActivity extends State<InsertActivity> {
           'fieldsNames[]': ['project_id', 'project_code'],
         };
         break;
+      case "A":
+        params = {
+          'data[task_type_id]': '$id',
+          'data[task_type_code]': '$code',
+          'data[unity_code]': '${attivita["unity_code"]}',
+          'fieldsNames[]': ['task_type_id', 'task_type_code','unity_code'],
+        };
+        break;
     }
 
     final uri;
@@ -229,7 +237,6 @@ class _InsertActivity extends State<InsertActivity> {
     ).then((response) async {
       var deco = jsonDecode(response.body);
       var data = deco["data"];
-
       switch (tipo) {
         case "C":
           var loc = (data["location_code"] +
@@ -302,6 +309,25 @@ class _InsertActivity extends State<InsertActivity> {
             });
           });
           break;
+        case "A":
+           final params = {
+            'filters[customer_id]': '${cliente["customer_id"]}',
+          };
+          final uri;
+          uri = Uri.https(
+              'hyfix.test.nealis.it', '/reports/project/readactive', params);
+
+          await http.get(uri, headers: {
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.cookieHeader: globals.sesid,
+          }).then((resp) {
+            var deco2 = jsonDecode(resp.body);
+            var d = deco2["data"];
+            setState(() {
+              progetto = d[0];
+            });
+          });
+          break;
       }
 
       setState(() {
@@ -312,6 +338,7 @@ class _InsertActivity extends State<InsertActivity> {
         _clear("L");
         _clear("P");
         _clear("A");
+        
       });
       getLuoghi(globals.sesid, cliente["customer_id"]);
       getProgetti(globals.sesid, cliente["customer_id"]);
@@ -625,6 +652,12 @@ class _InsertActivity extends State<InsertActivity> {
                                       setState(() {
                                         cate = "T";
                                         rimborso = false;
+
+                                        _clear("P");
+                                        _clear("A");
+                                        pController.clear();
+                                        aController.clear();
+                                        task_type="";
                                       });
                                       getActivity(globals.sesid);
                                     },
@@ -666,6 +699,12 @@ class _InsertActivity extends State<InsertActivity> {
                                     onPressed: () {
                                       setState(() {
                                         cate = "C";
+
+                                        _clear("P");
+                                        _clear("A");
+                                        pController.clear();
+                                        aController.clear();
+                                        task_type="";
                                       });
                                       getActivity(globals.sesid);
                                     },
@@ -707,6 +746,12 @@ class _InsertActivity extends State<InsertActivity> {
                                     onPressed: () {
                                       setState(() {
                                         cate = "D";
+
+                                        _clear("P");
+                                        _clear("A");
+                                        pController.clear();
+                                        aController.clear();
+                                        task_type="";
                                       });
                                       getActivity(globals.sesid);
                                     },
@@ -1012,130 +1057,139 @@ class _InsertActivity extends State<InsertActivity> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Autocomplete<String>(optionsBuilder:
-                              (TextEditingValue textEditingValue) {
-                            if (textEditingValue.text == '') {
-                              return _progettiOptions;
-                            }
-                            return _progettiOptions.where((String option) {
-                              return option.toUpperCase().contains(
-                                  textEditingValue.text.toUpperCase());
-                            });
-                          }, fieldViewBuilder: (BuildContext context,
-                              progettoController,
-                              FocusNode progettoFocus,
-                              VoidCallback onFieldSubmitted) {
-                            return TextFormField(
-                              enabled: loading,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Inserisci il progetto';
-                                }
-                                return null;
-                              },
-                              controller: pController,
-                              focusNode: progettoFocus,
-                              decoration: const InputDecoration(
-                                  label: Text('Progetto'),
-                                  border: OutlineInputBorder()),
-                              onChanged: (text) {
-                                // Update suggestions based on user input
-                                // Implement the logic to filter and refresh suggestions
-                                if (text == "") {
-                                  _clear("P");
-                                  return;
-                                }
-
-                                setState(() {
-                                  _progettiOptions.clear();
-                                });
-
-                                for (var element in progetti) {
-                                  if (element["project_code"].contains(text) ||
-                                      element["customer_code"].contains(text)) {
-                                    _progettiOptions.add(
-                                        element["project_code"] +
-                                            " - " +
-                                            element["customer_code"]);
+                    cate == "T"
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Autocomplete<String>(optionsBuilder:
+                                    (TextEditingValue textEditingValue) {
+                                  if (textEditingValue.text == '') {
+                                    return _progettiOptions;
                                   }
-                                }
-                                setState(() {
-                                  _progettiOptions = _progettiOptions;
-                                });
-                              },
-                              onEditingComplete: () {
-                                if (pController.text == "" && tempPro.isEmpty) {
-                                  pController.clear();
-                                  progettoFocus.unfocus();
-                                  _clear("P");
-                                  return;
-                                }
-
-                                for (var element in progetti) {
-                                  if (element.containsValue(pController.text)) {
-                                    pController.text = _progettiOptions[
-                                        progetti.indexOf(element)];
-                                    progettoFocus.unfocus();
-                                  } else {
-                                    if (_progettiOptions
-                                        .contains(pController.text)) {
-                                      progettoFocus.unfocus();
-                                    } else {
-                                      if (tempPro.isNotEmpty) {
-                                        pController.text = tempPro;
-                                      } else {
-                                        pController.clear();
+                                  return _progettiOptions
+                                      .where((String option) {
+                                    return option.toUpperCase().contains(
+                                        textEditingValue.text.toUpperCase());
+                                  });
+                                }, fieldViewBuilder: (BuildContext context,
+                                    progettoController,
+                                    FocusNode progettoFocus,
+                                    VoidCallback onFieldSubmitted) {
+                                  return TextFormField(
+                                    enabled: loading,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Inserisci il progetto';
                                       }
-                                      progettoFocus.unfocus();
-                                      _clear("P");
+                                      return null;
+                                    },
+                                    controller: pController,
+                                    focusNode: progettoFocus,
+                                    decoration: const InputDecoration(
+                                        label: Text('Progetto'),
+                                        border: OutlineInputBorder()),
+                                    onChanged: (text) {
+                                      // Update suggestions based on user input
+                                      // Implement the logic to filter and refresh suggestions
+                                      if (text == "") {
+                                        _clear("P");
+                                        return;
+                                      }
+
+                                      setState(() {
+                                        _progettiOptions.clear();
+                                      });
+
+                                      for (var element in progetti) {
+                                        if (element["project_code"]
+                                                .contains(text) ||
+                                            element["customer_code"]
+                                                .contains(text)) {
+                                          _progettiOptions.add(
+                                              element["project_code"] +
+                                                  " - " +
+                                                  element["customer_code"]);
+                                        }
+                                      }
+                                      setState(() {
+                                        _progettiOptions = _progettiOptions;
+                                      });
+                                    },
+                                    onEditingComplete: () {
+                                      if (pController.text == "" &&
+                                          tempPro.isEmpty) {
+                                        pController.clear();
+                                        progettoFocus.unfocus();
+                                        _clear("P");
+                                        return;
+                                      }
+
+                                      for (var element in progetti) {
+                                        if (element
+                                            .containsValue(pController.text)) {
+                                          pController.text = _progettiOptions[
+                                              progetti.indexOf(element)];
+                                          progettoFocus.unfocus();
+                                        } else {
+                                          if (_progettiOptions
+                                              .contains(pController.text)) {
+                                            progettoFocus.unfocus();
+                                          } else {
+                                            if (tempPro.isNotEmpty) {
+                                              pController.text = tempPro;
+                                            } else {
+                                              pController.clear();
+                                            }
+                                            progettoFocus.unfocus();
+                                            _clear("P");
+                                          }
+                                        }
+                                      }
+                                    },
+                                    onTap: () => {
+                                      progettoController.clear(),
+                                      setState(() {
+                                        tempPro = pController.text;
+                                      }),
+                                      pController.clear(),
+                                      _clear("P")
+                                    },
+                                  );
+                                }, onSelected: (String selection) {
+                                  pController.text = selection;
+                                  var nomeC = selection.split(" - ");
+                                  for (var c in progetti) {
+                                    if (c["project_code"] == nomeC[0] &&
+                                        c["customer_code"] == nomeC[1]) {
+                                      progetto = c;
                                     }
                                   }
-                                }
-                              },
-                              onTap: () => {
-                                progettoController.clear(),
-                                setState(() {
-                                  tempPro = pController.text;
+                                  if (id == 0) {
+                                    setState(() {
+                                      id = progetto["project_id"];
+                                    });
+                                  }
+                                  if (cliente.isEmpty) {
+                                    getResolve(globals.sesid, id,
+                                        progetto["project_code"], "P");
+                                  }
+
+                                  getActivity(globals.sesid);
+                                  FocusScope.of(context).unfocus();
+
+                                  setState(() {
+                                    id = 0;
+                                  });
+                                  // getProgetti(globals.sesid, id);
+                                  // getLuoghi(globals.sesid, id);
                                 }),
-                                pController.clear(),
-                                _clear("P")
-                              },
-                            );
-                          }, onSelected: (String selection) {
-                            pController.text = selection;
-                            var nomeC = selection.split(" - ");
-                            for (var c in progetti) {
-                              if (c["project_code"] == nomeC[0] &&
-                                  c["customer_code"] == nomeC[1]) {
-                                progetto = c;
-                              }
-                            }
-                            if (id == 0) {
-                              setState(() {
-                                id = progetto["project_id"];
-                              });
-                            }
-                            if (cliente.isEmpty) {
-                              getResolve(globals.sesid, id,
-                                  progetto["project_code"], "P");
-                            }
-
-                            getActivity(globals.sesid);
-                            FocusScope.of(context).unfocus();
-
-                            setState(() {
-                              id = 0;
-                            });
-                            // getProgetti(globals.sesid, id);
-                            // getLuoghi(globals.sesid, id);
-                          }),
-                        ),
-                      ],
-                    ),
+                              ),
+                            ],
+                          )
+                        : const SizedBox(
+                            height: 0.01,
+                          ),
                     const SizedBox(
                       height: 10,
                     ),
@@ -1165,8 +1219,10 @@ class _InsertActivity extends State<InsertActivity> {
                               },
                               controller: aController,
                               focusNode: activityFocus,
-                              decoration: const InputDecoration(
-                                  label: Text('Attività'),
+                              decoration: InputDecoration(
+                                  label: Text(cate == "T"
+                                      ? 'Attività'
+                                      : 'Tipo attività'),
                                   border: OutlineInputBorder()),
                               onChanged: (text) {
                                 // Update suggestions based on user input
@@ -1231,7 +1287,11 @@ class _InsertActivity extends State<InsertActivity> {
                                   tempAct = aController.text;
                                 }),
                                 aController.clear(),
-                                _clear("A")
+                                _clear("A"),
+                                if(cliente.isNotEmpty){
+                                  getActivity(globals.sesid)
+                                }
+                                
                               },
                             );
                           }, onSelected: (String selection) {
@@ -1241,12 +1301,16 @@ class _InsertActivity extends State<InsertActivity> {
                               if (c["task_type_code"] == nomeC[0] &&
                                   c["unity_code"] == nomeC[1]) {
                                 attivita = c;
+                                print(attivita);
                                 setState(() {
                                   task_type = c["unity_code"];
                                 });
                               }
                             }
-
+                            if(cliente.isNotEmpty){
+                              getResolve(globals.sesid, attivita["task_type_id"], attivita["task_type_code"], "A");
+                            }
+                            
                             FocusScope.of(context).unfocus();
 
                             setState(() {
