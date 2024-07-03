@@ -35,7 +35,7 @@ class _InsertActivity extends State<InsertActivity> {
   late Map<String, dynamic> cliente = {};
   late Map<String, dynamic> luogo = {};
   late Map<String, dynamic> progetto = {};
-  late Map<String, dynamic> attivita={};
+  late Map<String, dynamic> attivita = {};
   var id = 0;
   bool rimborso = false;
   String tipo = "";
@@ -221,7 +221,7 @@ class _InsertActivity extends State<InsertActivity> {
           'data[task_type_id]': '$id',
           'data[task_type_code]': '$code',
           'data[unity_code]': '${attivita["unity_code"]}',
-          'fieldsNames[]': ['task_type_id', 'task_type_code','unity_code'],
+          'fieldsNames[]': ['task_type_id', 'task_type_code', 'unity_code'],
         };
         break;
     }
@@ -310,7 +310,7 @@ class _InsertActivity extends State<InsertActivity> {
           });
           break;
         case "A":
-           final params = {
+          final params = {
             'filters[customer_id]': '${cliente["customer_id"]}',
           };
           final uri;
@@ -338,7 +338,6 @@ class _InsertActivity extends State<InsertActivity> {
         _clear("L");
         _clear("P");
         _clear("A");
-        
       });
       getLuoghi(globals.sesid, cliente["customer_id"]);
       getProgetti(globals.sesid, cliente["customer_id"]);
@@ -657,7 +656,8 @@ class _InsertActivity extends State<InsertActivity> {
                                         _clear("A");
                                         pController.clear();
                                         aController.clear();
-                                        task_type="";
+                                        FocusScope.of(context).unfocus();
+                                        task_type = "";
                                       });
                                       getActivity(globals.sesid);
                                     },
@@ -704,7 +704,8 @@ class _InsertActivity extends State<InsertActivity> {
                                         _clear("A");
                                         pController.clear();
                                         aController.clear();
-                                        task_type="";
+                                        FocusScope.of(context).unfocus();
+                                        task_type = "";
                                       });
                                       getActivity(globals.sesid);
                                     },
@@ -751,7 +752,8 @@ class _InsertActivity extends State<InsertActivity> {
                                         _clear("A");
                                         pController.clear();
                                         aController.clear();
-                                        task_type="";
+                                        FocusScope.of(context).unfocus();
+                                        task_type = "";
                                       });
                                       getActivity(globals.sesid);
                                     },
@@ -787,117 +789,159 @@ class _InsertActivity extends State<InsertActivity> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
-                          child: Autocomplete<String>(optionsBuilder:
-                              (TextEditingValue textEditingValue) {
-                            if (textEditingValue.text == '') {
-                              return _clientiOptions;
-                            }
-                            return _clientiOptions.where((String option) {
-                              return option.toUpperCase().contains(
-                                  textEditingValue.text.toUpperCase());
-                            });
-                          }, fieldViewBuilder: (BuildContext context,
-                              customerController,
-                              FocusNode clientFocus,
-                              VoidCallback onFieldSubmitted) {
-                            return TextFormField(
-                              enabled: loading,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Inserisci il cliente';
+                          child: LayoutBuilder(
+                            builder: (context, constraints) =>
+                                RawAutocomplete<String>(
+                              optionsViewBuilder:
+                                  (context, onSelected, options) => Align(
+                                alignment: Alignment.topLeft,
+                                child: Material(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        bottom: Radius.circular(4.0)),
+                                  ),
+                                  child: Container(
+                                    height: 60.0 * options.length,
+                                    width: constraints
+                                        .biggest.width, // <-- Right here !
+                                    child: ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      itemCount: options.length,
+                                      shrinkWrap: false,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final String option =
+                                            options.elementAt(index);
+                                        return InkWell(
+                                          onTap: () => onSelected(option),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: Text(option),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              optionsBuilder:
+                                  (TextEditingValue textEditingValue) {
+                                if (textEditingValue.text == '') {
+                                  return _clientiOptions;
                                 }
-                                return null;
+                                return _clientiOptions.where((String option) {
+                                  return option.toUpperCase().contains(
+                                      textEditingValue.text.toUpperCase());
+                                });
                               },
-                              controller: cController,
-                              focusNode: clientFocus,
-                              decoration: const InputDecoration(
-                                  label: Text('Cliente'),
-                                  border: OutlineInputBorder()),
-                              onChanged: (text) {
-                                // Update suggestions based on user input
-                                // Implement the logic to filter and refresh suggestions
-                                if (text == "") {
-                                  _clear("C");
-                                  return;
-                                }
+                              fieldViewBuilder: (BuildContext context,
+                                  customerController,
+                                  FocusNode clientFocus,
+                                  VoidCallback onFieldSubmitted) {
+                                return TextFormField(
+                                  enabled: loading,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Inserisci il cliente';
+                                    }
+                                    return null;
+                                  },
+                                  controller: cController,
+                                  focusNode: clientFocus,
+                                  decoration: const InputDecoration(
+                                      label: Text('Cliente'),
+                                      border: OutlineInputBorder()),
+                                  onChanged: (text) {
+                                    // Update suggestions based on user input
+                                    // Implement the logic to filter and refresh suggestions
+                                    if (text == "") {
+                                      _clear("C");
+                                      return;
+                                    }
 
-                                setState(() {
-                                  _clientiOptions.clear();
-                                });
-                                clienti.forEach((element) {
-                                  if (element["companyname"].contains(text) ||
-                                      element["code"].contains(text)) {
-                                    _clientiOptions.add(element["code"] +
-                                        " - " +
-                                        element["companyname"]);
-                                  }
-                                });
-                                setState(() {
-                                  _clientiOptions = _clientiOptions;
-                                });
-                              },
-                              onEditingComplete: () {
-                                if (cController.text == "" && tempCli.isEmpty) {
-                                  cController.clear();
-                                  clientFocus.unfocus();
-                                  _clear("C");
-                                  return;
-                                }
-                                for (var element in clienti) {
-                                  if (element.containsValue(cController.text)) {
-                                    cController.text = _clientiOptions[
-                                        clienti.indexOf(element)];
-                                    clientFocus.unfocus();
-                                  } else {
-                                    if (_clientiOptions
-                                        .contains(cController.text)) {
-                                      clientFocus.unfocus();
-                                    } else {
-                                      if (tempCli.isNotEmpty) {
-                                        cController.text = tempCli;
-                                      } else {
-                                        cController.clear();
+                                    setState(() {
+                                      _clientiOptions.clear();
+                                    });
+                                    clienti.forEach((element) {
+                                      if (element["companyname"]
+                                              .contains(text) ||
+                                          element["code"].contains(text)) {
+                                        _clientiOptions.add(element["code"] +
+                                            " - " +
+                                            element["companyname"]);
                                       }
+                                    });
+                                    setState(() {
+                                      _clientiOptions = _clientiOptions;
+                                    });
+                                  },
+                                  onEditingComplete: () {
+                                    if (cController.text == "" &&
+                                        tempCli.isEmpty) {
+                                      cController.clear();
                                       clientFocus.unfocus();
                                       _clear("C");
+                                      return;
                                     }
+                                    for (var element in clienti) {
+                                      if (element
+                                          .containsValue(cController.text)) {
+                                        cController.text = _clientiOptions[
+                                            clienti.indexOf(element)];
+                                        clientFocus.unfocus();
+                                      } else {
+                                        if (_clientiOptions
+                                            .contains(cController.text)) {
+                                          clientFocus.unfocus();
+                                        } else {
+                                          if (tempCli.isNotEmpty) {
+                                            cController.text = tempCli;
+                                          } else {
+                                            cController.clear();
+                                          }
+                                          clientFocus.unfocus();
+                                          _clear("C");
+                                        }
+                                      }
+                                    }
+                                  },
+                                  onTap: () => {
+                                    customerController.clear(),
+                                    setState(() {
+                                      tempCli = cController.text;
+                                    }),
+                                    cController.clear(),
+                                    _clear("C")
+                                  },
+                                );
+                              },
+                              onSelected: (String selection) {
+                                cController.text = selection;
+                                var nomeC = selection.split(" ");
+                                for (var c in clienti) {
+                                  if (c["companyname"] == nomeC[2]) {
+                                    setState(() {
+                                      cliente = c;
+                                    });
                                   }
                                 }
-                              },
-                              onTap: () => {
-                                customerController.clear(),
-                                setState(() {
-                                  tempCli = cController.text;
-                                }),
-                                cController.clear(),
-                                _clear("C")
-                              },
-                            );
-                          }, onSelected: (String selection) {
-                            cController.text = selection;
-                            var nomeC = selection.split(" ");
-                            for (var c in clienti) {
-                              if (c["companyname"] == nomeC[2]) {
-                                setState(() {
-                                  cliente = c;
-                                });
-                              }
-                            }
-                            if (id == 0) {
-                              setState(() {
-                                id = cliente["customer_id"];
-                              });
-                            }
-                            getResolve(globals.sesid, id,
-                                cliente["customer_code"], "C");
-                            FocusScope.of(context).unfocus();
+                                if (id == 0) {
+                                  setState(() {
+                                    id = cliente["customer_id"];
+                                  });
+                                }
+                                getResolve(globals.sesid, id,
+                                    cliente["customer_code"], "C");
+                                FocusScope.of(context).unfocus();
 
-                            setState(() {
-                              id = 0;
-                            });
-                            // getProgetti(globals.sesid, id);
-                            // getLuoghi(globals.sesid, id);
-                          }),
+                                setState(() {
+                                  id = 0;
+                                });
+                                // getProgetti(globals.sesid, id);
+                                // getLuoghi(globals.sesid, id);
+                              },
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -907,128 +951,173 @@ class _InsertActivity extends State<InsertActivity> {
                     Row(
                       children: [
                         Expanded(
-                          child: Autocomplete<String>(optionsBuilder:
-                              (TextEditingValue textEditingValue) {
-                            if (textEditingValue.text == '') {
-                              return _luoghiOptions;
-                            }
-                            return _luoghiOptions.where((String option) {
-                              return option.toUpperCase().contains(
-                                  textEditingValue.text.toUpperCase());
-                            });
-                          }, fieldViewBuilder: (BuildContext context,
-                              locationController,
-                              FocusNode locationFocus,
-                              VoidCallback onFieldSubmitted) {
-                            return TextFormField(
-                              enabled: loading,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Inserisci il luogo';
-                                }
-                                return null;
-                              },
-                              controller: lController,
-                              focusNode: locationFocus,
-                              decoration: const InputDecoration(
-                                  label: Text('Luogo'),
-                                  border: OutlineInputBorder()),
-                              onChanged: (text) {
-                                // Update suggestions based on user input
-                                // Implement the logic to filter and refresh suggestions
-                                if (text == "") {
-                                  _clear("L");
-                                  return;
-                                }
-
-                                setState(() {
-                                  _luoghiOptions.clear();
-                                });
-
-                                for (var element in luoghi) {
-                                  if (element["location_code"].contains(text) ||
-                                      element["customer_code"].contains(text) ||
-                                      element["location_city"].contains(text)) {
-                                    _luoghiOptions.add(
-                                        element["location_code"] +
-                                            " - " +
-                                            element["customer_code"] +
-                                            " - " +
-                                            element["location_city"]);
+                          child: LayoutBuilder(
+                            builder: (context, constraints) => RawAutocomplete<
+                                    String>(
+                                optionsViewBuilder: (context, onSelected,
+                                        options) =>
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Material(
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                              bottom: Radius.circular(4.0)),
+                                        ),
+                                        child: Container(
+                                          height: 60.0 * options.length,
+                                          width: constraints.biggest
+                                              .width, // <-- Right here !
+                                          child: ListView.builder(
+                                            padding: EdgeInsets.zero,
+                                            itemCount: options.length,
+                                            shrinkWrap: false,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              final String option =
+                                                  options.elementAt(index);
+                                              return InkWell(
+                                                onTap: () => onSelected(option),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
+                                                  child: Text(option),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                optionsBuilder:
+                                    (TextEditingValue textEditingValue) {
+                                  if (textEditingValue.text == '') {
+                                    return _luoghiOptions;
                                   }
-                                }
-                                setState(() {
-                                  _luoghiOptions = _luoghiOptions;
-                                });
-                              },
-                              onEditingComplete: () {
-                                if (lController.text == "" && tempLoc.isEmpty) {
-                                  lController.clear();
-                                  locationFocus.unfocus();
-                                  _clear("L");
-                                  return;
-                                }
-
-                                for (var element in luoghi) {
-                                  if (element.containsValue(lController.text)) {
-                                    lController.text =
-                                        _luoghiOptions[luoghi.indexOf(element)];
-                                    locationFocus.unfocus();
-                                  } else {
-                                    if (_luoghiOptions
-                                        .contains(lController.text)) {
-                                      locationFocus.unfocus();
-                                    } else {
-                                      if (tempLoc.isNotEmpty) {
-                                        lController.text = tempLoc;
-                                      } else {
-                                        lController.clear();
+                                  return _luoghiOptions.where((String option) {
+                                    return option.toUpperCase().contains(
+                                        textEditingValue.text.toUpperCase());
+                                  });
+                                },
+                                fieldViewBuilder: (BuildContext context,
+                                    locationController,
+                                    FocusNode locationFocus,
+                                    VoidCallback onFieldSubmitted) {
+                                  return TextFormField(
+                                    enabled: loading,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Inserisci il luogo';
                                       }
-                                      locationFocus.unfocus();
-                                      _clear("L");
+                                      return null;
+                                    },
+                                    controller: lController,
+                                    focusNode: locationFocus,
+                                    decoration: const InputDecoration(
+                                        label: Text('Luogo'),
+                                        border: OutlineInputBorder()),
+                                    onChanged: (text) {
+                                      // Update suggestions based on user input
+                                      // Implement the logic to filter and refresh suggestions
+                                      if (text == "") {
+                                        _clear("L");
+                                        return;
+                                      }
+
+                                      setState(() {
+                                        _luoghiOptions.clear();
+                                      });
+
+                                      for (var element in luoghi) {
+                                        if (element["location_code"]
+                                                .contains(text) ||
+                                            element["customer_code"]
+                                                .contains(text) ||
+                                            element["location_city"]
+                                                .contains(text)) {
+                                          _luoghiOptions.add(
+                                              element["location_code"] +
+                                                  " - " +
+                                                  element["customer_code"] +
+                                                  " - " +
+                                                  element["location_city"]);
+                                        }
+                                      }
+                                      setState(() {
+                                        _luoghiOptions = _luoghiOptions;
+                                      });
+                                    },
+                                    onEditingComplete: () {
+                                      if (lController.text == "" &&
+                                          tempLoc.isEmpty) {
+                                        lController.clear();
+                                        locationFocus.unfocus();
+                                        _clear("L");
+                                        return;
+                                      }
+
+                                      for (var element in luoghi) {
+                                        if (element
+                                            .containsValue(lController.text)) {
+                                          lController.text = _luoghiOptions[
+                                              luoghi.indexOf(element)];
+                                          locationFocus.unfocus();
+                                        } else {
+                                          if (_luoghiOptions
+                                              .contains(lController.text)) {
+                                            locationFocus.unfocus();
+                                          } else {
+                                            if (tempLoc.isNotEmpty) {
+                                              lController.text = tempLoc;
+                                            } else {
+                                              lController.clear();
+                                            }
+                                            locationFocus.unfocus();
+                                            _clear("L");
+                                          }
+                                        }
+                                      }
+                                    },
+                                    onTap: () => {
+                                      locationController.clear(),
+                                      setState(() {
+                                        tempLoc = lController.text;
+                                      }),
+                                      lController.clear(),
+                                      _clear("L")
+                                    },
+                                  );
+                                },
+                                onSelected: (String selection) {
+                                  lController.text = selection;
+                                  var nomeC = selection.split(" - ");
+                                  for (var c in luoghi) {
+                                    if (c["location_code"] == nomeC[0] &&
+                                        c["customer_code"] == nomeC[1] &&
+                                        c["location_city"] == nomeC[2]) {
+                                      luogo = c;
                                     }
                                   }
-                                }
-                              },
-                              onTap: () => {
-                                locationController.clear(),
-                                setState(() {
-                                  tempLoc = lController.text;
+                                  if (id == 0) {
+                                    setState(() {
+                                      id = luogo["customer_location_id"];
+                                    });
+                                  }
+                                  if (cliente.isEmpty) {
+                                    getResolve(globals.sesid, id,
+                                        luogo["customer_code"], "L");
+                                  }
+                                  indirizzo = luogo["location_fulladdress"];
+
+                                  FocusScope.of(context).unfocus();
+
+                                  setState(() {
+                                    id = 0;
+                                  });
+                                  // getProgetti(globals.sesid, id);
+                                  // getLuoghi(globals.sesid, id);
                                 }),
-                                lController.clear(),
-                                _clear("L")
-                              },
-                            );
-                          }, onSelected: (String selection) {
-                            lController.text = selection;
-                            var nomeC = selection.split(" - ");
-                            for (var c in luoghi) {
-                              if (c["location_code"] == nomeC[0] &&
-                                  c["customer_code"] == nomeC[1] &&
-                                  c["location_city"] == nomeC[2]) {
-                                luogo = c;
-                              }
-                            }
-                            if (id == 0) {
-                              setState(() {
-                                id = luogo["customer_location_id"];
-                              });
-                            }
-                            if (cliente.isEmpty) {
-                              getResolve(globals.sesid, id,
-                                  luogo["customer_code"], "L");
-                            }
-                            indirizzo = luogo["location_fulladdress"];
-
-                            FocusScope.of(context).unfocus();
-
-                            setState(() {
-                              id = 0;
-                            });
-                            // getProgetti(globals.sesid, id);
-                            // getLuoghi(globals.sesid, id);
-                          }),
-                        ),
+                          ),
+                        )
                       ],
                     ),
                     const SizedBox(
@@ -1062,129 +1151,195 @@ class _InsertActivity extends State<InsertActivity> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Expanded(
-                                child: Autocomplete<String>(optionsBuilder:
-                                    (TextEditingValue textEditingValue) {
-                                  if (textEditingValue.text == '') {
-                                    return _progettiOptions;
-                                  }
-                                  return _progettiOptions
-                                      .where((String option) {
-                                    return option.toUpperCase().contains(
-                                        textEditingValue.text.toUpperCase());
-                                  });
-                                }, fieldViewBuilder: (BuildContext context,
-                                    progettoController,
-                                    FocusNode progettoFocus,
-                                    VoidCallback onFieldSubmitted) {
-                                  return TextFormField(
-                                    enabled: loading,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Inserisci il progetto';
-                                      }
-                                      return null;
-                                    },
-                                    controller: pController,
-                                    focusNode: progettoFocus,
-                                    decoration: const InputDecoration(
-                                        label: Text('Progetto'),
-                                        border: OutlineInputBorder()),
-                                    onChanged: (text) {
-                                      // Update suggestions based on user input
-                                      // Implement the logic to filter and refresh suggestions
-                                      if (text == "") {
-                                        _clear("P");
-                                        return;
-                                      }
-
-                                      setState(() {
-                                        _progettiOptions.clear();
-                                      });
-
-                                      for (var element in progetti) {
-                                        if (element["project_code"]
-                                                .contains(text) ||
-                                            element["customer_code"]
-                                                .contains(text)) {
-                                          _progettiOptions.add(
-                                              element["project_code"] +
-                                                  " - " +
-                                                  element["customer_code"]);
-                                        }
-                                      }
-                                      setState(() {
-                                        _progettiOptions = _progettiOptions;
-                                      });
-                                    },
-                                    onEditingComplete: () {
-                                      if (pController.text == "" &&
-                                          tempPro.isEmpty) {
-                                        pController.clear();
-                                        progettoFocus.unfocus();
-                                        _clear("P");
-                                        return;
-                                      }
-
-                                      for (var element in progetti) {
-                                        if (element
-                                            .containsValue(pController.text)) {
-                                          pController.text = _progettiOptions[
-                                              progetti.indexOf(element)];
-                                          progettoFocus.unfocus();
-                                        } else {
-                                          if (_progettiOptions
-                                              .contains(pController.text)) {
-                                            progettoFocus.unfocus();
-                                          } else {
-                                            if (tempPro.isNotEmpty) {
-                                              pController.text = tempPro;
-                                            } else {
-                                              pController.clear();
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) =>
+                                      RawAutocomplete<String>(
+                                          optionsViewBuilder: (context,
+                                                  onSelected, options) =>
+                                              Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Material(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                            bottom:
+                                                                Radius.circular(
+                                                                    4.0)),
+                                                  ),
+                                                  child: Container(
+                                                    height:
+                                                        60.0 * options.length,
+                                                    width: constraints.biggest
+                                                        .width, // <-- Right here !
+                                                    child: ListView.builder(
+                                                      padding: EdgeInsets.zero,
+                                                      itemCount: options.length,
+                                                      shrinkWrap: false,
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int index) {
+                                                        final String option =
+                                                            options.elementAt(
+                                                                index);
+                                                        return InkWell(
+                                                          onTap: () =>
+                                                              onSelected(
+                                                                  option),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(16.0),
+                                                            child: Text(option),
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                          optionsBuilder: (TextEditingValue
+                                              textEditingValue) {
+                                            if (textEditingValue.text == '') {
+                                              return _progettiOptions;
                                             }
-                                            progettoFocus.unfocus();
-                                            _clear("P");
-                                          }
-                                        }
-                                      }
-                                    },
-                                    onTap: () => {
-                                      progettoController.clear(),
-                                      setState(() {
-                                        tempPro = pController.text;
-                                      }),
-                                      pController.clear(),
-                                      _clear("P")
-                                    },
-                                  );
-                                }, onSelected: (String selection) {
-                                  pController.text = selection;
-                                  var nomeC = selection.split(" - ");
-                                  for (var c in progetti) {
-                                    if (c["project_code"] == nomeC[0] &&
-                                        c["customer_code"] == nomeC[1]) {
-                                      progetto = c;
-                                    }
-                                  }
-                                  if (id == 0) {
-                                    setState(() {
-                                      id = progetto["project_id"];
-                                    });
-                                  }
-                                  if (cliente.isEmpty) {
-                                    getResolve(globals.sesid, id,
-                                        progetto["project_code"], "P");
-                                  }
+                                            return _progettiOptions
+                                                .where((String option) {
+                                              return option
+                                                  .toUpperCase()
+                                                  .contains(textEditingValue
+                                                      .text
+                                                      .toUpperCase());
+                                            });
+                                          },
+                                          fieldViewBuilder: (BuildContext
+                                                  context,
+                                              progettoController,
+                                              FocusNode progettoFocus,
+                                              VoidCallback onFieldSubmitted) {
+                                            return TextFormField(
+                                              enabled: loading,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Inserisci il progetto';
+                                                }
+                                                return null;
+                                              },
+                                              controller: pController,
+                                              focusNode: progettoFocus,
+                                              decoration: const InputDecoration(
+                                                  label: Text('Progetto'),
+                                                  border: OutlineInputBorder()),
+                                              onChanged: (text) {
+                                                // Update suggestions based on user input
+                                                // Implement the logic to filter and refresh suggestions
+                                                if (text == "") {
+                                                  _clear("P");
+                                                  return;
+                                                }
 
-                                  getActivity(globals.sesid);
-                                  FocusScope.of(context).unfocus();
+                                                setState(() {
+                                                  _progettiOptions.clear();
+                                                });
 
-                                  setState(() {
-                                    id = 0;
-                                  });
-                                  // getProgetti(globals.sesid, id);
-                                  // getLuoghi(globals.sesid, id);
-                                }),
-                              ),
+                                                for (var element in progetti) {
+                                                  if (element["project_code"]
+                                                          .contains(text) ||
+                                                      element["customer_code"]
+                                                          .contains(text)) {
+                                                    _progettiOptions.add(element[
+                                                            "project_code"] +
+                                                        " - " +
+                                                        element[
+                                                            "customer_code"]);
+                                                  }
+                                                }
+                                                setState(() {
+                                                  _progettiOptions =
+                                                      _progettiOptions;
+                                                });
+                                              },
+                                              onEditingComplete: () {
+                                                if (pController.text == "" &&
+                                                    tempPro.isEmpty) {
+                                                  pController.clear();
+                                                  progettoFocus.unfocus();
+                                                  _clear("P");
+                                                  return;
+                                                }
+
+                                                for (var element in progetti) {
+                                                  if (element.containsValue(
+                                                      pController.text)) {
+                                                    pController.text =
+                                                        _progettiOptions[
+                                                            progetti.indexOf(
+                                                                element)];
+                                                    progettoFocus.unfocus();
+                                                  } else {
+                                                    if (_progettiOptions
+                                                        .contains(
+                                                            pController.text)) {
+                                                      progettoFocus.unfocus();
+                                                    } else {
+                                                      if (tempPro.isNotEmpty) {
+                                                        pController.text =
+                                                            tempPro;
+                                                      } else {
+                                                        pController.clear();
+                                                      }
+                                                      progettoFocus.unfocus();
+                                                      _clear("P");
+                                                    }
+                                                  }
+                                                }
+                                              },
+                                              onTap: () => {
+                                                progettoController.clear(),
+                                                setState(() {
+                                                  tempPro = pController.text;
+                                                }),
+                                                pController.clear(),
+                                                _clear("P")
+                                              },
+                                            );
+                                          },
+                                          onSelected: (String selection) {
+                                            pController.text = selection;
+                                            var nomeC = selection.split(" - ");
+                                            for (var c in progetti) {
+                                              if (c["project_code"] ==
+                                                      nomeC[0] &&
+                                                  c["customer_code"] ==
+                                                      nomeC[1]) {
+                                                progetto = c;
+                                              }
+                                            }
+                                            if (id == 0) {
+                                              setState(() {
+                                                id = progetto["project_id"];
+                                              });
+                                            }
+                                            if (cliente.isEmpty) {
+                                              getResolve(
+                                                  globals.sesid,
+                                                  id,
+                                                  progetto["project_code"],
+                                                  "P");
+                                            }
+
+                                            getActivity(globals.sesid);
+                                            FocusScope.of(context).unfocus();
+
+                                            setState(() {
+                                              id = 0;
+                                            });
+                                            // getProgetti(globals.sesid, id);
+                                            // getLuoghi(globals.sesid, id);
+                                          }),
+                                ),
+                              )
                             ],
                           )
                         : const SizedBox(
@@ -1196,129 +1351,173 @@ class _InsertActivity extends State<InsertActivity> {
                     Row(
                       children: [
                         Expanded(
-                          child: Autocomplete<String>(optionsBuilder:
-                              (TextEditingValue textEditingValue) {
-                            if (textEditingValue.text == '') {
-                              return _activityOptions;
-                            }
-                            return _activityOptions.where((String option) {
-                              return option.toUpperCase().contains(
-                                  textEditingValue.text.toUpperCase());
-                            });
-                          }, fieldViewBuilder: (BuildContext context,
-                              activityController,
-                              FocusNode activityFocus,
-                              VoidCallback onFieldSubmitted) {
-                            return TextFormField(
-                              enabled: loading,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Inserisci il attività';
+                            child: LayoutBuilder(
+                          builder: (context, constraints) => RawAutocomplete<
+                                  String>(
+                              optionsViewBuilder: (context, onSelected,
+                                      options) =>
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Material(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            bottom: Radius.circular(4.0)),
+                                      ),
+                                      child: Container(
+                                        height: 60.0 * options.length,
+                                        width: constraints
+                                            .biggest.width, // <-- Right here !
+                                        child: ListView.builder(
+                                          padding: EdgeInsets.zero,
+                                          itemCount: options.length,
+                                          shrinkWrap: false,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            final String option =
+                                                options.elementAt(index);
+                                            return InkWell(
+                                              onTap: () => onSelected(option),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(16.0),
+                                                child: Text(option),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              optionsBuilder:
+                                  (TextEditingValue textEditingValue) {
+                                if (textEditingValue.text == '') {
+                                  return _activityOptions;
                                 }
-                                return null;
-                              },
-                              controller: aController,
-                              focusNode: activityFocus,
-                              decoration: InputDecoration(
-                                  label: Text(cate == "T"
-                                      ? 'Attività'
-                                      : 'Tipo attività'),
-                                  border: OutlineInputBorder()),
-                              onChanged: (text) {
-                                // Update suggestions based on user input
-                                // Implement the logic to filter and refresh suggestions
-                                if (text == "") {
-                                  _clear("A");
-                                  return;
-                                }
-
-                                setState(() {
-                                  _activityOptions.clear();
-                                });
-
-                                for (var element in activity) {
-                                  // c["task_type_code"] == nomeC[0] &&
-                                  // c["unity_code"] == nomeC[1]
-                                  if (element["task_type_code"]
-                                          .contains(text) ||
-                                      element["unity_code"].contains(text)) {
-                                    _activityOptions.add(
-                                        element["task_type_code"] +
-                                            " - " +
-                                            element["unity_code"]);
-                                  }
-                                }
-                                setState(() {
-                                  _activityOptions = _activityOptions;
+                                return _activityOptions.where((String option) {
+                                  return option.toUpperCase().contains(
+                                      textEditingValue.text.toUpperCase());
                                 });
                               },
-                              onEditingComplete: () {
-                                if (aController.text == "" && tempAct.isEmpty) {
-                                  aController.clear();
-                                  activityFocus.unfocus();
-                                  _clear("A");
-                                  return;
-                                }
+                              fieldViewBuilder: (BuildContext context,
+                                  activityController,
+                                  FocusNode activityFocus,
+                                  VoidCallback onFieldSubmitted) {
+                                return TextFormField(
+                                  enabled: loading,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Inserisci il attività';
+                                    }
+                                    return null;
+                                  },
+                                  controller: aController,
+                                  focusNode: activityFocus,
+                                  decoration: InputDecoration(
+                                      label: Text(cate == "T"
+                                          ? 'Attività'
+                                          : 'Tipo attività'),
+                                      border: OutlineInputBorder()),
+                                  onChanged: (text) {
+                                    // Update suggestions based on user input
+                                    // Implement the logic to filter and refresh suggestions
+                                    if (text == "") {
+                                      _clear("A");
+                                      return;
+                                    }
 
-                                for (var element in activity) {
-                                  if (element.containsValue(aController.text)) {
-                                    aController.text = _activityOptions[
-                                        activity.indexOf(element)];
-                                    activityFocus.unfocus();
-                                  } else {
-                                    if (_activityOptions
-                                        .contains(aController.text)) {
-                                      activityFocus.unfocus();
-                                    } else {
-                                      if (tempAct.isNotEmpty) {
-                                        aController.text = tempAct;
-                                      } else {
-                                        aController.clear();
+                                    setState(() {
+                                      _activityOptions.clear();
+                                    });
+
+                                    for (var element in activity) {
+                                      // c["task_type_code"] == nomeC[0] &&
+                                      // c["unity_code"] == nomeC[1]
+                                      if (element["task_type_code"]
+                                              .contains(text) ||
+                                          element["unity_code"]
+                                              .contains(text)) {
+                                        _activityOptions.add(
+                                            element["task_type_code"] +
+                                                " - " +
+                                                element["unity_code"]);
                                       }
+                                    }
+                                    setState(() {
+                                      _activityOptions = _activityOptions;
+                                    });
+                                  },
+                                  onEditingComplete: () {
+                                    if (aController.text == "" &&
+                                        tempAct.isEmpty) {
+                                      aController.clear();
                                       activityFocus.unfocus();
                                       _clear("A");
+                                      return;
                                     }
+
+                                    for (var element in activity) {
+                                      if (element
+                                          .containsValue(aController.text)) {
+                                        aController.text = _activityOptions[
+                                            activity.indexOf(element)];
+                                        activityFocus.unfocus();
+                                      } else {
+                                        if (_activityOptions
+                                            .contains(aController.text)) {
+                                          activityFocus.unfocus();
+                                        } else {
+                                          if (tempAct.isNotEmpty) {
+                                            aController.text = tempAct;
+                                          } else {
+                                            aController.clear();
+                                          }
+                                          activityFocus.unfocus();
+                                          _clear("A");
+                                        }
+                                      }
+                                    }
+                                  },
+                                  onTap: () => {
+                                    activityController.clear(),
+                                    setState(() {
+                                      tempAct = aController.text;
+                                    }),
+                                    aController.clear(),
+                                    _clear("A"),
+                                    if (cliente.isNotEmpty)
+                                      {getActivity(globals.sesid)}
+                                  },
+                                );
+                              },
+                              onSelected: (String selection) {
+                                aController.text = selection;
+                                var nomeC = selection.split(" - ");
+                                for (var c in activity) {
+                                  if (c["task_type_code"] == nomeC[0] &&
+                                      c["unity_code"] == nomeC[1]) {
+                                    attivita = c;
+                                    setState(() {
+                                      task_type = c["unity_code"];
+                                    });
                                   }
                                 }
-                              },
-                              onTap: () => {
-                                activityController.clear(),
-                                setState(() {
-                                  tempAct = aController.text;
-                                }),
-                                aController.clear(),
-                                _clear("A"),
-                                if(cliente.isNotEmpty){
-                                  getActivity(globals.sesid)
+                                if (cliente.isNotEmpty) {
+                                  getResolve(
+                                      globals.sesid,
+                                      attivita["task_type_id"],
+                                      attivita["task_type_code"],
+                                      "A");
                                 }
-                                
-                              },
-                            );
-                          }, onSelected: (String selection) {
-                            aController.text = selection;
-                            var nomeC = selection.split(" - ");
-                            for (var c in activity) {
-                              if (c["task_type_code"] == nomeC[0] &&
-                                  c["unity_code"] == nomeC[1]) {
-                                attivita = c;
-                                setState(() {
-                                  task_type = c["unity_code"];
-                                });
-                              }
-                            }
-                            if(cliente.isNotEmpty){
-                              getResolve(globals.sesid, attivita["task_type_id"], attivita["task_type_code"], "A");
-                            }
-                            
-                            FocusScope.of(context).unfocus();
 
-                            setState(() {
-                              id = 0;
-                            });
-                            // getProgetti(globals.sesid, id);
-                            // getLuoghi(globals.sesid, id);
-                          }),
-                        ),
+                                FocusScope.of(context).unfocus();
+
+                                setState(() {
+                                  id = 0;
+                                });
+                                // getProgetti(globals.sesid, id);
+                                // getLuoghi(globals.sesid, id);
+                              }),
+                        )),
                         const SizedBox(
                           width: 10,
                         ),
