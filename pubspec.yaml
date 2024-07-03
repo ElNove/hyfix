@@ -79,6 +79,7 @@ flutter:
 
     - assets/theme.json
     - assets/favicon.ico
+    - assets/image.ico
     - assets/full_logo.svg
     - assets/image.svg
   #   - images/a_dot_ham.jpeg
@@ -112,14 +113,13 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  remove_alpha_ios: true
+  # remove_alpha_ios: true
   image_path: "assets/favicon.ico"
+  image_path_ios: "assets/image.ico"
+  remove_alpha_ios: true
   web:
-    generate: true
-    image_path: "assets/favicon.ico"
+    generate: false
   windows:
-    generate: true
-    image_path: "assets/favicon.ico"
+    generate: false
   macos:
-    generate: true
-    image_path: "assets/favicon.ico"
+    generate: false
