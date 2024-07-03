@@ -1301,7 +1301,6 @@ class _InsertActivity extends State<InsertActivity> {
                               if (c["task_type_code"] == nomeC[0] &&
                                   c["unity_code"] == nomeC[1]) {
                                 attivita = c;
-                                print(attivita);
                                 setState(() {
                                   task_type = c["unity_code"];
                                 });
