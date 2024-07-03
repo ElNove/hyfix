@@ -312,6 +312,7 @@ class _InsertActivity extends State<InsertActivity> {
         case "A":
           final params = {
             'filters[customer_id]': '${cliente["customer_id"]}',
+            'filters[default_project]': 'Y'
           };
           final uri;
           uri = Uri.https(
@@ -348,8 +349,10 @@ class _InsertActivity extends State<InsertActivity> {
   }
 
   void getActivity(sesid) async {
-    activity = [];
-    _activityOptions = [];
+    setState(() {
+      activity.clear();
+      _activityOptions.clear();
+    });
     final params = {
       'filters[unity_type]': cate,
     };
@@ -368,6 +371,9 @@ class _InsertActivity extends State<InsertActivity> {
       activity.add(elem);
       _activityOptions.add(elem["task_type_code"] + " - " + elem["unity_code"]);
     }
+    setState(() {
+      _activityOptions = _activityOptions;
+    });
   }
 
   void assegnaTask(int o) {
@@ -1313,7 +1319,9 @@ class _InsertActivity extends State<InsertActivity> {
                                                       nomeC[0] &&
                                                   c["customer_code"] ==
                                                       nomeC[1]) {
-                                                progetto = c;
+                                                setState(() {
+                                                  progetto = c;
+                                                });
                                               }
                                             }
                                             if (id == 0) {
@@ -1390,9 +1398,13 @@ class _InsertActivity extends State<InsertActivity> {
                                   ),
                               optionsBuilder:
                                   (TextEditingValue textEditingValue) {
+                                // if (progetto.isEmpty) {
+                                //   return [];
+                                // }
                                 if (textEditingValue.text == '') {
                                   return _activityOptions;
                                 }
+
                                 return _activityOptions.where((String option) {
                                   return option.toUpperCase().contains(
                                       textEditingValue.text.toUpperCase());
@@ -1430,8 +1442,6 @@ class _InsertActivity extends State<InsertActivity> {
                                     });
 
                                     for (var element in activity) {
-                                      // c["task_type_code"] == nomeC[0] &&
-                                      // c["unity_code"] == nomeC[1]
                                       if (element["task_type_code"]
                                               .contains(text) ||
                                           element["unity_code"]
@@ -1484,24 +1494,26 @@ class _InsertActivity extends State<InsertActivity> {
                                     }),
                                     aController.clear(),
                                     _clear("A"),
-                                    if (cliente.isNotEmpty)
-                                      {getActivity(globals.sesid)}
+                                    // if (cliente.isNotEmpty)
+                                    //   {getActivity(globals.sesid)}
                                   },
                                 );
                               },
                               onSelected: (String selection) {
+                                // getActivity(globals.sesid);
                                 aController.text = selection;
                                 var nomeC = selection.split(" - ");
                                 for (var c in activity) {
                                   if (c["task_type_code"] == nomeC[0] &&
                                       c["unity_code"] == nomeC[1]) {
-                                    attivita = c;
                                     setState(() {
+                                      attivita = c;
                                       task_type = c["unity_code"];
                                     });
                                   }
                                 }
                                 if (cliente.isNotEmpty) {
+                                  // if (progetto.isEmpty) {
                                   getResolve(
                                       globals.sesid,
                                       attivita["task_type_id"],
@@ -1510,10 +1522,6 @@ class _InsertActivity extends State<InsertActivity> {
                                 }
 
                                 FocusScope.of(context).unfocus();
-
-                                setState(() {
-                                  id = 0;
-                                });
                                 // getProgetti(globals.sesid, id);
                                 // getLuoghi(globals.sesid, id);
                               }),
