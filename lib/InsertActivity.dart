@@ -662,6 +662,7 @@ class _InsertActivity extends State<InsertActivity> {
                                         _clear("A");
                                         pController.clear();
                                         aController.clear();
+                                        progetto.clear();
                                         FocusScope.of(context).unfocus();
                                         task_type = "";
                                       });
@@ -707,6 +708,7 @@ class _InsertActivity extends State<InsertActivity> {
                                         cate = "C";
 
                                         _clear("P");
+                                        progetto.clear();
                                         _clear("A");
                                         pController.clear();
                                         aController.clear();
@@ -754,6 +756,7 @@ class _InsertActivity extends State<InsertActivity> {
                                       setState(() {
                                         cate = "D";
 
+                                        progetto.clear();
                                         _clear("P");
                                         _clear("A");
                                         pController.clear();
@@ -1336,12 +1339,15 @@ class _InsertActivity extends State<InsertActivity> {
                                                   progetto["project_code"],
                                                   "P");
                                             }
-
+                                            setState(() {
+                                              loading=false;
+                                            });
                                             getActivity(globals.sesid);
                                             FocusScope.of(context).unfocus();
 
                                             setState(() {
                                               id = 0;
+                                              loading=true;
                                             });
                                             // getProgetti(globals.sesid, id);
                                             // getLuoghi(globals.sesid, id);
@@ -1398,9 +1404,9 @@ class _InsertActivity extends State<InsertActivity> {
                                   ),
                               optionsBuilder:
                                   (TextEditingValue textEditingValue) {
-                                // if (progetto.isEmpty) {
-                                //   return [];
-                                // }
+                                if (progetto.isEmpty&&cate=="T") {
+                                  return [];
+                                }
                                 if (textEditingValue.text == '') {
                                   return _activityOptions;
                                 }
@@ -1512,7 +1518,7 @@ class _InsertActivity extends State<InsertActivity> {
                                     });
                                   }
                                 }
-                                if (cliente.isNotEmpty) {
+                                if (progetto.isEmpty) {
                                   // if (progetto.isEmpty) {
                                   getResolve(
                                       globals.sesid,
