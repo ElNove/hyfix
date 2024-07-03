@@ -76,10 +76,9 @@ flutter:
  
   # To add assets to your application, add an assets section, like this:
   assets:
-
     - assets/theme.json
-    - assets/favicon.ico
-    - assets/image.ico
+    - assets/favicon.png
+    - assets/image.png
     - assets/full_logo.svg
     - assets/image.svg
   #   - images/a_dot_ham.jpeg
@@ -114,8 +113,8 @@ flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   # remove_alpha_ios: true
-  image_path: "assets/favicon.ico"
-  image_path_ios: "assets/image.ico"
+  image_path: "assets/favicon.png"
+  image_path_ios: "assets/image.png"
   
   remove_alpha_ios: true
   web:
