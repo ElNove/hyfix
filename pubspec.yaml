@@ -116,6 +116,7 @@ flutter_launcher_icons:
   # remove_alpha_ios: true
   image_path: "assets/favicon.ico"
   image_path_ios: "assets/image.ico"
+  
   remove_alpha_ios: true
   web:
     generate: false
