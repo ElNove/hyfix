@@ -68,7 +68,7 @@ class _EventsState extends State<Events> {
                       transform: GradientRotation(math.pi / 8),
                       begin: Alignment(-1.0, -4.0),
                       end: Alignment(1.0, 4.0),
-                      colors: List.generate(66, (index) {
+                      colors: List.generate(26, (index) {
                         if (index % 4 == 0 || index % 4 == 1) {
                           return HexColor.fromHex(i.color);
                         } else {
@@ -78,7 +78,7 @@ class _EventsState extends State<Events> {
                       stops: () {
                         final List<double> stops = [];
                         double i = 0;
-                        double increment = 0.05;
+                        double increment = 0.08;
                         while (i < 1) {
                           stops.add(i);
                           i += increment;
@@ -86,7 +86,6 @@ class _EventsState extends State<Events> {
                             stops.add(1);
                             break;
                           }
-                          increment = increment == 0.05 ? 0.01 : 0.05;
                           stops.add(i);
                         }
                         return stops;
