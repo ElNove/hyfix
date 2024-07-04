@@ -140,6 +140,7 @@ class Accesso extends StatefulWidget {
 }
 
 class _AccessoState extends State<Accesso> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   static DateTime parse(String date) {
     final int SP = 32;
     const List wkdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -343,12 +344,18 @@ class _AccessoState extends State<Accesso> {
 
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool visible = false;
+  FocusNode passwordFocus = FocusNode();
+
+  void setVisible() {
+    setState(() {
+      visible = !visible;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = context.watch<ThemeProvider>();
-
-    final _formKey = GlobalKey<FormState>();
 
     return Scaffold(
       appBar: AppBar(
@@ -369,144 +376,153 @@ class _AccessoState extends State<Accesso> {
         ],
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 100),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // const Image(width: 100, image: AssetImage('lib/img/logo.png')),
-                SvgPicture.asset(
-                  'assets/full_logo.svg',
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context).colorScheme.primaryContainer,
-                      BlendMode.srcIn),
-                  width: 250,
-                ),
-                const SizedBox(height: 50),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 300,
-                        child: TextFormField(
-                          controller: userController,
-                          decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                  onPressed: () => {userController.clear()},
-                                  icon: Icon(Icons.clear)),
-                              border: OutlineInputBorder(),
-                              labelText: "Nome Utente"),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Inserisci il tuo nome utente';
-                            }
-                            return null;
-                          },
-                        ),
+        heightFactor: 1.5,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // const Image(
+              //     width: 350, image: AssetImage('assets/full_logo.png')),
+              SvgPicture.asset(
+                'assets/full_logo.svg',
+                colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.primaryContainer,
+                    BlendMode.srcIn),
+                width: 280,
+              ),
+              const SizedBox(height: 50),
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      child: TextFormField(
+                        controller: userController,
+                        decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                                onPressed: () => {userController.clear()},
+                                icon: Icon(Icons.clear)),
+                            border: OutlineInputBorder(),
+                            labelText: "Nome Utente"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Inserisci il tuo nome utente';
+                          }
+                          return null;
+                        },
                       ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        width: 300,
-                        child: TextFormField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                  onPressed: () => {passwordController.clear()},
-                                  icon: Icon(Icons.clear)),
-                              border: OutlineInputBorder(),
-                              labelText: "Password"),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Inserisci la tua password';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      PopScope(
-                        canPop: false,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primaryContainer,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(8), // <-- Radius
-                            ),
-                          ),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              fetchUtente(userController.text,
-                                      passwordController.text)
-                                  .then((res) => {
-                                        if (res.contains('"success":false'))
-                                          {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: const Text(
-                                                    'Username e/o Password Errati'),
-                                                action: SnackBarAction(
-                                                  label: 'Chiudi',
-                                                  onPressed: () {
-                                                    // Code to execute.
-                                                  },
-                                                ),
-                                                behavior:
-                                                    SnackBarBehavior.floating,
-                                              ),
-                                            ),
-                                          }
-                                        else
-                                          {
-                                            setState(() {
-                                              globals.username =
-                                                  userController.text;
-                                            }),
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      MyApp()),
-                                            ),
-                                          }
-                                      });
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text('Riempi tutti i campi'),
-                                  action: SnackBarAction(
-                                    label: 'Chiudi',
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: 300,
+                      child: TextFormField(
+                        controller: passwordController,
+                        obscureText: !visible,
+                        focusNode: passwordFocus,
+                        decoration: InputDecoration(
+                            suffixIcon: Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween, // added line
+                              mainAxisSize: MainAxisSize.min, // added line
+                              children: <Widget>[
+                                IconButton(
+                                    icon: Icon(visible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off),
                                     onPressed: () {
-                                      // Code to execute.
-                                    },
-                                  ),
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            }
-                          },
-                          child: Text(
-                            'Accedi',
-                            style: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onPrimaryContainer),
+                                      setVisible();
+                                    }),
+                                IconButton(
+                                    onPressed: () =>
+                                        {passwordController.clear()},
+                                    icon: Icon(Icons.clear)),
+                              ],
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Password"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Inserisci la tua password';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    PopScope(
+                      canPop: false,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(8), // <-- Radius
                           ),
                         ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            fetchUtente(userController.text,
+                                    passwordController.text)
+                                .then((res) => {
+                                      if (res.contains('"success":false'))
+                                        {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              duration: Duration(seconds: 3),
+                                              content: Text(
+                                                'Username e/o Password Errati',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                            ),
+                                          ),
+                                        }
+                                      else
+                                        {
+                                          setState(() {
+                                            globals.username =
+                                                userController.text;
+                                          }),
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => MyApp()),
+                                          ),
+                                        }
+                                    });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 3),
+                                content: Text(
+                                  'Riempi tutti i campi',
+                                  textAlign: TextAlign.center,
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          }
+                        },
+                        child: Text(
+                          'Accedi',
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer),
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

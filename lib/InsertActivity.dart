@@ -114,6 +114,7 @@ class _InsertActivity extends State<InsertActivity> {
 
   void getProgetti(sesid, id) async {
     setState(() {
+      _clear("P");
       progetti.clear();
     });
     _progettiOptions.clear();
@@ -121,7 +122,7 @@ class _InsertActivity extends State<InsertActivity> {
       "filters[customer_id]": '$id',
     };
     final uri;
-    if (id == 0) {
+    if (cliente.isEmpty) {
       uri = Uri.https('hyfix.test.nealis.it', '/reports/project/readactive');
     } else {
       uri = Uri.https(
@@ -142,11 +143,13 @@ class _InsertActivity extends State<InsertActivity> {
       _progettiOptions.add(elem["code"] + " - " + elem["customer_code"]);
     }
     setState(() {
+      progetti = progetti;
       _progettiOptions = _progettiOptions;
     });
   }
 
   void getLuoghi(sesid, id) async {
+    _clear("L");
     luoghi = [];
     _luoghiOptions.clear();
     final params = {
@@ -340,20 +343,21 @@ class _InsertActivity extends State<InsertActivity> {
           });
           break;
       }
-
-      setState(() {
-        _clear("L");
-        _clear("P");
-      });
-      getLuoghi(globals.sesid, cliente["customer_id"]);
-      getProgetti(globals.sesid, cliente["customer_id"]);
-      setState(() {
-        loading = true;
+      await getDatas().then((val) {
+        setState(() {
+          loading = true;
+        });
       });
     });
   }
 
+  Future<void> getDatas() async {
+    getLuoghi(globals.sesid, cliente["customer_id"]);
+    getProgetti(globals.sesid, cliente["customer_id"]);
+  }
+
   void getActivity(sesid) async {
+    _clear("A");
     setState(() {
       loading = false;
       activity.clear();
@@ -666,18 +670,19 @@ class _InsertActivity extends State<InsertActivity> {
                                       setState(() {
                                         cate = "T";
                                         rimborso = false;
+                                        activity.clear();
 
                                         _clear("P");
                                         // _clear("A");
                                         pController.clear();
                                         aController.clear();
-                                        progetto.clear();
+                                        progetto = {};
                                         FocusScope.of(context).unfocus();
                                         task_type = "";
                                       });
                                       getProgetti(globals.sesid,
                                           cliente["customer_id"]);
-                                      getActivity(globals.sesid);
+                                      // getActivity(globals.sesid);
                                     },
                                     child: Text(
                                       'Tempo',
@@ -821,10 +826,25 @@ class _InsertActivity extends State<InsertActivity> {
                                         bottom: Radius.circular(4.0)),
                                   ),
                                   child: Container(
-                                    height: 60.0 * options.length,
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                      left: BorderSide(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface),
+                                      bottom: BorderSide(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface),
+                                      right: BorderSide(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface),
+                                    )),
+                                    height: 65.0 * options.length,
                                     width: constraints
                                         .biggest.width, // <-- Right here !
-                                    child: ListView.builder(
+                                    child: ListView.separated(
                                       padding: EdgeInsets.zero,
                                       itemCount: options.length,
                                       shrinkWrap: false,
@@ -839,6 +859,9 @@ class _InsertActivity extends State<InsertActivity> {
                                             child: Text(option),
                                           ),
                                         );
+                                      },
+                                      separatorBuilder: (context, index) {
+                                        return const Divider();
                                       },
                                     ),
                                   ),
@@ -984,10 +1007,25 @@ class _InsertActivity extends State<InsertActivity> {
                                               bottom: Radius.circular(4.0)),
                                         ),
                                         child: Container(
-                                          height: 60.0 * options.length,
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                            left: BorderSide(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface),
+                                            bottom: BorderSide(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface),
+                                            right: BorderSide(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface),
+                                          )),
+                                          height: 65.0 * options.length,
                                           width: constraints.biggest
                                               .width, // <-- Right here !
-                                          child: ListView.builder(
+                                          child: ListView.separated(
                                             padding: EdgeInsets.zero,
                                             itemCount: options.length,
                                             shrinkWrap: false,
@@ -1003,6 +1041,9 @@ class _InsertActivity extends State<InsertActivity> {
                                                   child: Text(option),
                                                 ),
                                               );
+                                            },
+                                            separatorBuilder: (context, index) {
+                                              return const Divider();
                                             },
                                           ),
                                         ),
@@ -1188,11 +1229,31 @@ class _InsertActivity extends State<InsertActivity> {
                                                                     4.0)),
                                                   ),
                                                   child: Container(
+                                                    decoration: BoxDecoration(
+                                                        border: Border(
+                                                      left: BorderSide(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onSurface),
+                                                      bottom: BorderSide(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onSurface),
+                                                      right: BorderSide(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onSurface),
+                                                    )),
                                                     height:
-                                                        60.0 * options.length,
+                                                        65.0 * options.length,
                                                     width: constraints.biggest
                                                         .width, // <-- Right here !
-                                                    child: ListView.builder(
+                                                    child: ListView.separated(
+                                                      physics:
+                                                          const AlwaysScrollableScrollPhysics(),
                                                       padding: EdgeInsets.zero,
                                                       itemCount: options.length,
                                                       shrinkWrap: false,
@@ -1213,6 +1274,10 @@ class _InsertActivity extends State<InsertActivity> {
                                                             child: Text(option),
                                                           ),
                                                         );
+                                                      },
+                                                      separatorBuilder:
+                                                          (context, index) {
+                                                        return const Divider();
                                                       },
                                                     ),
                                                   ),
@@ -1328,6 +1393,9 @@ class _InsertActivity extends State<InsertActivity> {
                                           onSelected: (String selection) {
                                             pController.text = selection;
                                             var nomeC = selection.split(" - ");
+                                            setState(() {
+                                              progetto = {};
+                                            });
                                             for (var c in progetti) {
                                               if (c["project_code"]
                                                           .toString()
@@ -1361,6 +1429,11 @@ class _InsertActivity extends State<InsertActivity> {
                                                   progetto["project_code"],
                                                   "P");
                                             } else {
+                                              pController.text = (progetto[
+                                                      "project_code"] +
+                                                  " - " +
+                                                  progetto["customer_code"]);
+
                                               _clear("A");
                                               getActivity(globals.sesid);
                                             }
@@ -1398,10 +1471,25 @@ class _InsertActivity extends State<InsertActivity> {
                                             bottom: Radius.circular(4.0)),
                                       ),
                                       child: Container(
-                                        height: 60.0 * options.length,
+                                        decoration: BoxDecoration(
+                                            border: Border(
+                                          left: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                          bottom: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                          right: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                        )),
+                                        height: 65.0 * options.length,
                                         width: constraints
                                             .biggest.width, // <-- Right here !
-                                        child: ListView.builder(
+                                        child: ListView.separated(
                                           padding: EdgeInsets.zero,
                                           itemCount: options.length,
                                           shrinkWrap: false,
@@ -1418,15 +1506,19 @@ class _InsertActivity extends State<InsertActivity> {
                                               ),
                                             );
                                           },
+                                          separatorBuilder: (context, index) {
+                                            return const Divider();
+                                          },
                                         ),
                                       ),
                                     ),
                                   ),
                               optionsBuilder:
                                   (TextEditingValue textEditingValue) {
-                                if (progetto.isEmpty && cate == "T") {
-                                  return [];
-                                }
+                                // if (progetto.isEmpty && cate == "T") {
+                                //   return [];
+                                // }
+
                                 if (textEditingValue.text == '') {
                                   return _activityOptions;
                                 }
@@ -1514,6 +1606,12 @@ class _InsertActivity extends State<InsertActivity> {
                                     }
                                   },
                                   onTap: () => {
+                                    if (progetto.isEmpty)
+                                      {
+                                        _activityOptions.clear(),
+                                      },
+
+                                    _clear("A"),
                                     activityController.clear(),
                                     setState(() {
                                       tempAct = aController.text;

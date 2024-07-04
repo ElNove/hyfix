@@ -53,7 +53,13 @@ class _TableBasicState extends State<TableBasic> {
           borderRadius: BorderRadius.circular(8.0),
         ),
       ),
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekdayStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        weekendStyle: TextStyle(color: Theme.of(context).colorScheme.error),
+      ),
+      daysOfWeekHeight: 20,
       calendarStyle: CalendarStyle(
+        weekendTextStyle: TextStyle(color: Theme.of(context).colorScheme.error),
         markerDecoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary,
           shape: BoxShape.circle,
