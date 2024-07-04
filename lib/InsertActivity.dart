@@ -113,7 +113,7 @@ class _InsertActivity extends State<InsertActivity> {
   }
 
   void getProgetti(sesid, id) async {
-    progetti = [];
+    progetti.clear();
     _progettiOptions.clear();
     final params = {
       "filters[customer_id]": '$id',
@@ -139,6 +139,10 @@ class _InsertActivity extends State<InsertActivity> {
       progetti.add(elem);
       _progettiOptions.add(elem["code"] + " - " + elem["customer_code"]);
     }
+    setState(() {
+      progetti = progetti;
+      _progettiOptions = _progettiOptions;
+    });
   }
 
   void getLuoghi(sesid, id) async {
@@ -350,6 +354,7 @@ class _InsertActivity extends State<InsertActivity> {
 
   void getActivity(sesid) async {
     setState(() {
+      loading = false;
       activity.clear();
       _activityOptions.clear();
     });
@@ -373,6 +378,7 @@ class _InsertActivity extends State<InsertActivity> {
     }
     setState(() {
       _activityOptions = _activityOptions;
+      loading = true;
     });
   }
 
@@ -494,8 +500,8 @@ class _InsertActivity extends State<InsertActivity> {
           _progettiOptions.clear();
         });
         for (var element in progetti) {
-          _progettiOptions
-              .add(element["project_code"] + " - " + element["customer_code"]);
+          _progettiOptions.add(
+              "${element["project_code"]}  -  ${element["customer_code"]}");
         }
         setState(() {
           _progettiOptions = _progettiOptions;
@@ -1318,15 +1324,24 @@ class _InsertActivity extends State<InsertActivity> {
                                             pController.text = selection;
                                             var nomeC = selection.split(" - ");
                                             for (var c in progetti) {
-                                              if (c["project_code"] ==
-                                                      nomeC[0] &&
-                                                  c["customer_code"] ==
-                                                      nomeC[1]) {
+                                              if (c["project_code"]
+                                                          .toString()
+                                                          .trim() ==
+                                                      nomeC[0]
+                                                          .toString()
+                                                          .trim() &&
+                                                  c["customer_code"]
+                                                          .toString()
+                                                          .trim() ==
+                                                      nomeC[1]
+                                                          .toString()
+                                                          .trim()) {
                                                 setState(() {
                                                   progetto = c;
                                                 });
                                               }
                                             }
+
                                             if (id == 0) {
                                               setState(() {
                                                 id = progetto["project_id"];
@@ -1339,15 +1354,11 @@ class _InsertActivity extends State<InsertActivity> {
                                                   progetto["project_code"],
                                                   "P");
                                             }
-                                            setState(() {
-                                              loading=false;
-                                            });
                                             getActivity(globals.sesid);
                                             FocusScope.of(context).unfocus();
 
                                             setState(() {
                                               id = 0;
-                                              loading=true;
                                             });
                                             // getProgetti(globals.sesid, id);
                                             // getLuoghi(globals.sesid, id);
@@ -1404,7 +1415,7 @@ class _InsertActivity extends State<InsertActivity> {
                                   ),
                               optionsBuilder:
                                   (TextEditingValue textEditingValue) {
-                                if (progetto.isEmpty&&cate=="T") {
+                                if (progetto.isEmpty && cate == "T") {
                                   return [];
                                 }
                                 if (textEditingValue.text == '') {
@@ -1519,7 +1530,6 @@ class _InsertActivity extends State<InsertActivity> {
                                   }
                                 }
                                 if (progetto.isEmpty) {
-                                  // if (progetto.isEmpty) {
                                   getResolve(
                                       globals.sesid,
                                       attivita["task_type_id"],
