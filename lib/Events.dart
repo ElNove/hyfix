@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hyfix/DialogEvent.dart';
 import 'package:hyfix/models/Reports.dart';
+
 import 'dart:math' as math;
 
 extension HexColor on Color {
@@ -31,6 +32,7 @@ class Events extends StatefulWidget {
 }
 
 class _EventsState extends State<Events> {
+
   @override
   Widget build(BuildContext context) {
     return Container(

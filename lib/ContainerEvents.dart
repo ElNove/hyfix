@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hyfix/Events.dart';
 import 'package:hyfix/models/Reports.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/src/intl/date_format.dart';
 
 class ContainerEvents extends StatefulWidget {
   const ContainerEvents(
@@ -31,30 +33,72 @@ class _ContainerEvents extends State<ContainerEvents> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting('it_IT', null);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 15),
       child: AnimatedVisibility(
-        enter: fadeIn(),
-        exit: fadeOut(),
-        child: Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).colorScheme.tertiaryContainer,
-            ),
-            child: controllo()
-                ? Events(data: widget.selezionato, lista: widget.lista)
-                : widget.loading
-                    ? Center(
-                        child: LoadingAnimationWidget.staggeredDotsWave(
-                          color:
-                              Theme.of(context).colorScheme.onTertiaryContainer,
-                          size: 80,
+          enter: fadeIn(),
+          exit: fadeOut(),
+          child: Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.tertiaryContainer,
+              ),
+              child: controllo()
+                  ? Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
                         ),
-                      )
-                    : null),
-      ),
+                        Text(
+                            "${DateFormat.EEEE('it_IT').format(widget.selezionato)}, ${DateFormat.MMMd('it_IT').format(widget.selezionato)}, ${DateFormat.y('it_IT').format(widget.selezionato)}",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: MediaQuery.of(context).size.height /
+                                    100 *
+                                    2.5,
+                                fontWeight: FontWeight.bold)),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Events(data: widget.selezionato, lista: widget.lista),
+                      ],
+                    )
+                  : widget.loading
+                      ? Center(
+                          child: LoadingAnimationWidget.staggeredDotsWave(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onTertiaryContainer,
+                            size: 80,
+                          ),
+                        )
+                      : Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                                "${DateFormat.EEEE('it_IT').format(widget.selezionato)}, ${DateFormat.MMMd('it_IT').format(widget.selezionato)}, ${DateFormat.y('it_IT').format(widget.selezionato)}",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height /
+                                            100 *
+                                            2.5,
+                                    fontWeight: FontWeight.bold)),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        ))),
     );
   }
 }
