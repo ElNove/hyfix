@@ -118,6 +118,7 @@ class MainApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp(
+            restorationScopeId: 'app',
             debugShowCheckedModeBanner: false,
             title: 'HyFix',
             theme: ThemeData.from(colorScheme: lightColorScheme),
@@ -535,6 +536,9 @@ class _AccessoState extends State<Accesso> {
         ),
       );
       if (authenticated) {
+        setState(() {
+          globals.username = userController.text;
+        });
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => MyApp()),

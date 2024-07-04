@@ -214,10 +214,11 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-Route _createRoute(fetchRep,_data) {
+Route _createRoute(fetchRep, _data) {
   return PageRouteBuilder(
-    transitionDuration: Duration(milliseconds:750 ),
-    pageBuilder: (context, animation, secondaryAnimation) =>InsertActivity(fetchCalendar: fetchRep, dataAttuale: _data),
+    transitionDuration: Duration(milliseconds: 750),
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        InsertActivity(fetchCalendar: fetchRep, dataAttuale: _data),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;

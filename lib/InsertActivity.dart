@@ -113,7 +113,9 @@ class _InsertActivity extends State<InsertActivity> {
   }
 
   void getProgetti(sesid, id) async {
-    progetti.clear();
+    setState(() {
+      progetti.clear();
+    });
     _progettiOptions.clear();
     final params = {
       "filters[customer_id]": '$id',
@@ -140,7 +142,6 @@ class _InsertActivity extends State<InsertActivity> {
       _progettiOptions.add(elem["code"] + " - " + elem["customer_code"]);
     }
     setState(() {
-      progetti = progetti;
       _progettiOptions = _progettiOptions;
     });
   }
@@ -253,6 +254,8 @@ class _InsertActivity extends State<InsertActivity> {
             indirizzo = data["location_fulladdress"];
             aController.clear();
             pController.clear();
+            progetto.clear();
+            _activityOptions.clear();
           });
 
           break;
@@ -311,6 +314,9 @@ class _InsertActivity extends State<InsertActivity> {
               cliente = d[0];
               cController.text = cli2;
             });
+
+            _clear("A");
+            getActivity(globals.sesid);
           });
           break;
         case "A":
@@ -336,13 +342,8 @@ class _InsertActivity extends State<InsertActivity> {
       }
 
       setState(() {
-        // _clientiOptions.clear();
-        // _activityOptions.clear();
-        // _progettiOptions.clear();
-        // luoghi.clear();
         _clear("L");
         _clear("P");
-        _clear("A");
       });
       getLuoghi(globals.sesid, cliente["customer_id"]);
       getProgetti(globals.sesid, cliente["customer_id"]);
@@ -364,21 +365,23 @@ class _InsertActivity extends State<InsertActivity> {
     final uri =
         Uri.https('hyfix.test.nealis.it', '/reports/tasktype/read', params);
 
-    final response = await http.get(
+    await http.get(
       uri,
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
         HttpHeaders.cookieHeader: sesid,
       },
-    );
-    var deco = jsonDecode(response.body);
-    for (var elem in deco["data"]) {
-      activity.add(elem);
-      _activityOptions.add(elem["task_type_code"] + " - " + elem["unity_code"]);
-    }
-    setState(() {
-      _activityOptions = _activityOptions;
-      loading = true;
+    ).then((response) {
+      var deco = jsonDecode(response.body);
+      for (var elem in deco["data"]) {
+        activity.add(elem);
+        _activityOptions
+            .add(elem["task_type_code"] + " - " + elem["unity_code"]);
+      }
+      setState(() {
+        _activityOptions = _activityOptions;
+        loading = true;
+      });
     });
   }
 
@@ -665,13 +668,15 @@ class _InsertActivity extends State<InsertActivity> {
                                         rimborso = false;
 
                                         _clear("P");
-                                        _clear("A");
+                                        // _clear("A");
                                         pController.clear();
                                         aController.clear();
                                         progetto.clear();
                                         FocusScope.of(context).unfocus();
                                         task_type = "";
                                       });
+                                      getProgetti(globals.sesid,
+                                          cliente["customer_id"]);
                                       getActivity(globals.sesid);
                                     },
                                     child: Text(
@@ -715,7 +720,7 @@ class _InsertActivity extends State<InsertActivity> {
 
                                         _clear("P");
                                         progetto.clear();
-                                        _clear("A");
+                                        // _clear("A");
                                         pController.clear();
                                         aController.clear();
                                         FocusScope.of(context).unfocus();
@@ -764,7 +769,7 @@ class _InsertActivity extends State<InsertActivity> {
 
                                         progetto.clear();
                                         _clear("P");
-                                        _clear("A");
+                                        // _clear("A");
                                         pController.clear();
                                         aController.clear();
                                         FocusScope.of(context).unfocus();
@@ -1316,7 +1321,7 @@ class _InsertActivity extends State<InsertActivity> {
                                                   tempPro = pController.text;
                                                 }),
                                                 pController.clear(),
-                                                _clear("P")
+                                                // _clear("P")
                                               },
                                             );
                                           },
@@ -1339,6 +1344,7 @@ class _InsertActivity extends State<InsertActivity> {
                                                 setState(() {
                                                   progetto = c;
                                                 });
+                                                break;
                                               }
                                             }
 
@@ -1347,14 +1353,17 @@ class _InsertActivity extends State<InsertActivity> {
                                                 id = progetto["project_id"];
                                               });
                                             }
+
                                             if (cliente.isEmpty) {
                                               getResolve(
                                                   globals.sesid,
                                                   id,
                                                   progetto["project_code"],
                                                   "P");
+                                            } else {
+                                              _clear("A");
+                                              getActivity(globals.sesid);
                                             }
-                                            getActivity(globals.sesid);
                                             FocusScope.of(context).unfocus();
 
                                             setState(() {
@@ -1508,9 +1517,10 @@ class _InsertActivity extends State<InsertActivity> {
                                     activityController.clear(),
                                     setState(() {
                                       tempAct = aController.text;
+                                      _activityOptions = _activityOptions;
                                     }),
                                     aController.clear(),
-                                    _clear("A"),
+                                    // _clear("A"),
                                     // if (cliente.isNotEmpty)
                                     //   {getActivity(globals.sesid)}
                                   },
