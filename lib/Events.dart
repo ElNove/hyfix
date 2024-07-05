@@ -32,11 +32,10 @@ class Events extends StatefulWidget {
 }
 
 class _EventsState extends State<Events> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(top: 5, bottom: 5),
+        margin: const EdgeInsets.only(top: 5, bottom: 5),
         child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(children: createRow())));
@@ -46,97 +45,95 @@ class _EventsState extends State<Events> {
     double screenHeight = MediaQuery.of(context).size.height;
     var righe = <GestureDetector>[];
     for (var i in widget.lista) {
-        var con = new GestureDetector(
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) => DialogEvent(report: i));
-          },
-          child: Container(
-            padding: EdgeInsets.all(screenHeight / 100),
-            margin: const EdgeInsets.fromLTRB(10, 3, 10, 3),
-            height: screenHeight / 100 * 5,
-            decoration: i.reportType == "R"
-                ? BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.white, width: 1),
-                    color: HexColor.fromHex(i.color),
-                  )
-                : BoxDecoration(
-                    border: Border.all(color: Colors.white, width: 1),
-                    borderRadius: BorderRadius.circular(8),
-                    gradient: LinearGradient(
-                      transform: GradientRotation(math.pi / 8),
-                      begin: Alignment(-1.0, -4.0),
-                      end: Alignment(1.0, 4.0),
-                      colors: List.generate(26, (index) {
-                        if (index % 4 == 0 || index % 4 == 1) {
-                          return HexColor.fromHex(i.color);
-                        } else {
-                          return darken(HexColor.fromHex(i.color), .1);
+      var con = GestureDetector(
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) => DialogEvent(report: i));
+        },
+        child: Container(
+          padding: EdgeInsets.all(screenHeight / 100),
+          margin: const EdgeInsets.fromLTRB(10, 3, 10, 3),
+          height: screenHeight / 100 * 5,
+          decoration: i.reportType == "R"
+              ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.white, width: 1),
+                  color: HexColor.fromHex(i.color),
+                )
+              : BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 1),
+                  borderRadius: BorderRadius.circular(8),
+                  gradient: LinearGradient(
+                    transform: const GradientRotation(math.pi / 8),
+                    begin: const Alignment(-1.0, -4.0),
+                    end: const Alignment(1.0, 4.0),
+                    colors: List.generate(26, (index) {
+                      if (index % 4 == 0 || index % 4 == 1) {
+                        return HexColor.fromHex(i.color);
+                      } else {
+                        return darken(HexColor.fromHex(i.color), .1);
+                      }
+                    }),
+                    stops: () {
+                      final List<double> stops = [];
+                      double i = 0;
+                      double increment = 0.08;
+                      while (i < 1) {
+                        stops.add(i);
+                        i += increment;
+                        if (i >= 1) {
+                          stops.add(1);
+                          break;
                         }
-                      }),
-                      stops: () {
-                        final List<double> stops = [];
-                        double i = 0;
-                        double increment = 0.08;
-                        while (i < 1) {
-                          stops.add(i);
-                          i += increment;
-                          if (i >= 1) {
-                            stops.add(1);
-                            break;
-                          }
-                          stops.add(i);
-                        }
-                        return stops;
-                      }(),
-                    ),
+                        stops.add(i);
+                      }
+                      return stops;
+                    }(),
                   ),
-            child: Row(
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      i.reportType == "R" ? Icons.assignment : Icons.bookmark,
+                ),
+          child: Row(
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    i.reportType == "R" ? Icons.assignment : Icons.bookmark,
+                    color: Colors.white,
+                    size: screenHeight / 100 * 2.5,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+              Center(
+                child: Text(
+                  "[  ${int.parse(i.quantity).toStringAsFixed(2)} ${i.unityCode}  ]",
+                  style: TextStyle(
                       color: Colors.white,
-                      size: screenHeight / 100 * 2.5,
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                  ],
+                      fontSize: screenHeight / 100 * 2,
+                      fontWeight: FontWeight.bold),
                 ),
-                Center(
-                  child: Text(
-                    "[  ${int.parse(i.quantity).toStringAsFixed(2)} ${i.unityCode}  ]",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: screenHeight / 100 * 2,
-                        fontWeight: FontWeight.bold),
-                  ),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: Text(
+                  "${i.customerCode} - ${i.taskTypeCode}",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: screenHeight / 100 * 2,
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                  child: Container(
-                    child: Text(
-                      "${i.customerCode} - ${i.taskTypeCode}",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: screenHeight / 100 * 2,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-        righe.add(con);
+        ),
+      );
+      righe.add(con);
     }
     return righe.reversed.toList();
   }

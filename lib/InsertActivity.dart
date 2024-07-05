@@ -1,16 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hyfix/WeeksDay.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
 import 'Login.dart' as globals;
 import './models/ReportSave.dart';
+import './services/Service.dart';
 
-const List<int> _hoursOptions = <int>[1, 2, 3, 4, 5, 6, 7, 8];
 var loading = false;
 
 class InsertActivity extends StatefulWidget {
@@ -19,6 +15,7 @@ class InsertActivity extends StatefulWidget {
   final Function fetchCalendar;
   final DateTime dataAttuale;
 
+  @override
   _InsertActivity createState() => _InsertActivity();
 }
 
@@ -49,6 +46,7 @@ class _InsertActivity extends State<InsertActivity> {
   var tempPro = "";
   var tempAct = "";
 
+  @override
   void initState() {
     // verityFirstRun();
     setState(() {
@@ -59,10 +57,73 @@ class _InsertActivity extends State<InsertActivity> {
     } else {
       tipo = "R";
     }
-    getUtente(globals.sesid);
-    getClienti(globals.sesid, id);
-    getProgetti(globals.sesid, id);
-    getLuoghi(globals.sesid, id);
+
+    Service().getUtente(globals.sesid).then((response) {
+      var deco = jsonDecode(response.body);
+      for (var elem in deco["data"]) {
+        if (elem["username"] == globals.username) {
+          setState(() {
+            utente = elem;
+          });
+        }
+      }
+    });
+
+    Service().getClienti(globals.sesid, id).then((response) {
+      clienti = [];
+      _clientiOptions = [];
+
+      var deco = jsonDecode(response.body);
+      for (var elem in deco["data"]) {
+        clienti.add(elem);
+        _clientiOptions.add(elem["code"] + " - " + elem["companyname"]);
+      }
+    });
+
+    Service().getProgetti(globals.sesid, id, cliente).then((response) {
+      setState(() {
+        _clear("P");
+        progetti.clear();
+      });
+      _progettiOptions.clear();
+
+      var deco = jsonDecode(response.body);
+      for (var elem in deco["data"]) {
+        progetti.add(elem);
+        _progettiOptions.add(elem["code"] + " - " + elem["customer_code"]);
+      }
+      setState(() {
+        progetti = progetti;
+        _progettiOptions = _progettiOptions;
+      });
+    });
+
+    Service().getLuoghi(globals.sesid, id).then((response) {
+      _clear("L");
+      luoghi = [];
+      _luoghiOptions.clear();
+
+      var deco = jsonDecode(response.body);
+      for (var elem in deco["data"]) {
+        if (id != 0) {
+          if (elem["default_location"] == "Y") {
+            setState(() {
+              luogo = elem;
+            });
+          }
+        }
+        luoghi.add(elem);
+        _luoghiOptions.add(elem["location_code"] +
+            " - " +
+            elem["customer_code"] +
+            " - " +
+            elem["location_city"]);
+      }
+      setState(() {
+        _luoghiOptions = _luoghiOptions;
+        luoghi = luoghi;
+      });
+    });
 
     setState(() {
       loading = true;
@@ -70,134 +131,13 @@ class _InsertActivity extends State<InsertActivity> {
     super.initState();
   }
 
-  void getUtente(sesid) async {
-    final uri = Uri.https('hyfix.test.nealis.it', '/auth/user/read');
-
-    final response = await http.get(uri, headers: {
-      HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.cookieHeader: sesid,
-    });
-
-    var deco = jsonDecode(response.body);
-    for (var elem in deco["data"]) {
-      if (elem["username"] == globals.username) {
-        setState(() {
-          utente = elem;
-        });
-      }
-    }
-  }
-
-  void getClienti(sesid, id) async {
-    clienti = [];
-    _clientiOptions = [];
-    final params = {
-      'filters[id]': '$id',
-    };
-    final uri;
-    if (id == 0) {
-      uri = Uri.https('hyfix.test.nealis.it', '/reports/customer/read');
-    } else {
-      uri = Uri.https('hyfix.test.nealis.it', '/reports/customer/read', params);
-    }
-    final response = await http.get(uri, headers: {
-      HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.cookieHeader: sesid,
-    });
-
-    var deco = jsonDecode(response.body);
-    for (var elem in deco["data"]) {
-      clienti.add(elem);
-      _clientiOptions.add(elem["code"] + " - " + elem["companyname"]);
-    }
-  }
-
-  void getProgetti(sesid, id) async {
-    setState(() {
-      _clear("P");
-      progetti.clear();
-    });
-    _progettiOptions.clear();
-    final params = {
-      "filters[customer_id]": '$id',
-    };
-    final uri;
-    if (cliente.isEmpty) {
-      uri = Uri.https('hyfix.test.nealis.it', '/reports/project/readactive');
-    } else {
-      uri = Uri.https(
-          'hyfix.test.nealis.it', '/reports/project/readactive', params);
-    }
-
-    final response = await http.get(
-      uri,
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json',
-        HttpHeaders.cookieHeader: sesid,
-      },
-    );
-
-    var deco = jsonDecode(response.body);
-    for (var elem in deco["data"]) {
-      progetti.add(elem);
-      _progettiOptions.add(elem["code"] + " - " + elem["customer_code"]);
-    }
-    setState(() {
-      progetti = progetti;
-      _progettiOptions = _progettiOptions;
-    });
-  }
-
-  void getLuoghi(sesid, id) async {
-    _clear("L");
-    luoghi = [];
-    _luoghiOptions.clear();
-    final params = {
-      'filters[customer_id]': '${id}',
-    };
-
-    final uri;
-    if (id == 0) {
-      uri = Uri.https('hyfix.test.nealis.it', '/reports/customerlocation/read');
-    } else {
-      uri = Uri.https(
-          'hyfix.test.nealis.it', '/reports/customerlocation/read', params);
-    }
-    final response = await http.get(
-      uri,
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json',
-        HttpHeaders.cookieHeader: sesid,
-      },
-    );
-    var deco = jsonDecode(response.body);
-    for (var elem in deco["data"]) {
-      if (id != 0) {
-        if (elem["default_location"] == "Y") {
-          setState(() {
-            luogo = elem;
-          });
-        }
-      }
-      luoghi.add(elem);
-      _luoghiOptions.add(elem["location_code"] +
-          " - " +
-          elem["customer_code"] +
-          " - " +
-          elem["location_city"]);
-    }
-    setState(() {
-      _luoghiOptions = _luoghiOptions;
-      luoghi = luoghi;
-    });
-  }
-
   void getResolve(sesid, id, code, tipo) async {
-    var params;
+    Map<String, Object> params = {};
 
     setState(() {
       loading = false;
     });
+
     switch (tipo) {
       case "C":
         lController.clear();
@@ -234,15 +174,7 @@ class _InsertActivity extends State<InsertActivity> {
         break;
     }
 
-    final uri;
-    uri = Uri.https('hyfix.test.nealis.it', '/reports/report/resolve', params);
-    await http.get(
-      uri,
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json',
-        HttpHeaders.cookieHeader: sesid,
-      },
-    ).then((response) async {
+    Service().getResolve(sesid, params).then((response) async {
       var deco = jsonDecode(response.body);
       var data = deco["data"];
       switch (tipo) {
@@ -263,17 +195,7 @@ class _InsertActivity extends State<InsertActivity> {
 
           break;
         case "L":
-          final params = {
-            'filters[id]': '${data["customer_id"]}',
-          };
-          final uri;
-          uri = Uri.https(
-              'hyfix.test.nealis.it', '/reports/customer/read', params);
-
-          await http.get(uri, headers: {
-            HttpHeaders.contentTypeHeader: 'application/json',
-            HttpHeaders.cookieHeader: globals.sesid,
-          }).then((resp) {
+          Service().getClienti(sesid, data["customer_id"]).then((resp) {
             var deco2 = jsonDecode(resp.body);
             var d = deco2["data"];
             var cli2 = (data["customer_code"] + " - " + d[0]["companyname"]);
@@ -299,17 +221,7 @@ class _InsertActivity extends State<InsertActivity> {
             indirizzo = data["location_fulladdress"];
           });
 
-          final params = {
-            'filters[id]': '${data["customer_id"]}',
-          };
-          final uri;
-          uri = Uri.https(
-              'hyfix.test.nealis.it', '/reports/customer/read', params);
-
-          await http.get(uri, headers: {
-            HttpHeaders.contentTypeHeader: 'application/json',
-            HttpHeaders.cookieHeader: globals.sesid,
-          }).then((resp) {
+          Service().getClienti(sesid, data["customer_id"]).then((resp) {
             var deco2 = jsonDecode(resp.body);
             var d = deco2["data"];
             var cli2 = (data["customer_code"] + " - " + d[0]["companyname"]);
@@ -319,22 +231,13 @@ class _InsertActivity extends State<InsertActivity> {
             });
 
             _clear("A");
-            getActivity(globals.sesid);
+            Service().getActivity(globals.sesid, cate);
           });
           break;
         case "A":
-          final params = {
-            'filters[customer_id]': '${cliente["customer_id"]}',
-            'filters[default_project]': 'Y'
-          };
-          final uri;
-          uri = Uri.https(
-              'hyfix.test.nealis.it', '/reports/project/readactive', params);
-
-          await http.get(uri, headers: {
-            HttpHeaders.contentTypeHeader: 'application/json',
-            HttpHeaders.cookieHeader: globals.sesid,
-          }).then((resp) {
+          Service()
+              .getProgetti(sesid, cliente["customer_id"], cliente)
+              .then((resp) {
             var deco2 = jsonDecode(resp.body);
             var d = deco2["data"];
             setState(() {
@@ -343,6 +246,7 @@ class _InsertActivity extends State<InsertActivity> {
           });
           break;
       }
+
       await getDatas().then((val) {
         setState(() {
           loading = true;
@@ -352,41 +256,8 @@ class _InsertActivity extends State<InsertActivity> {
   }
 
   Future<void> getDatas() async {
-    getLuoghi(globals.sesid, cliente["customer_id"]);
-    getProgetti(globals.sesid, cliente["customer_id"]);
-  }
-
-  void getActivity(sesid) async {
-    _clear("A");
-    setState(() {
-      loading = false;
-      activity.clear();
-      _activityOptions.clear();
-    });
-    final params = {
-      'filters[unity_type]': cate,
-    };
-    final uri =
-        Uri.https('hyfix.test.nealis.it', '/reports/tasktype/read', params);
-
-    await http.get(
-      uri,
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json',
-        HttpHeaders.cookieHeader: sesid,
-      },
-    ).then((response) {
-      var deco = jsonDecode(response.body);
-      for (var elem in deco["data"]) {
-        activity.add(elem);
-        _activityOptions
-            .add(elem["task_type_code"] + " - " + elem["unity_code"]);
-      }
-      setState(() {
-        _activityOptions = _activityOptions;
-        loading = true;
-      });
-    });
+    Service().getLuoghi(globals.sesid, cliente["customer_id"]);
+    Service().getProgetti(globals.sesid, cliente["customer_id"], cliente);
   }
 
   void assegnaTask(int o) {
@@ -449,15 +320,8 @@ class _InsertActivity extends State<InsertActivity> {
       projectActive: progetto["active"],
       unityId: attivita["unity_id"],
     );
-    var uri = Uri.https('hyfix.test.nealis.it', '/reports/report/save');
-    await http
-        .post(uri,
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-              'Cookie': globals.sesid,
-            },
-            body: ReportSaveToJson(rep))
-        .then((report) {
+
+    Service().saveReport(globals.sesid, ReportSaveToJson(rep)).then((report) {
       DateTime focusedDay = DateTime.now();
 
       List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
@@ -680,9 +544,8 @@ class _InsertActivity extends State<InsertActivity> {
                                         FocusScope.of(context).unfocus();
                                         task_type = "";
                                       });
-                                      getProgetti(globals.sesid,
-                                          cliente["customer_id"]);
-                                      // getActivity(globals.sesid);
+                                      Service().getProgetti(globals.sesid,
+                                          cliente["customer_id"], cliente);
                                     },
                                     child: Text(
                                       'Tempo',
@@ -731,7 +594,29 @@ class _InsertActivity extends State<InsertActivity> {
                                         FocusScope.of(context).unfocus();
                                         task_type = "";
                                       });
-                                      getActivity(globals.sesid);
+                                      Service()
+                                          .getActivity(globals.sesid, cate)
+                                          .then((response) {
+                                        _clear("A");
+                                        setState(() {
+                                          loading = false;
+                                          activity.clear();
+                                          _activityOptions.clear();
+                                        });
+
+                                        var deco = jsonDecode(response.body);
+                                        for (var elem in deco["data"]) {
+                                          activity.add(elem);
+                                          _activityOptions.add(
+                                              elem["task_type_code"] +
+                                                  " - " +
+                                                  elem["unity_code"]);
+                                        }
+                                        setState(() {
+                                          _activityOptions = _activityOptions;
+                                          loading = true;
+                                        });
+                                      });
                                     },
                                     child: Text(
                                       'Costo',
@@ -780,7 +665,8 @@ class _InsertActivity extends State<InsertActivity> {
                                         FocusScope.of(context).unfocus();
                                         task_type = "";
                                       });
-                                      getActivity(globals.sesid);
+                                      Service()
+                                          .getActivity(globals.sesid, cate);
                                     },
                                     child: Text(
                                       'Distanza',
@@ -797,7 +683,7 @@ class _InsertActivity extends State<InsertActivity> {
                                   ))
                             ],
                           )
-                        : Text(""),
+                        : const Text(""),
                     const SizedBox(
                       height: 10,
                     ),
@@ -905,7 +791,7 @@ class _InsertActivity extends State<InsertActivity> {
                                     setState(() {
                                       _clientiOptions.clear();
                                     });
-                                    clienti.forEach((element) {
+                                    for (var element in clienti) {
                                       if (element["companyname"]
                                               .contains(text) ||
                                           element["code"].contains(text)) {
@@ -913,7 +799,7 @@ class _InsertActivity extends State<InsertActivity> {
                                             " - " +
                                             element["companyname"]);
                                       }
-                                    });
+                                    }
                                     setState(() {
                                       _clientiOptions = _clientiOptions;
                                     });
@@ -1189,7 +1075,7 @@ class _InsertActivity extends State<InsertActivity> {
                         child: Container(
                             //color:Colors.white,
                             width: screenWidth,
-                            margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                            margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                             child: Row(
                               children: [
                                 const Text(
@@ -1199,7 +1085,7 @@ class _InsertActivity extends State<InsertActivity> {
                                 Expanded(
                                   child: Text(
                                     softWrap: true,
-                                    "${indirizzo} ",
+                                    "$indirizzo ",
                                   ),
                                 )
                               ],
@@ -1435,7 +1321,8 @@ class _InsertActivity extends State<InsertActivity> {
                                                   progetto["customer_code"]);
 
                                               _clear("A");
-                                              getActivity(globals.sesid);
+                                              Service().getActivity(
+                                                  globals.sesid, cate);
                                             }
                                             FocusScope.of(context).unfocus();
 
@@ -1546,7 +1433,7 @@ class _InsertActivity extends State<InsertActivity> {
                                       label: Text(cate == "T"
                                           ? 'Attività'
                                           : 'Tipo attività'),
-                                      border: OutlineInputBorder()),
+                                      border: const OutlineInputBorder()),
                                   onChanged: (text) {
                                     // Update suggestions based on user input
                                     // Implement the logic to filter and refresh suggestions
@@ -1853,7 +1740,7 @@ class _RefundButtonState extends State<RefundButton> {
     }
 
     return CheckboxListTile(
-      title: Text("Rimborso"),
+      title: const Text("Rimborso"),
       controlAffinity: ListTileControlAffinity.leading,
       checkColor: Theme.of(context).colorScheme.onPrimaryContainer,
       fillColor: WidgetStateProperty.resolveWith(getColor),

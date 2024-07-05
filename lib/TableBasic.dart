@@ -43,7 +43,7 @@ class _TableBasicState extends State<TableBasic> {
       focusedDay: _focusedDay,
       calendarFormat: widget.calendarFormat,
       headerStyle: HeaderStyle(
-        headerPadding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+        headerPadding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
         leftChevronIcon: Icon(Icons.chevron_left,
             color: Theme.of(context).colorScheme.onSurface),
         rightChevronIcon: Icon(Icons.chevron_right,

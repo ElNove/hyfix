@@ -1,28 +1,15 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/main.dart';
 import 'package:hyfix/models/Reports.dart';
-import 'package:hyfix/services/service.dart';
+import 'package:hyfix/services/Service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'TableBasic.dart';
 import 'ContainerEvents.dart';
 import 'InsertActivity.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 import 'Login.dart' as globals;
-
-class Cliente {
-  int id = 0;
-  int id_costumer = 1;
-  String code = "";
-  String costumer_code = "";
-  String companyname = "";
-
-  Cliente() {}
-}
 
 class JobList with ChangeNotifier {
   List<Reports> lista = <Reports>[];
@@ -44,7 +31,7 @@ class JobList with ChangeNotifier {
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -92,14 +79,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void logout() async {
-    var client = http.Client();
-
-    var uri = Uri.https('hyfix.test.nealis.it', '/auth/logout');
-    await client.get(uri, headers: {
-      HttpHeaders.contentTypeHeader: 'application/json',
-      HttpHeaders.cookieHeader: globals.sesid,
-    }).then(
+  void logout() {
+    Service().logout(globals.sesid).then(
       (response) async {
         JobList jobList = context.read<JobList>();
         jobList.lista = <Reports>[];
@@ -188,7 +169,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         body: Container(
-          padding: EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15),
           child: Column(
             children: [
               TableBasic(
@@ -229,11 +210,11 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-Route _createRoute(fetchRep, _data) {
+Route _createRoute(fetchRep, data) {
   return PageRouteBuilder(
-    transitionDuration: Duration(milliseconds: 750),
+    transitionDuration: const Duration(milliseconds: 750),
     pageBuilder: (context, animation, secondaryAnimation) =>
-        InsertActivity(fetchCalendar: fetchRep, dataAttuale: _data),
+        InsertActivity(fetchCalendar: fetchRep, dataAttuale: data),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;

@@ -24,7 +24,7 @@ List<List<DateTime>> getWeeksOfMonth(DateTime date) {
       weeks.add(week);
       week = [];
     }
-    currentDay = currentDay.add(Duration(days: 1));
+    currentDay = currentDay.add(const Duration(days: 1));
   }
 
   if (week.isNotEmpty) {
@@ -32,11 +32,11 @@ List<List<DateTime>> getWeeksOfMonth(DateTime date) {
   }
 
   // Add an additional week after the last complete week
-  DateTime nextWeekStart = endDay.add(Duration(days: 1));
+  DateTime nextWeekStart = endDay.add(const Duration(days: 1));
   List<DateTime> nextWeek = [];
   while (nextWeek.length < 7) {
     nextWeek.add(nextWeekStart);
-    nextWeekStart = nextWeekStart.add(Duration(days: 1));
+    nextWeekStart = nextWeekStart.add(const Duration(days: 1));
   }
   weeks.add(nextWeek);
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hyfix/services/Service.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -106,7 +107,9 @@ class MainApp extends StatelessWidget {
   final ColorScheme darkColorScheme;
 
   const MainApp(
-      {required this.lightColorScheme, required this.darkColorScheme});
+      {super.key,
+      required this.lightColorScheme,
+      required this.darkColorScheme});
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +131,7 @@ class MainApp extends StatelessWidget {
             theme: ThemeData.from(colorScheme: lightColorScheme),
             darkTheme: ThemeData.from(colorScheme: darkColorScheme),
             themeMode: themeProvider.themeMode,
-            home: Accesso(),
+            home: const Accesso(),
           );
         },
       ),
@@ -146,7 +149,7 @@ class Accesso extends StatefulWidget {
 class _AccessoState extends State<Accesso> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   static DateTime parse(String date) {
-    final int SP = 32;
+    const int SP = 32;
     const List wkdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     const List weekdays = [
       "Monday",
@@ -172,9 +175,9 @@ class _AccessoState extends State<Accesso> {
       "Dec"
     ];
 
-    final int formatRfc1123 = 0;
-    final int formatRfc850 = 1;
-    final int formatAsctime = 2;
+    const int formatRfc1123 = 0;
+    const int formatRfc850 = 1;
+    const int formatAsctime = 2;
 
     int index = 0;
     String tmp;
@@ -278,27 +281,6 @@ class _AccessoState extends State<Accesso> {
     }
     expectEnd();
     return DateTime.utc(year, month + 1, day, hours, minutes, seconds, 0);
-  }
-
-  Future<String> fetchUtente(user, password) async {
-    final queryParameters = {
-      'username': user,
-      'password': password,
-    };
-    final uri =
-        Uri.https('hyfix.test.nealis.it', '/auth/login', queryParameters);
-    final response = await http.get(uri, headers: {
-      HttpHeaders.contentTypeHeader: 'application/json',
-    });
-
-    var sesid = response.headers["set-cookie"];
-    globals.sesid = sesid!;
-
-    var prefs = await SharedPreferences.getInstance();
-    prefs.setString('sesid', sesid);
-    prefs.setString('username', user);
-
-    return response.body;
   }
 
   late final LocalAuthentication auth;
@@ -409,8 +391,8 @@ class _AccessoState extends State<Accesso> {
                         decoration: InputDecoration(
                             suffixIcon: IconButton(
                                 onPressed: () => {userController.clear()},
-                                icon: Icon(Icons.clear)),
-                            border: OutlineInputBorder(),
+                                icon: const Icon(Icons.clear)),
+                            border: const OutlineInputBorder(),
                             labelText: "Nome Utente"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -443,10 +425,10 @@ class _AccessoState extends State<Accesso> {
                                 IconButton(
                                     onPressed: () =>
                                         {passwordController.clear()},
-                                    icon: Icon(Icons.clear)),
+                                    icon: const Icon(Icons.clear)),
                               ],
                             ),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             labelText: "Password"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -470,37 +452,38 @@ class _AccessoState extends State<Accesso> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            fetchUtente(userController.text,
+                            Service()
+                                .fetchUtente(userController.text,
                                     passwordController.text)
-                                .then((res) => {
-                                      if (res.contains('"success":false'))
-                                        {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              duration: Duration(seconds: 3),
-                                              content: Text(
-                                                'Username e/o Password Errati',
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                            ),
-                                          ),
-                                        }
-                                      else
-                                        {
-                                          setState(() {
-                                            globals.username =
-                                                userController.text;
-                                          }),
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => MyApp()),
-                                          ),
-                                        }
-                                    });
+                                .then((res) async {
+                              var sesid = res.headers["set-cookie"];
+                              globals.sesid = sesid!;
+
+                              var prefs = await SharedPreferences.getInstance();
+                              prefs.setString('sesid', sesid);
+                              prefs.setString('username', userController.text);
+                              if (res.body.contains('"success":false')) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    duration: Duration(seconds: 3),
+                                    content: Text(
+                                      'Username e/o Password Errati',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              } else {
+                                setState(() {
+                                  globals.username = userController.text;
+                                });
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const MyApp()),
+                                );
+                              }
+                            });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -561,7 +544,7 @@ class _AccessoState extends State<Accesso> {
         });
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => MyApp()),
+          MaterialPageRoute(builder: (context) => const MyApp()),
         );
       }
     } on PlatformException catch (e) {
