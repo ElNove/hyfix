@@ -321,16 +321,10 @@ class _InsertActivity extends State<InsertActivity> {
               progetto = d[0];
             });
 
-            Service().getLuoghi(globals.sesid, cliente["customer_id"]).then(
-                (res) =>
-                    Service()
-                        .getProgetti(
-                            globals.sesid, cliente["customer_id"], cliente)
-                        .then((res) {
-                      setProgetti(res);
-                      setState(() {
-                        loading = true;
-                      });
+            Service()
+                .getLuoghi(globals.sesid, cliente["customer_id"])
+                .then((res) => setState(() {
+                      loading = true;
                     }));
           });
           break;
@@ -680,7 +674,8 @@ class _InsertActivity extends State<InsertActivity> {
                                               sesid: globals.sesid,
                                               cate: cate,
                                               defaultPr:
-                                                  progetto["default_project"])
+                                                  progetto["default_project"] ??
+                                                      "Y")
                                           .then((response) {
                                         setActivity(response);
                                       });
@@ -736,7 +731,8 @@ class _InsertActivity extends State<InsertActivity> {
                                               sesid: globals.sesid,
                                               cate: cate,
                                               defaultPr:
-                                                  progetto["default_project"])
+                                                  progetto["default_project"] ??
+                                                      "Y")
                                           .then((response) {
                                         setActivity(response);
                                       });
@@ -1508,7 +1504,6 @@ class _InsertActivity extends State<InsertActivity> {
                                   ),
                               optionsBuilder:
                                   (TextEditingValue textEditingValue) {
-
                                 if (textEditingValue.text == '') {
                                   return _activityOptions;
                                 }
