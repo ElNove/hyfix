@@ -233,7 +233,11 @@ class _InsertActivity extends State<InsertActivity> {
             });
 
             _clear("A");
-            Service().getActivity(sesid:globals.sesid,cate: cate,pr_id:  progetto["project_id"],cu_id:  cliente["customer_id"]);
+            Service().getActivity(
+                sesid: globals.sesid,
+                cate: cate,
+                pr_id: progetto["project_id"],
+                cu_id: cliente["customer_id"]);
           });
           break;
         case "A":
@@ -249,17 +253,14 @@ class _InsertActivity extends State<InsertActivity> {
           break;
       }
 
-      await getDatas().then((val) {
-        setState(() {
-          loading = true;
-        });
-      });
+      // print('${globals.sesid}, ${cliente["customer_id"]}');
+      // Service().getLuoghi(globals.sesid, cliente["customer_id"]).then((res) =>
+      //     Service()
+      //         .getProgetti(globals.sesid, cliente["customer_id"], cliente)
+      //         .then((res) => setState(() {
+      //               loading = true;
+      //             })));
     });
-  }
-
-  Future<void> getDatas() async {
-    Service().getLuoghi(globals.sesid, cliente["customer_id"]);
-    Service().getProgetti(globals.sesid, cliente["customer_id"], cliente);
   }
 
   void assegnaTask(int o) {
@@ -596,7 +597,9 @@ class _InsertActivity extends State<InsertActivity> {
                                         FocusScope.of(context).unfocus();
                                         task_type = "";
                                       });
-                                      Service().getActivity(sesid:globals.sesid,cate: cate)
+                                      Service()
+                                          .getActivity(
+                                              sesid: globals.sesid, cate: cate)
                                           .then((response) {
                                         _clear("A");
                                         setState(() {
@@ -666,7 +669,8 @@ class _InsertActivity extends State<InsertActivity> {
                                         FocusScope.of(context).unfocus();
                                         task_type = "";
                                       });
-                                      Service().getActivity(sesid:globals.sesid,cate: cate);
+                                      Service().getActivity(
+                                          sesid: globals.sesid, cate: cate);
                                     },
                                     child: Text(
                                       'Distanza',
@@ -778,6 +782,7 @@ class _InsertActivity extends State<InsertActivity> {
                                   controller: cController,
                                   focusNode: clientFocus,
                                   decoration: const InputDecoration(
+                                      suffixIcon: Icon(Icons.arrow_drop_down),
                                       label: Text('Cliente'),
                                       border: OutlineInputBorder()),
                                   onChanged: (text) {
@@ -835,6 +840,8 @@ class _InsertActivity extends State<InsertActivity> {
                                     }
                                   },
                                   onTap: () => {
+                                    if (clientFocus.hasFocus)
+                                      {clientFocus.unfocus()},
                                     customerController.clear(),
                                     setState(() {
                                       tempCli = cController.text;
@@ -960,6 +967,7 @@ class _InsertActivity extends State<InsertActivity> {
                                     controller: lController,
                                     focusNode: locationFocus,
                                     decoration: const InputDecoration(
+                                        suffixIcon: Icon(Icons.arrow_drop_down),
                                         label: Text('Luogo'),
                                         border: OutlineInputBorder()),
                                     onChanged: (text) {
@@ -1025,6 +1033,8 @@ class _InsertActivity extends State<InsertActivity> {
                                       }
                                     },
                                     onTap: () => {
+                                      if (locationFocus.hasFocus)
+                                        {locationFocus.unfocus()},
                                       locationController.clear(),
                                       setState(() {
                                         tempLoc = lController.text;
@@ -1200,6 +1210,8 @@ class _InsertActivity extends State<InsertActivity> {
                                               controller: pController,
                                               focusNode: progettoFocus,
                                               decoration: const InputDecoration(
+                                                  suffixIcon: Icon(
+                                                      Icons.arrow_drop_down),
                                                   label: Text('Progetto'),
                                                   border: OutlineInputBorder()),
                                               onChanged: (text) {
@@ -1267,6 +1279,8 @@ class _InsertActivity extends State<InsertActivity> {
                                                 }
                                               },
                                               onTap: () => {
+                                                if (progettoFocus.hasFocus)
+                                                  {progettoFocus.unfocus()},
                                                 progettoController.clear(),
                                                 setState(() {
                                                   tempPro = pController.text;
@@ -1321,7 +1335,12 @@ class _InsertActivity extends State<InsertActivity> {
                                                   progetto["customer_code"]);
 
                                               _clear("A");
-                                              Service().getActivity(sesid:globals.sesid,cate: cate,pr_id:  progetto["project_id"],cu_id:  cliente["customer_id"]);
+                                              Service().getActivity(
+                                                  sesid: globals.sesid,
+                                                  cate: cate,
+                                                  pr_id: progetto["project_id"],
+                                                  cu_id:
+                                                      cliente["customer_id"]);
                                             }
                                             FocusScope.of(context).unfocus();
 
@@ -1429,6 +1448,8 @@ class _InsertActivity extends State<InsertActivity> {
                                   controller: aController,
                                   focusNode: activityFocus,
                                   decoration: InputDecoration(
+                                      suffixIcon:
+                                          const Icon(Icons.arrow_drop_down),
                                       label: Text(cate == "T"
                                           ? 'Attività'
                                           : 'Tipo attività'),
@@ -1492,6 +1513,8 @@ class _InsertActivity extends State<InsertActivity> {
                                     }
                                   },
                                   onTap: () => {
+                                    if (activityFocus.hasFocus)
+                                      {activityFocus.unfocus()},
                                     if (progetto.isEmpty)
                                       {
                                         _activityOptions.clear(),
