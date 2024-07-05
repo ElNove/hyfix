@@ -46,7 +46,6 @@ class _EventsState extends State<Events> {
     double screenHeight = MediaQuery.of(context).size.height;
     var righe = <GestureDetector>[];
     for (var i in widget.lista) {
-      if (DateUtils.isSameDay(i.reportDate, widget.data)) {
         var con = new GestureDetector(
           onTap: () {
             showDialog(
@@ -138,7 +137,6 @@ class _EventsState extends State<Events> {
           ),
         );
         righe.add(con);
-      }
     }
     return righe.reversed.toList();
   }

@@ -26,11 +26,21 @@ class Cliente {
 
 class JobList with ChangeNotifier {
   List<Reports> lista = <Reports>[];
+  List<Reports> listaEventi = <Reports>[];
 
   void addElement(Reports report) {
     lista.add(report);
     notifyListeners();
   }
+   void eventiGiorno(DateTime data){
+    listaEventi.clear();
+    for (var element in lista) {
+      if(DateUtils.isSameDay(element.reportDate, data)){
+        listaEventi.add(element);
+      }
+    }
+  }
+  
 }
 
 class MyApp extends StatefulWidget {
@@ -48,6 +58,7 @@ class _MyAppState extends State<MyApp> {
 
   int i = 0;
 
+ 
   @override
   void initState() {
     super.initState();
@@ -61,7 +72,6 @@ class _MyAppState extends State<MyApp> {
 
   void fetchRep(first, last) {
     var jobList = context.read<JobList>();
-    jobList.lista.clear();
     setState(() {
       loading = true;
     });
@@ -105,6 +115,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   void aggiornaData(DateTime data) {
+    
+    var jobList = context.read<JobList>();
     if (_data == data) {
       visible = !visible;
     } else {
@@ -113,6 +125,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _data = data;
     });
+    jobList.eventiGiorno(_data);
   }
 
   void updateFormat(CalendarFormat format) {
@@ -189,7 +202,7 @@ class _MyAppState extends State<MyApp> {
                   loading: loading,
                   selezionato: _data,
                   visible: visible,
-                  lista: jobList.lista,
+                  lista: jobList.listaEventi,
                 ),
               ),
               Align(

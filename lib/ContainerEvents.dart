@@ -51,8 +51,16 @@ class _ContainerEvents extends State<ContainerEvents> {
                 borderRadius: BorderRadius.circular(10),
                 color: Theme.of(context).colorScheme.tertiaryContainer,
               ),
-              child: controllo()
-                  ? Column(
+              child: widget.loading?Center(
+                          child: LoadingAnimationWidget.staggeredDotsWave(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onTertiaryContainer,
+                            size: 80,
+                          ),
+                        )
+                  
+                  :Column(
                       children: [
                         const SizedBox(
                           height: 10,
@@ -70,35 +78,7 @@ class _ContainerEvents extends State<ContainerEvents> {
                         ),
                         Events(data: widget.selezionato, lista: widget.lista),
                       ],
-                    )
-                  : widget.loading
-                      ? Center(
-                          child: LoadingAnimationWidget.staggeredDotsWave(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onTertiaryContainer,
-                            size: 80,
-                          ),
-                        )
-                      : Column(
-                          children: [
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                                "${DateFormat.EEEE('it_IT').format(widget.selezionato)}, ${DateFormat.MMMd('it_IT').format(widget.selezionato)}, ${DateFormat.y('it_IT').format(widget.selezionato)}",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height /
-                                            100 *
-                                            2.5,
-                                    fontWeight: FontWeight.bold)),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                          ],
-                        ))),
+                    ) )),
     );
   }
 }
