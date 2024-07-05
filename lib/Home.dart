@@ -20,6 +20,11 @@ class JobList with ChangeNotifier {
     notifyListeners();
   }
 
+  void updateLista() {
+    listaEventi.clear();
+    notifyListeners();
+  }
+
   void eventiGiorno(DateTime data) {
     listaEventi.clear();
     for (var element in lista) {
@@ -27,6 +32,7 @@ class JobList with ChangeNotifier {
         listaEventi.add(element);
       }
     }
+    notifyListeners();
   }
 }
 
@@ -116,6 +122,12 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void update() {
+    var updList = context.read<JobList>();
+
+    updList.updateLista();
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = context.watch<ThemeProvider>();
@@ -158,7 +170,6 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
           ],
-          // centerTitle: true,
           title: Center(
             child: Text('LE TUE ATTIVITÀ',
                 style: TextStyle(
@@ -196,7 +207,8 @@ class _MyAppState extends State<MyApp> {
                     backgroundColor:
                         Theme.of(context).colorScheme.primaryContainer,
                     onPressed: () {
-                      Navigator.of(context).push(_createRoute(fetchRep, _data));
+                      Navigator.of(context)
+                          .push(_createRoute(fetchRep, _data, update));
                     },
                     child: const Icon(Icons.add_rounded),
                   ),
@@ -210,11 +222,11 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-Route _createRoute(fetchRep, data) {
+Route _createRoute(fetchRep, data, update) {
   return PageRouteBuilder(
     transitionDuration: const Duration(milliseconds: 750),
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        InsertActivity(fetchCalendar: fetchRep, dataAttuale: data),
+    pageBuilder: (context, animation, secondaryAnimation) => InsertActivity(
+        fetchCalendar: fetchRep, update: update, dataAttuale: data),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;

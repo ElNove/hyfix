@@ -368,8 +368,6 @@ class _AccessoState extends State<Accesso> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // const Image(
-              //     width: 350, image: AssetImage('assets/full_logo.png')),
               SvgPicture.asset(
                 'assets/full_logo.svg',
                 colorFilter: ColorFilter.mode(
