@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Home.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:http/http.dart' as http;
 import 'Login.dart' as globals;
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
