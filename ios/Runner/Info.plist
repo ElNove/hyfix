@@ -51,5 +51,8 @@
       <string>NeedForSavePeristentDataLocally</string>
     <key>FLTEnableImpeller</key>
       <false /> 
+    <array>
+      <string>UIInterfaceOrientationPortrait</string>
+    </array>
   </dict>
 </plist>
