@@ -21,7 +21,7 @@ class ReportSave {
     String locationDistance;
     int projectId;
     String defaultProject;
-    int projectTaskId;
+    dynamic projectTaskId;
     int taskTypeId;
     String taskTypeCode;
     int quantity;

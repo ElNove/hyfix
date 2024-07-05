@@ -231,7 +231,7 @@ class _InsertActivity extends State<InsertActivity> {
             });
 
             _clear("A");
-            Service().getActivity(globals.sesid, cate);
+            Service().getActivity(sesid:globals.sesid,cate: cate,pr_id:  progetto["project_id"],cu_id:  cliente["customer_id"]);
           });
           break;
         case "A":
@@ -594,8 +594,7 @@ class _InsertActivity extends State<InsertActivity> {
                                         FocusScope.of(context).unfocus();
                                         task_type = "";
                                       });
-                                      Service()
-                                          .getActivity(globals.sesid, cate)
+                                      Service().getActivity(sesid:globals.sesid,cate: cate)
                                           .then((response) {
                                         _clear("A");
                                         setState(() {
@@ -665,8 +664,7 @@ class _InsertActivity extends State<InsertActivity> {
                                         FocusScope.of(context).unfocus();
                                         task_type = "";
                                       });
-                                      Service()
-                                          .getActivity(globals.sesid, cate);
+                                      Service().getActivity(sesid:globals.sesid,cate: cate);
                                     },
                                     child: Text(
                                       'Distanza',
@@ -1321,8 +1319,7 @@ class _InsertActivity extends State<InsertActivity> {
                                                   progetto["customer_code"]);
 
                                               _clear("A");
-                                              Service().getActivity(
-                                                  globals.sesid, cate);
+                                              Service().getActivity(sesid:globals.sesid,cate: cate,pr_id:  progetto["project_id"],cu_id:  cliente["customer_id"]);
                                             }
                                             FocusScope.of(context).unfocus();
 

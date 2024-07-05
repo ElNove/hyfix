@@ -20,7 +20,7 @@ class Reports {
   String note;
   String customerNote;
   int projectId;
-  String projectTaskId;
+  dynamic projectTaskId;
   int taskTypeId;
   String quantity;
   String customerQuantity;

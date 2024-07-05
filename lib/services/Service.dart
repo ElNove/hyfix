@@ -149,13 +149,26 @@ class Service {
     return response;
   }
 
-  Future<http.Response> getActivity(String sesid, String cate) async {
-    final params = {
+  Future<http.Response> getActivity({required String sesid, required String cate,int? pr_id,int? cu_id}) async {
+    final uri;
+    if(cate=="T"){
+      final params = {
+      'filters[project_id]':pr_id,
+      'filters[unity_type]': cate,
+      'filters[customer_id]':cu_id,
+    };
+    uri =
+        Uri.https('hyfix.test.nealis.it', '/reports/projecttask/readactivewithactiveproject', params);
+
+    }else{
+      final params = {
       'filters[unity_type]': cate,
     };
-    final uri =
+    uri =
         Uri.https('hyfix.test.nealis.it', '/reports/tasktype/read', params);
 
+    }
+    
     final response = await http.get(
       uri,
       headers: {
