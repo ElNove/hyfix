@@ -51,16 +51,15 @@ class _ContainerEvents extends State<ContainerEvents> {
                 borderRadius: BorderRadius.circular(10),
                 color: Theme.of(context).colorScheme.tertiaryContainer,
               ),
-              child: widget.loading?Center(
-                          child: LoadingAnimationWidget.staggeredDotsWave(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onTertiaryContainer,
-                            size: 80,
-                          ),
-                        )
-                  
-                  :Column(
+              child: widget.loading
+                  ? Center(
+                      child: LoadingAnimationWidget.staggeredDotsWave(
+                        color:
+                            Theme.of(context).colorScheme.onTertiaryContainer,
+                        size: 80,
+                      ),
+                    )
+                  : Column(
                       children: [
                         const SizedBox(
                           height: 10,
@@ -76,9 +75,14 @@ class _ContainerEvents extends State<ContainerEvents> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Events(data: widget.selezionato, lista: widget.lista),
+                        Expanded(
+                            child: Padding(
+                          padding: const EdgeInsets.only(bottom: 5),
+                          child: Events(
+                              data: widget.selezionato, lista: widget.lista),
+                        )),
                       ],
-                    ) )),
+                    ))),
     );
   }
 }

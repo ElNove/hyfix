@@ -32,15 +32,15 @@ class JobList with ChangeNotifier {
     lista.add(report);
     notifyListeners();
   }
-   void eventiGiorno(DateTime data){
+
+  void eventiGiorno(DateTime data) {
     listaEventi.clear();
     for (var element in lista) {
-      if(DateUtils.isSameDay(element.reportDate, data)){
+      if (DateUtils.isSameDay(element.reportDate, data)) {
         listaEventi.add(element);
       }
     }
   }
-  
 }
 
 class MyApp extends StatefulWidget {
@@ -58,7 +58,6 @@ class _MyAppState extends State<MyApp> {
 
   int i = 0;
 
- 
   @override
   void initState() {
     super.initState();
@@ -86,6 +85,9 @@ class _MyAppState extends State<MyApp> {
       }
       setState(() {
         jobList.lista = jobList.lista;
+        if (jobList.listaEventi.isEmpty) {
+          jobList.eventiGiorno(_data);
+        }
       });
     });
   }
@@ -115,7 +117,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   void aggiornaData(DateTime data) {
-    
     var jobList = context.read<JobList>();
     if (_data == data) {
       visible = !visible;
@@ -148,6 +149,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: Scaffold(
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           toolbarHeight: screenHeight / 100 * 6,
           leading: IconButton(
             onPressed: () {
@@ -208,7 +210,7 @@ class _MyAppState extends State<MyApp> {
               Align(
                 alignment: Alignment.bottomRight,
                 child: Container(
-                  margin: const EdgeInsets.fromLTRB(0, 20, 10, 20),
+                  margin: const EdgeInsets.fromLTRB(0, 15, 10, 15),
                   child: FloatingActionButton(
                     backgroundColor:
                         Theme.of(context).colorScheme.primaryContainer,
