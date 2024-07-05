@@ -40,6 +40,7 @@ class _InsertActivity extends State<InsertActivity> {
   String cate = "T";
   int task = 0;
   String task_type = "";
+  dynamic project_task_id=0;
   var indirizzo = "";
   var tempCli = "";
   var tempLoc = "";
@@ -177,6 +178,7 @@ class _InsertActivity extends State<InsertActivity> {
     Service().getResolve(sesid, params).then((response) async {
       var deco = jsonDecode(response.body);
       var data = deco["data"];
+      project_task_id=data["project_task_id"];
       switch (tipo) {
         case "C":
           var loc = (data["location_code"] +
@@ -290,7 +292,7 @@ class _InsertActivity extends State<InsertActivity> {
       locationDistance: luogo["location_distance"],
       projectId: progetto["project_id"],
       defaultProject: progetto["default_project"],
-      projectTaskId: 0,
+      projectTaskId: project_task_id,
       taskTypeId: attivita["task_type_id"],
       taskTypeCode: attivita["task_type_code"],
       quantity: task,
