@@ -89,6 +89,33 @@ class _InsertActivity extends State<InsertActivity> {
     });
   }
 
+  void setLuoghi(Response response) {
+    _clear("L");
+    luoghi = [];
+    _luoghiOptions.clear();
+
+    var deco = jsonDecode(response.body);
+    for (var elem in deco["data"]) {
+      if (luogo.isEmpty) {
+        if (elem["default_location"] == "Y") {
+          setState(() {
+            luogo = elem;
+          });
+        }
+      }
+      luoghi.add(elem);
+      _luoghiOptions.add(elem["location_code"] +
+          " - " +
+          elem["customer_code"] +
+          " - " +
+          elem["location_city"]);
+    }
+    setState(() {
+      _luoghiOptions = _luoghiOptions;
+      luoghi = luoghi;
+    });
+  }
+
   @override
   void initState() {
     setState(() {
@@ -127,30 +154,7 @@ class _InsertActivity extends State<InsertActivity> {
     });
 
     Service().getLuoghi(globals.sesid, id).then((response) {
-      _clear("L");
-      luoghi = [];
-      _luoghiOptions.clear();
-
-      var deco = jsonDecode(response.body);
-      for (var elem in deco["data"]) {
-        if (luogo.isEmpty) {
-          if (elem["default_location"] == "Y") {
-            setState(() {
-              luogo = elem;
-            });
-          }
-        }
-        luoghi.add(elem);
-        _luoghiOptions.add(elem["location_code"] +
-            " - " +
-            elem["customer_code"] +
-            " - " +
-            elem["location_city"]);
-      }
-      setState(() {
-        _luoghiOptions = _luoghiOptions;
-        luoghi = luoghi;
-      });
+      setLuoghi(response);
     });
 
     setState(() {
@@ -224,17 +228,19 @@ class _InsertActivity extends State<InsertActivity> {
             _activityOptions.clear();
           });
 
-          Service().getLuoghi(globals.sesid, cliente["customer_id"]).then(
-              (res) =>
-                  Service()
-                      .getProgetti(
-                          globals.sesid, cliente["customer_id"], cliente)
-                      .then((res) {
-                    setProgetti(res);
-                    setState(() {
-                      loading = true;
-                    });
-                  }));
+          Service()
+              .getLuoghi(globals.sesid, cliente["customer_id"])
+              .then((res) {
+            setLuoghi(res);
+            Service()
+                .getProgetti(globals.sesid, cliente["customer_id"], cliente)
+                .then((res) {
+              setProgetti(res);
+              setState(() {
+                loading = true;
+              });
+            });
+          });
 
           break;
         case "L":
@@ -248,17 +254,19 @@ class _InsertActivity extends State<InsertActivity> {
               aController.clear();
             });
 
-            Service().getLuoghi(globals.sesid, cliente["customer_id"]).then(
-                (res) =>
-                    Service()
-                        .getProgetti(
-                            globals.sesid, cliente["customer_id"], cliente)
-                        .then((res) {
-                      setProgetti(res);
-                      setState(() {
-                        loading = true;
-                      });
-                    }));
+            Service()
+                .getLuoghi(globals.sesid, cliente["customer_id"])
+                .then((res) {
+              setLuoghi(res);
+              Service()
+                  .getProgetti(globals.sesid, cliente["customer_id"], cliente)
+                  .then((res) {
+                setProgetti(res);
+                setState(() {
+                  loading = true;
+                });
+              });
+            });
           });
           break;
         case "P":
@@ -297,17 +305,19 @@ class _InsertActivity extends State<InsertActivity> {
               setActivity(response);
             });
 
-            Service().getLuoghi(globals.sesid, cliente["customer_id"]).then(
-                (res) =>
-                    Service()
-                        .getProgetti(
-                            globals.sesid, cliente["customer_id"], cliente)
-                        .then((res) {
-                      setProgetti(res);
-                      setState(() {
-                        loading = true;
-                      });
-                    }));
+            Service()
+                .getLuoghi(globals.sesid, cliente["customer_id"])
+                .then((res) {
+              setLuoghi(res);
+              Service()
+                  .getProgetti(globals.sesid, cliente["customer_id"], cliente)
+                  .then((res) {
+                setProgetti(res);
+                setState(() {
+                  loading = true;
+                });
+              });
+            });
           });
           break;
         case "A":
@@ -323,9 +333,12 @@ class _InsertActivity extends State<InsertActivity> {
 
             Service()
                 .getLuoghi(globals.sesid, cliente["customer_id"])
-                .then((res) => setState(() {
-                      loading = true;
-                    }));
+                .then((res) {
+              setLuoghi(res);
+              setState(() {
+                loading = true;
+              });
+            });
           });
           break;
       }
