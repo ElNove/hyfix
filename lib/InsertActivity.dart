@@ -160,6 +160,7 @@ class _InsertActivity extends State<InsertActivity> {
     setState(() {
       loading = true;
     });
+
     super.initState();
   }
 
@@ -227,6 +228,15 @@ class _InsertActivity extends State<InsertActivity> {
             activity.clear();
             _activityOptions.clear();
           });
+
+          if (cate != "T") {
+            print("dxfhyiodcgfbhjnkm,lò.à-");
+            Service()
+                .getActivity(sesid: globals.sesid, cate: cate, defaultPr: "Y")
+                .then((response) {
+              setActivity(response);
+            });
+          }
 
           Service()
               .getLuoghi(globals.sesid, cliente["customer_id"])

@@ -65,14 +65,137 @@ class _ContainerEvents extends State<ContainerEvents> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                            "${DateFormat.EEEE('it_IT').format(widget.selezionato)}, ${DateFormat.MMMd('it_IT').format(widget.selezionato)}, ${DateFormat.y('it_IT').format(widget.selezionato)}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: MediaQuery.of(context).size.height /
-                                    100 *
-                                    2.5,
-                                fontWeight: FontWeight.bold)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                                "${DateFormat.EEEE('it_IT').format(widget.selezionato)}, ${DateFormat.MMMd('it_IT').format(widget.selezionato)}, ${DateFormat.y('it_IT').format(widget.selezionato)}",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height /
+                                            100 *
+                                            2.5,
+                                    fontWeight: FontWeight.bold)),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .inverseSurface,
+                                ),
+                                onPressed: () {
+                                  Scaffold.of(context)
+                                      .showBottomSheet((context) => Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(20),
+                                                      topRight:
+                                                          Radius.circular(20)),
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .tertiaryContainer,
+                                            ),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                100 *
+                                                80,
+                                            child: Column(
+                                              children: [
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 20),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        'Filtra per:',
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height /
+                                                                100 *
+                                                                2.5,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      IconButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          icon: const Icon(
+                                                            Icons.close,
+                                                            color: Colors.white,
+                                                          ))
+                                                    ],
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                const Expanded(
+                                                    child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                      bottom: 5),
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.all(8.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Column(
+                                                          children: [
+                                                            Text(
+                                                              'Tipo',
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                            ),
+                                                            DropdownMenu<
+                                                                String>(
+                                                              initialSelection:
+                                                                  'R',
+                                                              dropdownMenuEntries: [
+                                                                DropdownMenuEntry(
+                                                                    value: '',
+                                                                    label: ''),
+                                                                DropdownMenuEntry(
+                                                                    value: 'R',
+                                                                    label:
+                                                                        'Rapportino'),
+                                                                DropdownMenuEntry(
+                                                                    value: 'E',
+                                                                    label:
+                                                                        'Evento'),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )),
+                                              ],
+                                            ),
+                                          ));
+                                },
+                                child: Icon(
+                                  Icons.filter_alt,
+                                  color: Theme.of(context).colorScheme.surface,
+                                ))
+                          ],
+                        ),
                         const SizedBox(
                           height: 10,
                         ),

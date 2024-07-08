@@ -68,20 +68,24 @@ class _MyAppState extends State<MyApp> {
       loading = true;
     });
     Service().getReports(globals.sesid, first, last).then((report) {
-      setState(() {
-        loading = false;
-      });
-      jobList.lista = <Reports>[];
-      for (var element in report) {
-        Reports reports = Reports.fromJson(element);
-        jobList.lista.add(reports);
-      }
-      setState(() {
-        jobList.lista = jobList.lista;
-        if (jobList.listaEventi.isEmpty) {
-          jobList.eventiGiorno(_data);
+      if (report == false) {
+        logout();
+      } else {
+        setState(() {
+          loading = false;
+        });
+        jobList.lista = <Reports>[];
+        for (var element in report) {
+          Reports reports = Reports.fromJson(element);
+          jobList.lista.add(reports);
         }
-      });
+        setState(() {
+          jobList.lista = jobList.lista;
+          if (jobList.listaEventi.isEmpty) {
+            jobList.eventiGiorno(_data);
+          }
+        });
+      }
     });
   }
 
@@ -126,6 +130,20 @@ class _MyAppState extends State<MyApp> {
     var updList = context.read<JobList>();
 
     updList.updateLista();
+  }
+
+  Future<void> _handleRefresh() async {
+    // Simulate network fetch or database query
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    // Update the list of items and refresh the UI
+
+    DateTime focusedDay = DateTime.now();
+
+    List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
+
+    fetchRep(weeks.first.first, weeks.last.last);
   }
 
   @override
@@ -179,38 +197,47 @@ class _MyAppState extends State<MyApp> {
                 )),
           ),
         ),
-        body: Container(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            children: [
-              TableBasic(
-                lista: jobList.lista,
-                onDaySelected: aggiornaData,
-                calendarFormat: _calendarFormat,
-                updateFormat: updateFormat,
-                fetchCalendar: fetchRep,
-                visible: visible,
-              ),
-              Expanded(
-                child: ContainerEvents(
-                  loading: loading,
-                  selezionato: _data,
-                  visible: visible,
-                  lista: jobList.listaEventi,
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
+        body: RefreshIndicator(
+          onRefresh: _handleRefresh,
+          child: CustomScrollView(
+            slivers: [
+              SliverFillRemaining(
                 child: Container(
-                  margin: const EdgeInsets.fromLTRB(0, 15, 10, 15),
-                  child: FloatingActionButton(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.primaryContainer,
-                    onPressed: () {
-                      Navigator.of(context)
-                          .push(_createRoute(fetchRep, _data, update));
-                    },
-                    child: const Icon(Icons.add_rounded),
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      TableBasic(
+                        lista: jobList.lista,
+                        onDaySelected: aggiornaData,
+                        calendarFormat: _calendarFormat,
+                        updateFormat: updateFormat,
+                        fetchCalendar: fetchRep,
+                        visible: visible,
+                      ),
+                      Expanded(
+                        child: ContainerEvents(
+                          loading: loading,
+                          selezionato: _data,
+                          visible: visible,
+                          lista: jobList.listaEventi,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Container(
+                          margin: const EdgeInsets.fromLTRB(0, 15, 10, 15),
+                          child: FloatingActionButton(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .push(_createRoute(fetchRep, _data, update));
+                            },
+                            child: const Icon(Icons.add_rounded),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
