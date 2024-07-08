@@ -111,7 +111,7 @@ class _TableBasicState extends State<TableBasic> {
         }
 
         List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
-        widget.fetchCalendar(weeks.first.first, weeks.last.last);
+        widget.fetchCalendar(weeks.first.first, weeks.last.last, 'R');
       },
     );
   }

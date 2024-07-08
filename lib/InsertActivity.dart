@@ -422,7 +422,7 @@ class _InsertActivity extends State<InsertActivity> {
       List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
 
       widget.update();
-      widget.fetchCalendar(weeks.first.first, weeks.last.last);
+      widget.fetchCalendar(weeks.first.first, weeks.last.last, 'R');
       Navigator.pop(context);
     });
   }

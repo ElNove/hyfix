@@ -59,10 +59,10 @@ class _MyAppState extends State<MyApp> {
 
     List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
 
-    fetchRep(weeks.first.first, weeks.last.last);
+    fetchRep(first: weeks.first.first, last: weeks.last.last, type: 'R');
   }
 
-  void fetchRep(first, last) {
+  void fetchRep({required first, required last, required type}) {
     var jobList = context.read<JobList>();
     setState(() {
       loading = true;
@@ -72,7 +72,7 @@ class _MyAppState extends State<MyApp> {
       sesid: globals.sesid,
       start: first,
       end: last,
-      type: 'R',
+      type: type,
     )
         .then((report) {
       if (report == false) {
@@ -150,7 +150,7 @@ class _MyAppState extends State<MyApp> {
 
     List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
 
-    fetchRep(weeks.first.first, weeks.last.last);
+    fetchRep(first: weeks.first.first, last: weeks.last.last, type: 'R');
   }
 
   @override
