@@ -11,6 +11,7 @@ class _FilterboxState extends State<Filterbox> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
       decoration: BoxDecoration(
@@ -23,8 +24,8 @@ class _FilterboxState extends State<Filterbox> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(
-              height: 10,
+            SizedBox(
+              height: screenHeight / 100 * 1,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -50,8 +51,8 @@ class _FilterboxState extends State<Filterbox> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: screenHeight / 100 * 2.5,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -126,8 +127,8 @@ class _FilterboxState extends State<Filterbox> {
                 ),
               ],
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: screenHeight / 100 * 2.5,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -196,8 +197,8 @@ class _FilterboxState extends State<Filterbox> {
                 ),
               ],
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: screenHeight / 100 * 2.5,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -266,8 +267,8 @@ class _FilterboxState extends State<Filterbox> {
                 ),
               ],
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: screenHeight / 100 * 2.5,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -304,6 +305,9 @@ class _FilterboxState extends State<Filterbox> {
                   ],
                 ),
               ],
+            ),
+            SizedBox(
+              height: screenHeight / 100 * 2.5,
             ),
           ],
         ),
