@@ -4,6 +4,7 @@ import 'package:hyfix/models/Reports.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/src/intl/date_format.dart';
+import 'package:hyfix/FilterBox.dart';
 
 class ContainerEvents extends StatefulWidget {
   const ContainerEvents(
@@ -84,111 +85,8 @@ class _ContainerEvents extends State<ContainerEvents> {
                                       .inverseSurface,
                                 ),
                                 onPressed: () {
-                                  Scaffold.of(context)
-                                      .showBottomSheet((context) => Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(20),
-                                                      topRight:
-                                                          Radius.circular(20)),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .tertiaryContainer,
-                                            ),
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                100 *
-                                                80,
-                                            child: Column(
-                                              children: [
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 20),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        'Filtra per:',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .height /
-                                                                100 *
-                                                                2.5,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      IconButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          icon: const Icon(
-                                                            Icons.close,
-                                                            color: Colors.white,
-                                                          ))
-                                                    ],
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                const Expanded(
-                                                    child: Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 5),
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsets.all(8.0),
-                                                    child: Row(
-                                                      children: [
-                                                        Column(
-                                                          children: [
-                                                            Text(
-                                                              'Tipo',
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                            ),
-                                                            DropdownMenu<
-                                                                String>(
-                                                              initialSelection:
-                                                                  'R',
-                                                              dropdownMenuEntries: [
-                                                                DropdownMenuEntry(
-                                                                    value: '',
-                                                                    label: ''),
-                                                                DropdownMenuEntry(
-                                                                    value: 'R',
-                                                                    label:
-                                                                        'Rapportino'),
-                                                                DropdownMenuEntry(
-                                                                    value: 'E',
-                                                                    label:
-                                                                        'Evento'),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                )),
-                                              ],
-                                            ),
-                                          ));
+                                  Scaffold.of(context).showBottomSheet(
+                                      (context) => const Filterbox());
                                 },
                                 child: Icon(
                                   Icons.filter_alt,

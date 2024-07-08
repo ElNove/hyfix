@@ -67,7 +67,14 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       loading = true;
     });
-    Service().getReports(globals.sesid, first, last).then((report) {
+    Service()
+        .getReports(
+      sesid: globals.sesid,
+      start: first,
+      end: last,
+      type: 'R',
+    )
+        .then((report) {
       if (report == false) {
         logout();
       } else {

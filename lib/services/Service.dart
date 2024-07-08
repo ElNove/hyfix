@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Service {
@@ -18,7 +17,17 @@ class Service {
     return response;
   }
 
-  Future<dynamic> getReports(String sesid, dynamic start, dynamic end) async {
+  Future<dynamic> getReports(
+      {required String sesid,
+      required dynamic start,
+      required dynamic end,
+      required String type,
+      List? customer,
+      List? location,
+      List? project,
+      List? projectTask,
+      List? taskType,
+      List? user}) async {
     var client = http.Client();
 
     final startDate = start.toString().split(' ')[0];
@@ -27,6 +36,13 @@ class Service {
     Map<String, dynamic> queryParameters = {
       'filters[start]': startDate,
       'filters[end]': endDate,
+      'filters[report_type]': type,
+      'filters[customer_id]': customer ?? '',
+      'filters[location_id]': location ?? '',
+      'filters[project_id]': project ?? '',
+      'filters[project_task_id]': projectTask ?? '',
+      'filters[task_type_id]': taskType ?? '',
+      'filters[user_id]': user ?? '',
       'limit': '10000'
     };
     var uri = Uri.https(
