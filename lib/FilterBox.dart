@@ -1,13 +1,54 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:hyfix/services/Service.dart';
+import 'Login.dart' as globals;
+
+class Cliente{
+  dynamic customer_id;
+  dynamic customer_code;
+  dynamic customer_companyname;
+
+  Cliente(customer_id,customer_code,customer_companyname){
+    customer_id=customer_id;
+    customer_code=customer_code;
+    customer_companyname=customer_companyname;
+  }
+}
+
+
 
 class Filterbox extends StatefulWidget {
   const Filterbox({super.key});
+
+
 
   @override
   _FilterboxState createState() => _FilterboxState();
 }
 
 class _FilterboxState extends State<Filterbox> {
+
+  List<Cliente> clienti=List.empty(growable: true);
+  List<DropdownMenuEntry<String>> clienti_option=List.empty(growable: true);
+  @override
+  void initState() {
+    Service().selectRead(sesid: globals.sesid, tipo: "C").then((res){
+      
+      var body=jsonDecode(res.body);
+      var data=body["data"];
+      // ignore: avoid_print
+      for (var element in data) {
+        clienti.add(Cliente(element["customer_id"],element["customer_code"],element["customer_companyname"]));
+        clienti_option.add(DropdownMenuEntry(value: "${element["customer_id"]}", label:"${element["customer_id"]}"));
+      }
+      print(clienti_option);
+      
+    });
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -108,7 +149,15 @@ class _FilterboxState extends State<Filterbox> {
                     const SizedBox(
                       height: 7,
                     ),
+
                     DropdownMenu<String>(
+                      onSelected: (value) {
+                        Service().selectRead(
+                            sesid: globals.sesid,
+                            tipo: "T").then((res)=>{
+                              print((res.body))
+                            });
+                      },
                       inputDecorationTheme: InputDecorationTheme(
                           fillColor: Theme.of(context).colorScheme.tertiary,
                           filled: true,
@@ -121,7 +170,7 @@ class _FilterboxState extends State<Filterbox> {
                       width: screenWidth / 100 * 40,
                       trailingIcon: const Icon(Icons.arrow_drop_down,
                           color: Colors.white),
-                      dropdownMenuEntries: const [],
+                      dropdownMenuEntries: clienti_option,
                     ),
                   ],
                 ),
@@ -147,20 +196,23 @@ class _FilterboxState extends State<Filterbox> {
                     const SizedBox(
                       height: 7,
                     ),
-                    DropdownMenu<String>(
-                      inputDecorationTheme: InputDecorationTheme(
-                          fillColor: Theme.of(context).colorScheme.tertiary,
-                          filled: true,
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)))),
-                      textStyle: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                      trailingIcon: const Icon(Icons.arrow_drop_down,
-                          color: Colors.white),
-                      width: screenWidth / 100 * 40,
-                      dropdownMenuEntries: const [],
+                    GestureDetector(
+                      onTap: () {},
+                      child: DropdownMenu<String>(
+                        inputDecorationTheme: InputDecorationTheme(
+                            fillColor: Theme.of(context).colorScheme.tertiary,
+                            filled: true,
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)))),
+                        textStyle: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                        trailingIcon: const Icon(Icons.arrow_drop_down,
+                            color: Colors.white),
+                        width: screenWidth / 100 * 40,
+                        dropdownMenuEntries: const [],
+                      ),
                     ),
                   ],
                 ),
@@ -178,20 +230,23 @@ class _FilterboxState extends State<Filterbox> {
                     const SizedBox(
                       height: 7,
                     ),
-                    DropdownMenu<String>(
-                      inputDecorationTheme: InputDecorationTheme(
-                          fillColor: Theme.of(context).colorScheme.tertiary,
-                          filled: true,
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)))),
-                      textStyle: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                      trailingIcon: const Icon(Icons.arrow_drop_down,
-                          color: Colors.white),
-                      width: screenWidth / 100 * 40,
-                      dropdownMenuEntries: const [],
+                    GestureDetector(
+                      onTap: () {},
+                      child: DropdownMenu<String>(
+                        inputDecorationTheme: InputDecorationTheme(
+                            fillColor: Theme.of(context).colorScheme.tertiary,
+                            filled: true,
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)))),
+                        textStyle: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                        trailingIcon: const Icon(Icons.arrow_drop_down,
+                            color: Colors.white),
+                        width: screenWidth / 100 * 40,
+                        dropdownMenuEntries: const [],
+                      ),
                     ),
                   ],
                 ),
@@ -217,20 +272,23 @@ class _FilterboxState extends State<Filterbox> {
                     const SizedBox(
                       height: 7,
                     ),
-                    DropdownMenu<String>(
-                      inputDecorationTheme: InputDecorationTheme(
-                          fillColor: Theme.of(context).colorScheme.tertiary,
-                          filled: true,
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)))),
-                      textStyle: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                      trailingIcon: const Icon(Icons.arrow_drop_down,
-                          color: Colors.white),
-                      width: screenWidth / 100 * 40,
-                      dropdownMenuEntries: const [],
+                    GestureDetector(
+                      onTap: () {},
+                      child: DropdownMenu<String>(
+                        inputDecorationTheme: InputDecorationTheme(
+                            fillColor: Theme.of(context).colorScheme.tertiary,
+                            filled: true,
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)))),
+                        textStyle: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                        trailingIcon: const Icon(Icons.arrow_drop_down,
+                            color: Colors.white),
+                        width: screenWidth / 100 * 40,
+                        dropdownMenuEntries: const [],
+                      ),
                     ),
                   ],
                 ),
@@ -248,20 +306,23 @@ class _FilterboxState extends State<Filterbox> {
                     const SizedBox(
                       height: 7,
                     ),
-                    DropdownMenu<String>(
-                      inputDecorationTheme: InputDecorationTheme(
-                          fillColor: Theme.of(context).colorScheme.tertiary,
-                          filled: true,
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)))),
-                      textStyle: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                      trailingIcon: const Icon(Icons.arrow_drop_down,
-                          color: Colors.white),
-                      width: screenWidth / 100 * 40,
-                      dropdownMenuEntries: const [],
+                    GestureDetector(
+                      onTap: () {},
+                      child: DropdownMenu<String>(
+                        inputDecorationTheme: InputDecorationTheme(
+                            fillColor: Theme.of(context).colorScheme.tertiary,
+                            filled: true,
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)))),
+                        textStyle: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                        trailingIcon: const Icon(Icons.arrow_drop_down,
+                            color: Colors.white),
+                        width: screenWidth / 100 * 40,
+                        dropdownMenuEntries: const [],
+                      ),
                     ),
                   ],
                 ),
@@ -287,20 +348,23 @@ class _FilterboxState extends State<Filterbox> {
                     const SizedBox(
                       height: 7,
                     ),
-                    DropdownMenu<String>(
-                      inputDecorationTheme: InputDecorationTheme(
-                          fillColor: Theme.of(context).colorScheme.tertiary,
-                          filled: true,
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)))),
-                      textStyle: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                      trailingIcon: const Icon(Icons.arrow_drop_down,
-                          color: Colors.white),
-                      width: screenWidth / 100 * 80,
-                      dropdownMenuEntries: const [],
+                    GestureDetector(
+                      onTap: () {},
+                      child: DropdownMenu<String>(
+                        inputDecorationTheme: InputDecorationTheme(
+                            fillColor: Theme.of(context).colorScheme.tertiary,
+                            filled: true,
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)))),
+                        textStyle: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                        trailingIcon: const Icon(Icons.arrow_drop_down,
+                            color: Colors.white),
+                        width: screenWidth / 100 * 80,
+                        dropdownMenuEntries: const [],
+                      ),
                     ),
                   ],
                 ),

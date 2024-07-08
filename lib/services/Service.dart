@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:hyfix/WeeksDay.dart';
 
 class Service {
   Future<http.Response> fetchUtente(String user, String password) async {
@@ -211,5 +212,156 @@ class Service {
         body: rep);
 
     return response;
+  }
+
+  Future<http.Response> selectRead({
+    required String sesid,
+    required String tipo,
+    dynamic report_type,
+    dynamic customer_id,
+    dynamic project_id,
+    dynamic task_type_id,
+    dynamic location_id,
+    dynamic project_task_id,
+    dynamic user_id,
+  }) async {
+    print("CIAOOAIOAOA0");
+    DateTime focusedDay = DateTime.now();
+
+    List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
+
+    final startDate = weeks.first.first.toString().split(' ')[0];
+    final endDate = weeks.last.last.toString().split(' ')[0];
+
+    var params;
+    switch (tipo) {
+      case "C":
+        params = {
+          "filters[start]": startDate,
+          "filters[end]": endDate,
+          //"filters[location_id]": location_id ?? '',
+          //"filters[project_id]": project_id ?? '',
+          //"filters[project_task_id]": project_task_id ?? '',
+          //"filters[task_type_id]": task_type_id ?? '',
+          //"filters[user_id]": user_id ?? '',
+          "selectParams[distinctFields][]":
+            [
+            "customer_id",
+            "customer_code",
+            "customer_companyname"
+          ]
+          
+        };
+        break;
+      case "L":
+        params = {
+          "filters[start]": startDate,
+          "filters[end]": endDate,
+          "filters[customer_id]": customer_id ?? '',
+          "filters[project_id]": project_id ?? '',
+          "filters[project_task_id]": project_task_id ?? '',
+          "filters[task_type_id]": task_type_id ?? '',
+          "filters[user_id]": user_id ?? '',
+          "selectParams[distinctFields][]": [
+            "location_id",
+            "location_code",
+            "location_city"
+          ]
+        };
+        break;
+      case "P":
+        params = {
+          "filters[start]": startDate,
+          "filters[end]": endDate,
+          "filters[customer_id]": customer_id ?? '',
+          "filters[location_id]": location_id ?? '',
+          "filters[project_task_id]": project_task_id ?? '',
+          "filters[task_type_id]": task_type_id ?? '',
+          "filters[user_id]": user_id ?? '',
+          "selectParams[distinctFields][]": [
+            "project_id",
+            "project_code",
+            "customer_code"
+          ]
+        };
+        break;
+      case "A":
+        params = {
+          "filters[start]": startDate,
+          "filters[end]": endDate,
+          "filters[customer_id]": customer_id ?? '',
+          "filters[location_id]": location_id ?? '',
+          "filters[project_id]": project_id ?? '',
+          "filters[task_type_id]": task_type_id ?? '',
+          "filters[user_id]": user_id ?? '',
+          "selectParams[distinctFields][]": [
+            "project_task_id",
+            "project_task_code",
+            "project_code",
+            "customer_code"
+          ]
+        };
+
+        break;
+      case "TA":
+        params = {
+          "filters[start]": startDate,
+          "filters[end]": endDate,
+          "filters[customer_id]": customer_id ?? '',
+          "filters[location_id]": location_id ?? '',
+          "filters[project_id]": project_id ?? '',
+          "filters[task_type_id]": task_type_id ?? '',
+          "filters[user_id]": user_id ?? '',
+          "selectParams[distinctFields][]": [
+            "'task_type_id'",
+            "'task_type_code'",
+            "unity_code"
+          ]
+        };
+        break;
+      case "U":
+        params = {
+          "filters[start]": startDate,
+          "filters[end]": endDate,
+          "filters[customer_id]": customer_id ?? '',
+          "filters[location_id]": location_id ?? '',
+          "filters[project_id]": project_id ?? '',
+          "filters[project_task_id]": project_task_id ?? '',
+          "filters[task_type_id]": task_type_id ?? '',
+          "selectParams[distinctFields][]": [
+            "user_id",
+            "username",
+            "signature",
+            "avatar"
+          ]
+        };
+        break;
+    }
+  print(params);
+    if (tipo != "A") {
+      var uri = Uri.https('hyfix.test.nealis.it',
+          '/reports/report/selectread', params);
+      final response = await http.get(
+        uri,
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.cookieHeader: sesid,
+        },
+      );
+
+      return response;
+    } else {
+      var uri = Uri.https('hyfix.test.nealis.it',
+          '/reports/report/readdistinctprojecttasks', params);
+      final response = await http.get(
+        uri,
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.cookieHeader: sesid,
+        },
+      );
+
+      return response;
+    }
   }
 }
