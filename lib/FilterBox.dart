@@ -22,6 +22,9 @@ class Cliente{
     customer_companyname=customer_companyname;
     label="${customer_code}";
   }
+  String toString(){
+    return "{$customer_id - $customer_code - $customer_companyname}";
+  }
 }
 class Luogo{
   dynamic location_id;
@@ -35,6 +38,9 @@ class Luogo{
     location_city=location_city;
     label="${location_code}";
   }
+  String toString(){
+    return "{$location_id - $location_code - $location_city}";
+  }
 }
 class Progetto{
   dynamic project_id;
@@ -47,6 +53,9 @@ class Progetto{
     project_code=project_code;
     customer_code=customer_code;
     label="${project_code}";
+  }
+  String toString(){
+    return "{$project_id - $project_code - $customer_code}";
   }
 }
 class Attivita{
@@ -63,6 +72,9 @@ class Attivita{
     customer_code=customer_code;
     label="${project_task_code}";
   }
+  String toString(){
+    return "{$project_task_id - $project_task_code - $project_code -  $customer_code}";
+  }
 }
 class TipoAttivita{
   dynamic task_type_id;
@@ -75,6 +87,9 @@ class TipoAttivita{
     task_type_code=task_type_code;
     unity_code=unity_code;
     label="${task_type_code}";
+  }
+  String toString(){
+    return "{$task_type_id - $task_type_code - $unity_code}";
   }
 }
 class Utente{
@@ -90,6 +105,9 @@ class Utente{
     signature=signature;
     avatar=avatar;
     label="${username}";
+  }
+  String toString(){
+    return "{$user_id - $username - $signature - $avatar}";
   }
 }
 
@@ -163,12 +181,13 @@ class _FilterboxState extends State<Filterbox> {
       listData: lista,
       selectedListData: [],
       choiceChipLabel: (user) => user,
-      validateSelectedItem: (list, val) => list!.contains(val),
+      validateSelectedItem: (list, val)=>list!.contains(val),
       onItemSearch: (user, query) {
         return true;
         // return user.name!.toLowerCase().contains(query.toLowerCase());
       },
       onApplyButtonClick: (list) {
+        print(list);
         setState(() {
           // selectedUserList = List.from(list!);
         });
@@ -190,68 +209,62 @@ class _FilterboxState extends State<Filterbox> {
       var body=jsonDecode(res.body);
       var data=body["data"];
       
-      print("clienti");
       // ignore: avoid_print
       for (var element in data) {
         clienti.add(Cliente(element["customer_id"],element["customer_code"],element["customer_companyname"]));
-        print(element);
       }
     });
     Service().selectRead(sesid: globals.sesid, tipo: "L").then((res){
       
       var body=jsonDecode(res.body);
       var data=body["data"];
-      print("luogo");
       // ignore: avoid_print
       for (var element in data) {
         luoghi.add(Luogo(element["locatio_id"],element["location_code"],element["location_city"]));
-        print(element);
       }
     });
     Service().selectRead(sesid: globals.sesid, tipo: "P").then((res){
       
       var body=jsonDecode(res.body);
       var data=body["data"];
-      print("progetto");
       // ignore: avoid_print
       for (var element in data) {
         progetti.add(Progetto(element["project_id"],element["project_code"],element["customer_code"]));
-        print(element);
+        
       }
     });
     Service().selectRead(sesid: globals.sesid, tipo: "A").then((res){
       
       var body=jsonDecode(res.body);
       var data=body["data"];
-      print("attività");
       // ignore: avoid_print
       for (var element in data) {
         attivita.add(Attivita(element["project_task_id"],element["project_task_code"],element["project_code"],element["customer_code"]));
-        print(element);
+        
       }
     });
     Service().selectRead(sesid: globals.sesid, tipo: "TA").then((res){
       
       var body=jsonDecode(res.body);
       var data=body["data"];
-      print("tipo attività");
+      
       
       // ignore: avoid_print
       for (var element in data) {
         tipoAttivita.add(TipoAttivita(element["task_type_id"],element["task_type_code"],element["unity_code"]));
-        print(element);
+        
       }
     });
     Service().selectRead(sesid: globals.sesid, tipo: "U").then((res){
       
       var body=jsonDecode(res.body);
       var data=body["data"];
-      print("utenti");
+      
       
       // ignore: avoid_print
       for (var element in data) {
         utenti.add(Utente(element["user_id"],element["username"],element["signature"],element["avatar"]));
-        print(element);
+        
       }
     });
     // TODO: implement initState
