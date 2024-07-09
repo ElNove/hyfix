@@ -4,6 +4,82 @@ import 'package:hyfix/Home.dart';
 import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/models/Reports.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:hyfix/services/Service.dart';
+import 'Login.dart' as globals;
+
+class Cliente{
+  dynamic customer_id;
+  dynamic customer_code;
+  dynamic customer_companyname;
+
+  Cliente(customer_id,customer_code,customer_companyname){
+    customer_id=customer_id;
+    customer_code=customer_code;
+    customer_companyname=customer_companyname;
+  }
+}
+class Luogo{
+  dynamic location_id;
+  dynamic location_code;
+  dynamic location_city;
+
+  Luogo(location_id,location_code,location_city){
+    location_id=location_id;
+    location_code=location_code;
+    location_city=location_city;
+  }
+}
+class Progetto{
+  dynamic project_id;
+  dynamic project_code;
+  dynamic customer_code;
+
+  Progetto(project_id,project_code,customer_code){
+    project_id=project_id;
+    project_code=project_code;
+    customer_code=customer_code;
+  }
+}
+class Attivita{
+  dynamic project_task_id;
+  dynamic project_task_code;
+  dynamic project_code;
+  dynamic customer_code;
+
+  Attivita(project_task_id,project_task_code,customer_companyname,customer_code){
+    project_task_id=project_task_id;
+    project_task_code=project_task_code;
+    project_code=project_code;
+    customer_code=customer_code;
+  }
+}
+class TipoAttivita{
+  dynamic task_type_id;
+  dynamic task_type_code;
+  dynamic unity_code;
+
+  TipoAttivita(task_type_id,task_type_code,unity_code){
+    task_type_id=task_type_id;
+    task_type_code=task_type_code;
+    unity_code=unity_code;
+  }
+}
+class Utente{
+  dynamic user_id;
+  dynamic username;
+  dynamic signature;
+  dynamic avatar;
+
+  Utente(user_id,username,signature,avatar){
+    user_id=user_id;
+    username=username;
+    signature=signature;
+    avatar=avatar;
+  }
+}
 
 class Filterbox extends StatefulWidget {
   const Filterbox(
@@ -80,6 +156,87 @@ class _FilterboxState extends State<Filterbox> {
         Navigator.pop(context);
       },
     );
+
+  List<Cliente> clienti=List.empty(growable: true);
+  List<Luogo> luoghi=List.empty(growable: true);
+  List<Progetto> progetti=List.empty(growable: true);
+  List<Attivita> attivita=List.empty(growable: true);
+  List<TipoAttivita> tipoAttivita=List.empty(growable: true);
+  List<Utente> utenti=List.empty(growable: true);
+
+  @override
+  void initState() {
+    Service().selectRead(sesid: globals.sesid, tipo: "C").then((res){
+      
+      var body=jsonDecode(res.body);
+      var data=body["data"];
+      
+      print("clienti");
+      // ignore: avoid_print
+      for (var element in data) {
+        clienti.add(Cliente(element["customer_id"],element["customer_code"],element["customer_companyname"]));
+        print(element);
+      }
+    });
+    Service().selectRead(sesid: globals.sesid, tipo: "L").then((res){
+      
+      var body=jsonDecode(res.body);
+      var data=body["data"];
+      print("luogo");
+      // ignore: avoid_print
+      for (var element in data) {
+        luoghi.add(Luogo(element["locatio_id"],element["location_code"],element["location_city"]));
+        print(element);
+      }
+    });
+    Service().selectRead(sesid: globals.sesid, tipo: "P").then((res){
+      
+      var body=jsonDecode(res.body);
+      var data=body["data"];
+      print("progetto");
+      // ignore: avoid_print
+      for (var element in data) {
+        progetti.add(Progetto(element["project_id"],element["project_code"],element["customer_code"]));
+        print(element);
+      }
+    });
+    Service().selectRead(sesid: globals.sesid, tipo: "A").then((res){
+      
+      var body=jsonDecode(res.body);
+      var data=body["data"];
+      print("attività");
+      // ignore: avoid_print
+      for (var element in data) {
+        attivita.add(Attivita(element["project_task_id"],element["project_task_code"],element["project_code"],element["customer_code"]));
+        print(element);
+      }
+    });
+    Service().selectRead(sesid: globals.sesid, tipo: "TA").then((res){
+      
+      var body=jsonDecode(res.body);
+      var data=body["data"];
+      print("tipo attività");
+      
+      // ignore: avoid_print
+      for (var element in data) {
+        tipoAttivita.add(TipoAttivita(element["task_type_id"],element["task_type_code"],element["unity_code"]));
+        print(element);
+      }
+    });
+    Service().selectRead(sesid: globals.sesid, tipo: "U").then((res){
+      
+      var body=jsonDecode(res.body);
+      var data=body["data"];
+      print("utenti");
+      
+      // ignore: avoid_print
+      for (var element in data) {
+        utenti.add(Utente(element["user_id"],element["username"],element["signature"],element["avatar"]));
+        print(element);
+      }
+    });
+    // TODO: implement initState
+    super.initState();
   }
 
   @override

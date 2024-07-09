@@ -15,7 +15,8 @@ class ContainerEvents extends StatefulWidget {
       required this.fetchRep,
       required this.dayReload,
       super.key,
-      required this.visible});
+      required this.visible,});
+
   final DateTime selezionato;
   final bool visible;
   final List<Reports> lista;
