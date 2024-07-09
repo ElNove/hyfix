@@ -6,6 +6,7 @@ import 'package:table_calendar/table_calendar.dart';
 class TableBasic extends StatefulWidget {
   const TableBasic(
       {super.key,
+      required this.update,
       required this.lista,
       required this.onDaySelected,
       required this.calendarFormat,
@@ -18,6 +19,7 @@ class TableBasic extends StatefulWidget {
   final bool visible;
   final Function fetchCalendar;
   final List<Reports> lista;
+  final Function update;
 
   @override
   _TableBasicState createState() => _TableBasicState();
@@ -110,8 +112,10 @@ class _TableBasicState extends State<TableBasic> {
             break;
         }
 
-        List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
-        widget.fetchCalendar(weeks.first.first, weeks.last.last, 'R');
+        widget.update(_focusedDay);
+        List<List<DateTime>> weeks = getWeeksOfMonth(_focusedDay);
+        widget.fetchCalendar(
+            first: weeks.first.first, last: weeks.last.last, type: 'R');
       },
     );
   }
