@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hyfix/FilterBox.dart';
 import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/main.dart';
 import 'package:hyfix/models/Reports.dart';
@@ -46,12 +47,12 @@ class DataFetch with ChangeNotifier {
   dynamic first;
   dynamic last;
   String type = 'R';
-  List customer = [];
-  List location = [];
-  List project = [];
-  List projectTask = [];
-  List taskType = [];
-  List user = [];
+  List<Cliente> customer = [];
+  List<Luogo> location = [];
+  List<Progetto> project = [];
+  List<Attivita> projectTask = [];
+  List<TipoAttivita> taskType = [];
+  List<Utente> user = [];
 
   void initData() {
     DateTime focusedDay = DateTime.now();

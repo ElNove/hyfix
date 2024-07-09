@@ -2,94 +2,97 @@ import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
 import 'package:hyfix/Home.dart';
 import 'package:hyfix/WeeksDay.dart';
-import 'package:hyfix/models/Reports.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:hyfix/services/Service.dart';
 import 'Login.dart' as globals;
 
-class Cliente{
+class Cliente {
   dynamic customer_id;
   dynamic customer_code;
   dynamic customer_companyname;
-  String label="";
+  String label = "";
 
-  Cliente(customer_id,customer_code,customer_companyname){
-    customer_id=customer_id;
-    customer_code=customer_code;
-    customer_companyname=customer_companyname;
-    label="${customer_code}";
+  Cliente(this.customer_id, this.customer_code, this.customer_companyname) {
+    customer_id = customer_id;
+    customer_code = customer_code;
+    customer_companyname = customer_companyname;
+    label = "$customer_code - $customer_companyname";
   }
 }
-class Luogo{
+
+class Luogo {
   dynamic location_id;
   dynamic location_code;
   dynamic location_city;
-  String label="";
+  String label = "";
 
-  Luogo(location_id,location_code,location_city){
-    location_id=location_id;
-    location_code=location_code;
-    location_city=location_city;
-    label="${location_code}";
+  Luogo(this.location_id, this.location_code, this.location_city) {
+    location_id = location_id;
+    location_code = location_code;
+    location_city = location_city;
+    label = "$location_code - $location_city";
   }
 }
-class Progetto{
+
+class Progetto {
   dynamic project_id;
   dynamic project_code;
   dynamic customer_code;
-  String label="";
+  String label = "";
 
-  Progetto(project_id,project_code,customer_code){
-    project_id=project_id;
-    project_code=project_code;
-    customer_code=customer_code;
-    label="${project_code}";
+  Progetto(this.project_id, this.project_code, this.customer_code) {
+    project_id = project_id;
+    project_code = project_code;
+    customer_code = customer_code;
+    label = "$project_code - $customer_code";
   }
 }
-class Attivita{
+
+class Attivita {
   dynamic project_task_id;
   dynamic project_task_code;
   dynamic project_code;
   dynamic customer_code;
-  String label="";
+  String label = "";
 
-  Attivita(project_task_id,project_task_code,customer_companyname,customer_code){
-    project_task_id=project_task_id;
-    project_task_code=project_task_code;
-    project_code=project_code;
-    customer_code=customer_code;
-    label="${project_task_code}";
+  Attivita(this.project_task_id, this.project_task_code, this.project_code,
+      this.customer_code) {
+    project_task_id = project_task_id;
+    project_task_code = project_task_code;
+    project_code = project_code;
+    customer_code = customer_code;
+    label = "$project_task_code - $project_code - $customer_code";
   }
 }
-class TipoAttivita{
+
+class TipoAttivita {
   dynamic task_type_id;
   dynamic task_type_code;
   dynamic unity_code;
-  String label="";
+  String label = "";
 
-  TipoAttivita(task_type_id,task_type_code,unity_code){
-    task_type_id=task_type_id;
-    task_type_code=task_type_code;
-    unity_code=unity_code;
-    label="${task_type_code}";
+  TipoAttivita(this.task_type_id, this.task_type_code, this.unity_code) {
+    task_type_id = task_type_id;
+    task_type_code = task_type_code;
+    unity_code = unity_code;
+    label = "$task_type_code - $unity_code";
   }
 }
-class Utente{
+
+class Utente {
   dynamic user_id;
   dynamic username;
   dynamic signature;
   dynamic avatar;
-  String label="";
+  String label = "";
 
-  Utente(user_id,username,signature,avatar){
-    user_id=user_id;
-    username=username;
-    signature=signature;
-    avatar=avatar;
-    label="${username}";
+  Utente(this.user_id, this.username, this.signature, this.avatar) {
+    user_id = user_id;
+    username = username;
+    signature = signature;
+    avatar = avatar;
+    label = "$username";
   }
 }
 
@@ -113,156 +116,149 @@ class _FilterboxState extends State<Filterbox> {
     widget.aggiornaData();
   }
 
-  void openFilterDialog(List list) async {
-    List<String> lista=List.empty(growable: true);
-    for (var element in list) {
-      lista.add(element.label);
-      
-    }
-
-
-    await FilterListDialog.display<String>(
-      applyButtonText: 'Applica',
-      allButtonText: 'Tutti',
-      themeData: FilterListThemeData(
-        context,
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        headerTheme: HeaderThemeData(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          closeIconColor: Theme.of(context).colorScheme.onSurface,
-          searchFieldBackgroundColor: Theme.of(context).colorScheme.onSurface,
-          searchFieldIconColor: Theme.of(context).colorScheme.surface,
-          searchFieldHintText: 'Cerca...',
-          searchFieldHintTextStyle: TextStyle(
-              color: Theme.of(context).colorScheme.outline, fontSize: 18),
-          searchFieldTextStyle: TextStyle(
-              color: Theme.of(context).colorScheme.surface, fontSize: 18),
-          headerTextStyle: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontSize: 18,
-              fontWeight: FontWeight.bold),
-        ),
-        controlButtonBarTheme: ControlButtonBarThemeData(
-          context,
-          backgroundColor: Theme.of(context).colorScheme.onSurface,
-          controlButtonTheme: ControlButtonThemeData(
-            primaryButtonBackgroundColor:
-                Theme.of(context).colorScheme.tertiaryContainer,
-            primaryButtonTextStyle: TextStyle(
-              color: Theme.of(context).colorScheme.onTertiaryContainer,
-              fontSize: 15,
-            ),
-            textStyle: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
-              fontSize: 15,
-            ),
-          ),
-        ),
-      ),
-      context,
-      listData: lista,
-      selectedListData: [],
-      choiceChipLabel: (user) => user,
-      validateSelectedItem: (list, val) => list!.contains(val),
-      onItemSearch: (user, query) {
-        return true;
-        // return user.name!.toLowerCase().contains(query.toLowerCase());
-      },
-      onApplyButtonClick: (list) {
-        setState(() {
-          // selectedUserList = List.from(list!);
-        });
-        Navigator.pop(context);
-      },
-    );
-  }
-  List<Cliente> clienti=List.empty(growable: true);
-  List<Luogo> luoghi=List.empty(growable: true);
-  List<Progetto> progetti=List.empty(growable: true);
-  List<Attivita> attivita=List.empty(growable: true);
-  List<TipoAttivita> tipoAttivita=List.empty(growable: true);
-  List<Utente> utenti=List.empty(growable: true);
-
-  @override
-  void initState() {
-    Service().selectRead(sesid: globals.sesid, tipo: "C").then((res){
-      
-      var body=jsonDecode(res.body);
-      var data=body["data"];
-      
-      print("clienti");
-      // ignore: avoid_print
-      for (var element in data) {
-        clienti.add(Cliente(element["customer_id"],element["customer_code"],element["customer_companyname"]));
-        print(element);
-      }
-    });
-    Service().selectRead(sesid: globals.sesid, tipo: "L").then((res){
-      
-      var body=jsonDecode(res.body);
-      var data=body["data"];
-      print("luogo");
-      // ignore: avoid_print
-      for (var element in data) {
-        luoghi.add(Luogo(element["locatio_id"],element["location_code"],element["location_city"]));
-        print(element);
-      }
-    });
-    Service().selectRead(sesid: globals.sesid, tipo: "P").then((res){
-      
-      var body=jsonDecode(res.body);
-      var data=body["data"];
-      print("progetto");
-      // ignore: avoid_print
-      for (var element in data) {
-        progetti.add(Progetto(element["project_id"],element["project_code"],element["customer_code"]));
-        print(element);
-      }
-    });
-    Service().selectRead(sesid: globals.sesid, tipo: "A").then((res){
-      
-      var body=jsonDecode(res.body);
-      var data=body["data"];
-      print("attività");
-      // ignore: avoid_print
-      for (var element in data) {
-        attivita.add(Attivita(element["project_task_id"],element["project_task_code"],element["project_code"],element["customer_code"]));
-        print(element);
-      }
-    });
-    Service().selectRead(sesid: globals.sesid, tipo: "TA").then((res){
-      
-      var body=jsonDecode(res.body);
-      var data=body["data"];
-      print("tipo attività");
-      
-      // ignore: avoid_print
-      for (var element in data) {
-        tipoAttivita.add(TipoAttivita(element["task_type_id"],element["task_type_code"],element["unity_code"]));
-        print(element);
-      }
-    });
-    Service().selectRead(sesid: globals.sesid, tipo: "U").then((res){
-      
-      var body=jsonDecode(res.body);
-      var data=body["data"];
-      print("utenti");
-      
-      // ignore: avoid_print
-      for (var element in data) {
-        utenti.add(Utente(element["user_id"],element["username"],element["signature"],element["avatar"]));
-        print(element);
-      }
-    });
-    // TODO: implement initState
-    super.initState();
-  }
+  List<Cliente> clienti = List.empty(growable: true);
+  List<Luogo> luoghi = List.empty(growable: true);
+  List<Progetto> progetti = List.empty(growable: true);
+  List<Attivita> attivita = List.empty(growable: true);
+  List<TipoAttivita> tipoAttivita = List.empty(growable: true);
+  List<Utente> utenti = List.empty(growable: true);
 
   @override
   Widget build(BuildContext context) {
     var dataFetch = context.watch<DataFetch>();
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
+    void openFilterDialog<T extends Object>(List<T> list) async {
+      late List selectedList = List.empty(growable: true);
+
+      if (list is List<Cliente>) {
+        selectedList = dataFetch.customer;
+      } else if (list is List<Luogo>) {
+        selectedList = dataFetch.location;
+      } else if (list is List<Progetto>) {
+        selectedList = dataFetch.project;
+      } else if (list is List<Attivita>) {
+        selectedList = dataFetch.projectTask;
+      } else if (list is List<TipoAttivita>) {
+        selectedList = dataFetch.taskType;
+      } else if (list is List<Utente>) {
+        selectedList = dataFetch.user;
+      }
+
+      print(selectedList);
+
+      await FilterListDialog.display<T>(
+        applyButtonText: 'Applica',
+        allButtonText: 'Tutti',
+        themeData: FilterListThemeData(
+          context,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          headerTheme: HeaderThemeData(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            closeIconColor: Theme.of(context).colorScheme.onSurface,
+            searchFieldBackgroundColor: Theme.of(context).colorScheme.onSurface,
+            searchFieldIconColor: Theme.of(context).colorScheme.surface,
+            searchFieldHintText: 'Cerca...',
+            searchFieldHintTextStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline, fontSize: 18),
+            searchFieldTextStyle: TextStyle(
+                color: Theme.of(context).colorScheme.surface, fontSize: 18),
+            headerTextStyle: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontSize: 18,
+                fontWeight: FontWeight.bold),
+          ),
+          controlButtonBarTheme: ControlButtonBarThemeData(
+            context,
+            backgroundColor: Theme.of(context).colorScheme.onSurface,
+            controlButtonTheme: ControlButtonThemeData(
+              primaryButtonBackgroundColor:
+                  Theme.of(context).colorScheme.tertiaryContainer,
+              primaryButtonTextStyle: TextStyle(
+                color: Theme.of(context).colorScheme.onTertiaryContainer,
+                fontSize: 15,
+              ),
+              textStyle: TextStyle(
+                color: Theme.of(context).colorScheme.surface,
+                fontSize: 15,
+              ),
+            ),
+          ),
+        ),
+        context,
+        listData: list,
+        selectedListData: selectedList as List<T>,
+        choiceChipLabel: (item) => '',
+        choiceChipBuilder: (context, item, isSelected) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            decoration: BoxDecoration(
+              color: isSelected!
+                  ? Theme.of(context).colorScheme.tertiaryContainer
+                  : Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.tertiaryContainer
+                      : Theme.of(context).colorScheme.onSurface),
+            ),
+            child: Text(
+              item.label,
+              style: TextStyle(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.onTertiaryContainer
+                      : Theme.of(context).colorScheme.onSurface,
+                  fontSize: 15),
+            )),
+        validateSelectedItem: (list, val) {
+          return list!.contains(val);
+        },
+        onItemSearch: (ele, query) {
+          if (ele is Cliente) {
+            return ele.customer_code!
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                ele.customer_companyname!
+                    .toLowerCase()
+                    .contains(query.toLowerCase());
+          } else if (ele is Luogo) {
+            return ele.location_code!
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                ele.location_city!.toLowerCase().contains(query.toLowerCase());
+          } else if (ele is Progetto) {
+            return ele.project_code!
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                ele.customer_code!.toLowerCase().contains(query.toLowerCase());
+          } else if (ele is Attivita) {
+            return ele.project_task_code!
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                ele.project_code!.toLowerCase().contains(query.toLowerCase()) ||
+                ele.customer_code!.toLowerCase().contains(query.toLowerCase());
+          } else if (ele is TipoAttivita) {
+            return ele.task_type_code!
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                ele.unity_code!.toLowerCase().contains(query.toLowerCase());
+          } else if (ele is Utente) {
+            return ele.username!.toLowerCase().contains(query.toLowerCase());
+          } else {
+            return false;
+          }
+        },
+        onApplyButtonClick: (list) {
+          setState(() {
+            dataFetch.customer = list as List<Cliente>;
+          });
+          print(dataFetch.customer);
+          Navigator.pop(context);
+        },
+      );
+    }
+
     return Wrap(
       children: [
         Container(
@@ -396,7 +392,28 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(clienti),
+                            onTap: () {
+                              if (clienti.isEmpty) {
+                                Service()
+                                    .selectRead(sesid: globals.sesid, tipo: "C")
+                                    .then((res) {
+                                  clienti.clear();
+                                  var body = jsonDecode(res.body);
+                                  var data = body["data"];
+
+                                  // ignore: avoid_print
+                                  for (var element in data) {
+                                    clienti.add(Cliente(
+                                        element["customer_id"],
+                                        element["customer_code"],
+                                        element["customer_companyname"]));
+                                  }
+                                  openFilterDialog(clienti);
+                                });
+                              } else {
+                                openFilterDialog(clienti);
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -443,7 +460,26 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(luoghi),
+                            onTap: () {
+                              if (luoghi.isEmpty) {
+                                Service()
+                                    .selectRead(sesid: globals.sesid, tipo: "L")
+                                    .then((res) {
+                                  var body = jsonDecode(res.body);
+                                  var data = body["data"];
+                                  // ignore: avoid_print
+                                  for (var element in data) {
+                                    luoghi.add(Luogo(
+                                        element["locatio_id"],
+                                        element["location_code"],
+                                        element["location_city"]));
+                                  }
+                                  openFilterDialog(luoghi);
+                                });
+                              } else {
+                                openFilterDialog(luoghi);
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -482,7 +518,26 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(progetti),
+                            onTap: () {
+                              if (progetti.isEmpty) {
+                                Service()
+                                    .selectRead(sesid: globals.sesid, tipo: "P")
+                                    .then((res) {
+                                  var body = jsonDecode(res.body);
+                                  var data = body["data"];
+                                  // ignore: avoid_print
+                                  for (var element in data) {
+                                    progetti.add(Progetto(
+                                        element["project_id"],
+                                        element["project_code"],
+                                        element["customer_code"]));
+                                  }
+                                  openFilterDialog(progetti);
+                                });
+                              } else {
+                                openFilterDialog(progetti);
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -529,7 +584,27 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(attivita),
+                            onTap: () {
+                              if (attivita.isEmpty) {
+                                Service()
+                                    .selectRead(sesid: globals.sesid, tipo: "A")
+                                    .then((res) {
+                                  var body = jsonDecode(res.body);
+                                  var data = body["data"];
+                                  // ignore: avoid_print
+                                  for (var element in data) {
+                                    attivita.add(Attivita(
+                                        element["project_task_id"],
+                                        element["project_task_code"],
+                                        element["project_code"],
+                                        element["customer_code"]));
+                                  }
+                                  openFilterDialog(attivita);
+                                });
+                              } else {
+                                openFilterDialog(attivita);
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -568,7 +643,28 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(tipoAttivita),
+                            onTap: () {
+                              if (tipoAttivita.isEmpty) {
+                                Service()
+                                    .selectRead(
+                                        sesid: globals.sesid, tipo: "TA")
+                                    .then((res) {
+                                  var body = jsonDecode(res.body);
+                                  var data = body["data"];
+
+                                  // ignore: avoid_print
+                                  for (var element in data) {
+                                    tipoAttivita.add(TipoAttivita(
+                                        element["task_type_id"],
+                                        element["task_type_code"],
+                                        element["unity_code"]));
+                                  }
+                                  openFilterDialog(tipoAttivita);
+                                });
+                              } else {
+                                openFilterDialog(tipoAttivita);
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -615,7 +711,28 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(utenti),
+                            onTap: () {
+                              if (utenti.isEmpty) {
+                                Service()
+                                    .selectRead(sesid: globals.sesid, tipo: "U")
+                                    .then((res) {
+                                  var body = jsonDecode(res.body);
+                                  var data = body["data"];
+
+                                  // ignore: avoid_print
+                                  for (var element in data) {
+                                    utenti.add(Utente(
+                                        element["user_id"],
+                                        element["username"],
+                                        element["signature"],
+                                        element["avatar"]));
+                                  }
+                                  openFilterDialog(utenti);
+                                });
+                              } else {
+                                openFilterDialog(utenti);
+                              }
+                            },
                           ),
                         ),
                       ],
