@@ -19,6 +19,10 @@ class Cliente {
     customer_companyname = customer_companyname;
     label = "$customer_code - $customer_companyname";
   }
+  @override
+  String toString() {
+    return "{$customer_id - $customer_code - $customer_companyname}";
+  }
 }
 
 class Luogo {
@@ -33,6 +37,10 @@ class Luogo {
     location_city = location_city;
     label = "$location_code - $location_city";
   }
+  @override
+  String toString() {
+    return "{$location_id - $location_code - $location_city}";
+  }
 }
 
 class Progetto {
@@ -46,6 +54,10 @@ class Progetto {
     project_code = project_code;
     customer_code = customer_code;
     label = "$project_code - $customer_code";
+  }
+  @override
+  String toString() {
+    return "{$project_id - $project_code - $customer_code}";
   }
 }
 
@@ -64,6 +76,10 @@ class Attivita {
     customer_code = customer_code;
     label = "$project_task_code - $project_code - $customer_code";
   }
+  @override
+  String toString() {
+    return "{$project_task_id - $project_task_code - $project_code -  $customer_code}";
+  }
 }
 
 class TipoAttivita {
@@ -77,6 +93,10 @@ class TipoAttivita {
     task_type_code = task_type_code;
     unity_code = unity_code;
     label = "$task_type_code - $unity_code";
+  }
+  @override
+  String toString() {
+    return "{$task_type_id - $task_type_code - $unity_code}";
   }
 }
 
@@ -93,6 +113,10 @@ class Utente {
     signature = signature;
     avatar = avatar;
     label = "$username";
+  }
+  @override
+  String toString() {
+    return "{$user_id - $username - $signature - $avatar}";
   }
 }
 
@@ -146,7 +170,7 @@ class _FilterboxState extends State<Filterbox> {
         selectedList = dataFetch.user;
       }
 
-      print(selectedList);
+      // print(selectedList.toString());
 
       await FilterListDialog.display<T>(
         applyButtonText: 'Applica',
@@ -212,6 +236,11 @@ class _FilterboxState extends State<Filterbox> {
                   fontSize: 15),
             )),
         validateSelectedItem: (list, val) {
+          // for (var ele in selectedList) {
+          //   if (ele.toString() == val.toString()) {
+          //     print("Ciao");
+          //   }
+          // }
           return list!.contains(val);
         },
         onItemSearch: (ele, query) {
