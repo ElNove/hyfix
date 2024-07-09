@@ -14,33 +14,39 @@ class Cliente{
   dynamic customer_id;
   dynamic customer_code;
   dynamic customer_companyname;
+  String label="";
 
   Cliente(customer_id,customer_code,customer_companyname){
     customer_id=customer_id;
     customer_code=customer_code;
     customer_companyname=customer_companyname;
+    label="${customer_code}";
   }
 }
 class Luogo{
   dynamic location_id;
   dynamic location_code;
   dynamic location_city;
+  String label="";
 
   Luogo(location_id,location_code,location_city){
     location_id=location_id;
     location_code=location_code;
     location_city=location_city;
+    label="${location_code}";
   }
 }
 class Progetto{
   dynamic project_id;
   dynamic project_code;
   dynamic customer_code;
+  String label="";
 
   Progetto(project_id,project_code,customer_code){
     project_id=project_id;
     project_code=project_code;
     customer_code=customer_code;
+    label="${project_code}";
   }
 }
 class Attivita{
@@ -48,23 +54,27 @@ class Attivita{
   dynamic project_task_code;
   dynamic project_code;
   dynamic customer_code;
+  String label="";
 
   Attivita(project_task_id,project_task_code,customer_companyname,customer_code){
     project_task_id=project_task_id;
     project_task_code=project_task_code;
     project_code=project_code;
     customer_code=customer_code;
+    label="${project_task_code}";
   }
 }
 class TipoAttivita{
   dynamic task_type_id;
   dynamic task_type_code;
   dynamic unity_code;
+  String label="";
 
   TipoAttivita(task_type_id,task_type_code,unity_code){
     task_type_id=task_type_id;
     task_type_code=task_type_code;
     unity_code=unity_code;
+    label="${task_type_code}";
   }
 }
 class Utente{
@@ -72,12 +82,14 @@ class Utente{
   dynamic username;
   dynamic signature;
   dynamic avatar;
+  String label="";
 
   Utente(user_id,username,signature,avatar){
     user_id=user_id;
     username=username;
     signature=signature;
     avatar=avatar;
+    label="${username}";
   }
 }
 
@@ -101,7 +113,14 @@ class _FilterboxState extends State<Filterbox> {
     widget.aggiornaData();
   }
 
-  void openFilterDialog() async {
+  void openFilterDialog(List list) async {
+    List<String> lista=List.empty(growable: true);
+    for (var element in list) {
+      lista.add(element.label);
+      
+    }
+
+
     await FilterListDialog.display<String>(
       applyButtonText: 'Applica',
       allButtonText: 'Tutti',
@@ -141,7 +160,7 @@ class _FilterboxState extends State<Filterbox> {
         ),
       ),
       context,
-      listData: ['asd', 'asd', 'asd'],
+      listData: lista,
       selectedListData: [],
       choiceChipLabel: (user) => user,
       validateSelectedItem: (list, val) => list!.contains(val),
@@ -156,7 +175,7 @@ class _FilterboxState extends State<Filterbox> {
         Navigator.pop(context);
       },
     );
-
+  }
   List<Cliente> clienti=List.empty(growable: true);
   List<Luogo> luoghi=List.empty(growable: true);
   List<Progetto> progetti=List.empty(growable: true);
@@ -377,7 +396,7 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(),
+                            onTap: () => openFilterDialog(clienti),
                           ),
                         ),
                       ],
@@ -424,7 +443,7 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(),
+                            onTap: () => openFilterDialog(luoghi),
                           ),
                         ),
                       ],
@@ -463,7 +482,7 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(),
+                            onTap: () => openFilterDialog(progetti),
                           ),
                         ),
                       ],
@@ -510,7 +529,7 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(),
+                            onTap: () => openFilterDialog(attivita),
                           ),
                         ),
                       ],
@@ -549,7 +568,7 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(),
+                            onTap: () => openFilterDialog(tipoAttivita),
                           ),
                         ),
                       ],
@@ -596,7 +615,7 @@ class _FilterboxState extends State<Filterbox> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                             ),
-                            onTap: () => openFilterDialog(),
+                            onTap: () => openFilterDialog(utenti),
                           ),
                         ),
                       ],
