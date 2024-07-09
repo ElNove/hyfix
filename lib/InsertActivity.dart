@@ -230,7 +230,6 @@ class _InsertActivity extends State<InsertActivity> {
           });
 
           if (cate != "T") {
-            print("dxfhyiodcgfbhjnkm,lò.à-");
             Service()
                 .getActivity(sesid: globals.sesid, cate: cate, defaultPr: "Y")
                 .then((response) {
@@ -422,7 +421,8 @@ class _InsertActivity extends State<InsertActivity> {
       List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
 
       widget.update();
-      widget.fetchCalendar(weeks.first.first, weeks.last.last, 'R');
+      widget.fetchCalendar(
+          first: weeks.first.first, last: weeks.last.last, type: 'R');
       Navigator.pop(context);
     });
   }

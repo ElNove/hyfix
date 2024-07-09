@@ -119,7 +119,8 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
-        ChangeNotifierProvider(create: (context) => JobList())
+        ChangeNotifierProvider(create: (context) => JobList()),
+        ChangeNotifierProvider(create: (context) => DataFetch())
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

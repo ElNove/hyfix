@@ -10,7 +10,10 @@ class ContainerEvents extends StatefulWidget {
   const ContainerEvents(
       {required this.selezionato,
       required this.lista,
+      required this.data,
       required this.loading,
+      required this.fetchRep,
+      required this.dayReload,
       super.key,
       required this.visible,});
 
@@ -18,6 +21,9 @@ class ContainerEvents extends StatefulWidget {
   final bool visible;
   final List<Reports> lista;
   final bool loading;
+  final Function fetchRep;
+  final DateTime data;
+  final Function dayReload;
 
   @override
   _ContainerEvents createState() => _ContainerEvents();
@@ -86,8 +92,15 @@ class _ContainerEvents extends State<ContainerEvents> {
                                       .inverseSurface,
                                 ),
                                 onPressed: () {
-                                  Scaffold.of(context).showBottomSheet(
-                                      (context) => const Filterbox());
+                                  showModalBottomSheet(
+                                    context: context,
+                                    
+                                    isScrollControlled: true,
+                                    builder: (context) => Filterbox(
+                                        fetchRep: widget.fetchRep,
+                                        data: widget.data,
+                                        aggiornaData: widget.dayReload),
+                                  );
                                 },
                                 child: Icon(
                                   Icons.filter_alt,

@@ -19,16 +19,16 @@ class Service {
   }
 
   Future<dynamic> getReports(
-      {required String sesid,
-      required dynamic start,
-      required dynamic end,
-      required String type,
-      List? customer,
-      List? location,
-      List? project,
-      List? projectTask,
-      List? taskType,
-      List? user}) async {
+      String sesid,
+      dynamic start,
+      dynamic end,
+      String type,
+      dynamic customer,
+      dynamic location,
+      dynamic project,
+      dynamic projectTask,
+      dynamic taskType,
+      dynamic user) async {
     var client = http.Client();
 
     final startDate = start.toString().split(' ')[0];
@@ -38,12 +38,12 @@ class Service {
       'filters[start]': startDate,
       'filters[end]': endDate,
       'filters[report_type]': type,
-      'filters[customer_id]': customer ?? '',
-      'filters[location_id]': location ?? '',
-      'filters[project_id]': project ?? '',
-      'filters[project_task_id]': projectTask ?? '',
-      'filters[task_type_id]': taskType ?? '',
-      'filters[user_id]': user ?? '',
+      'filters[customer_id]': customer,
+      'filters[location_id]': location,
+      'filters[project_id]': project,
+      'filters[project_task_id]': projectTask,
+      'filters[task_type_id]': taskType,
+      'filters[user_id]': user,
       'limit': '10000'
     };
     var uri = Uri.https(
@@ -53,8 +53,6 @@ class Service {
       HttpHeaders.cookieHeader: sesid,
     });
 
-    print(response.body);
-    print(sesid);
     if (response.body.contains('"success":true')) {
       var json = response.body;
       final dynamic jsonData = jsonDecode(json);

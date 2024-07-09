@@ -14,6 +14,7 @@ import 'Login.dart' as globals;
 class JobList with ChangeNotifier {
   List<Reports> lista = <Reports>[];
   List<Reports> listaEventi = <Reports>[];
+  DateTime focusedDay = DateTime.now();
 
   void addElement(Reports report) {
     lista.add(report);
@@ -33,6 +34,39 @@ class JobList with ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  void addFocused(DateTime data) {
+    focusedDay = data;
+    notifyListeners();
+  }
+}
+
+class DataFetch with ChangeNotifier {
+  dynamic first;
+  dynamic last;
+  String type = 'R';
+  List customer = [];
+  List location = [];
+  List project = [];
+  List projectTask = [];
+  List taskType = [];
+  List user = [];
+
+  void initData() {
+    DateTime focusedDay = DateTime.now();
+
+    List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
+
+    first = weeks.first.first;
+    last = weeks.last.last;
+    type = 'R';
+    customer = [];
+    location = [];
+    project = [];
+    projectTask = [];
+    taskType = [];
+    user = [];
   }
 }
 
@@ -62,18 +96,32 @@ class _MyAppState extends State<MyApp> {
     fetchRep(first: weeks.first.first, last: weeks.last.last, type: 'R');
   }
 
-  void fetchRep({required first, required last, required type}) {
+  void fetchRep(
+      {required dynamic first,
+      required dynamic last,
+      required String type,
+      List? customer,
+      List? location,
+      List? project,
+      List? projectTask,
+      List? taskType,
+      List? user}) {
     var jobList = context.read<JobList>();
     setState(() {
       loading = true;
     });
     Service()
         .getReports(
-      sesid: globals.sesid,
-      start: first,
-      end: last,
-      type: type,
-    )
+            globals.sesid,
+            first,
+            last,
+            type,
+            customer ?? '',
+            location ?? '',
+            project ?? '',
+            projectTask ?? '',
+            taskType ?? '',
+            user ?? '')
         .then((report) {
       if (report == false) {
         logout();
@@ -143,12 +191,17 @@ class _MyAppState extends State<MyApp> {
     // Simulate network fetch or database query
 
     await Future.delayed(const Duration(seconds: 2));
+    final dataFetch = context.read<DataFetch>();
+    final jobList = context.read<JobList>();
 
     // Update the list of items and refresh the UI
 
     DateTime focusedDay = DateTime.now();
 
     List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
+
+    dataFetch.initData();
+    jobList.updateLista();
 
     fetchRep(first: weeks.first.first, last: weeks.last.last, type: 'R');
   }
@@ -164,6 +217,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => JobList()),
+        ChangeNotifierProvider(create: (context) => DataFetch()),
       ],
       child: Scaffold(
         appBar: AppBar(
@@ -219,6 +273,7 @@ class _MyAppState extends State<MyApp> {
                         calendarFormat: _calendarFormat,
                         updateFormat: updateFormat,
                         fetchCalendar: fetchRep,
+                        update: jobList.addFocused,
                         visible: visible,
                       ),
                       Expanded(
@@ -227,6 +282,9 @@ class _MyAppState extends State<MyApp> {
                           selezionato: _data,
                           visible: visible,
                           lista: jobList.listaEventi,
+                          fetchRep: fetchRep,
+                          dayReload: jobList.updateLista,
+                          data: jobList.focusedDay,
                         ),
                       ),
                       Align(
