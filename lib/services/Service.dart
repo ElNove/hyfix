@@ -225,7 +225,6 @@ class Service {
     dynamic project_task_id,
     dynamic user_id,
   }) async {
-    print("CIAOOAIOAOA0");
     DateTime focusedDay = DateTime.now();
 
     List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
@@ -239,11 +238,11 @@ class Service {
         params = {
           "filters[start]": startDate,
           "filters[end]": endDate,
-          //"filters[location_id]": location_id ?? '',
-          //"filters[project_id]": project_id ?? '',
-          //"filters[project_task_id]": project_task_id ?? '',
-          //"filters[task_type_id]": task_type_id ?? '',
-          //"filters[user_id]": user_id ?? '',
+          "filters[location_id]": location_id ?? '',
+          "filters[project_id]": project_id ?? '',
+          "filters[project_task_id]": project_task_id ?? '',
+          "filters[task_type_id]": task_type_id ?? '',
+          "filters[user_id]": user_id ?? '',
           "selectParams[distinctFields][]":
             [
             "customer_id",
@@ -313,8 +312,8 @@ class Service {
           "filters[task_type_id]": task_type_id ?? '',
           "filters[user_id]": user_id ?? '',
           "selectParams[distinctFields][]": [
-            "'task_type_id'",
-            "'task_type_code'",
+            "task_type_id",
+            "task_type_code",
             "unity_code"
           ]
         };
@@ -337,7 +336,6 @@ class Service {
         };
         break;
     }
-  print(params);
     if (tipo != "A") {
       var uri = Uri.https('hyfix.test.nealis.it',
           '/reports/report/selectread', params);
