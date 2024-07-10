@@ -8,69 +8,69 @@ import 'package:hyfix/services/Service.dart';
 import 'Login.dart' as globals;
 
 class Cliente {
-  dynamic customer_id;
+  dynamic id;
   dynamic customer_code;
   dynamic customer_companyname;
   String label = "";
 
-  Cliente(this.customer_id, this.customer_code, this.customer_companyname) {
-    customer_id = customer_id;
+  Cliente(this.id, this.customer_code, this.customer_companyname) {
+    id = id;
     customer_code = customer_code;
     customer_companyname = customer_companyname;
     label = "$customer_code - $customer_companyname";
   }
   @override
   String toString() {
-    return "{$customer_id - $customer_code - $customer_companyname}";
+    return "{$id - $customer_code - $customer_companyname}";
   }
 }
 
 class Luogo {
-  dynamic location_id;
+  dynamic id;
   dynamic location_code;
   dynamic location_city;
   String label = "";
 
-  Luogo(this.location_id, this.location_code, this.location_city) {
-    location_id = location_id;
+  Luogo(this.id, this.location_code, this.location_city) {
+    id = id;
     location_code = location_code;
     location_city = location_city;
     label = "$location_code - $location_city";
   }
   @override
   String toString() {
-    return "{$location_id - $location_code - $location_city}";
+    return "{$id - $location_code - $location_city}";
   }
 }
 
 class Progetto {
-  dynamic project_id;
+  dynamic id;
   dynamic project_code;
   dynamic customer_code;
   String label = "";
 
-  Progetto(this.project_id, this.project_code, this.customer_code) {
-    project_id = project_id;
+  Progetto(this.id, this.project_code, this.customer_code) {
+    id = id;
     project_code = project_code;
     customer_code = customer_code;
     label = "$project_code - $customer_code";
   }
   @override
   String toString() {
-    return "{$project_id - $project_code - $customer_code}";
+    return "{$id - $project_code - $customer_code}";
   }
 }
 
 class Attivita {
-  dynamic project_task_id;
+  dynamic id;
   dynamic project_task_code;
   dynamic project_code;
   dynamic customer_code;
   String label = "";
 
-  Attivita(this.project_task_id, this.project_task_code, this.project_code,
-      this.customer_code) {
-    project_task_id = project_task_id;
+  Attivita(
+      this.id, this.project_task_code, this.project_code, this.customer_code) {
+    id = id;
     project_task_code = project_task_code;
     project_code = project_code;
     customer_code = customer_code;
@@ -78,37 +78,37 @@ class Attivita {
   }
   @override
   String toString() {
-    return "{$project_task_id - $project_task_code - $project_code -  $customer_code}";
+    return "{$id - $project_task_code - $project_code -  $customer_code}";
   }
 }
 
 class TipoAttivita {
-  dynamic task_type_id;
+  dynamic id;
   dynamic task_type_code;
   dynamic unity_code;
   String label = "";
 
-  TipoAttivita(this.task_type_id, this.task_type_code, this.unity_code) {
-    task_type_id = task_type_id;
+  TipoAttivita(this.id, this.task_type_code, this.unity_code) {
+    id = id;
     task_type_code = task_type_code;
     unity_code = unity_code;
     label = "$task_type_code - $unity_code";
   }
   @override
   String toString() {
-    return "{$task_type_id - $task_type_code - $unity_code}";
+    return "{$id - $task_type_code - $unity_code}";
   }
 }
 
 class Utente {
-  dynamic user_id;
+  dynamic id;
   dynamic username;
   dynamic signature;
   dynamic avatar;
   String label = "";
 
-  Utente(this.user_id, this.username, this.signature, this.avatar) {
-    user_id = user_id;
+  Utente(this.id, this.username, this.signature, this.avatar) {
+    id = id;
     username = username;
     signature = signature;
     avatar = avatar;
@@ -116,7 +116,7 @@ class Utente {
   }
   @override
   String toString() {
-    return "{$user_id - $username - $signature - $avatar}";
+    return "{$id - $username - $signature - $avatar}";
   }
 }
 
@@ -279,10 +279,43 @@ class _FilterboxState extends State<Filterbox> {
           }
         },
         onApplyButtonClick: (list) {
-          setState(() {
-            dataFetch.customer = list as List<Cliente>;
-          });
-          print(dataFetch.customer);
+          var jobList=context.read<JobList>();
+          if (list is List<Cliente>) {
+            setState(() {
+              dataFetch.customer = list as List<Cliente>;
+            });
+          } else if (list is List<Luogo>) {
+            setState(() {
+              dataFetch.location = list as List<Luogo>;
+            });
+          } else if (list is List<Progetto>) {
+            setState(() {
+              dataFetch.project = list as List<Progetto>;
+            });
+          } else if (list is List<Attivita>) {
+            setState(() {
+              dataFetch.projectTask = list as List<Attivita>;
+            });
+          } else if (list is List<TipoAttivita>) {
+            setState(() {
+              dataFetch.taskType = list as List<TipoAttivita>;
+            });
+          } else if (list is List<Utente>) {
+            setState(() {
+              dataFetch.user = list as List<Utente>;
+            });
+          }
+          jobList.updateLista();
+          widget.fetchRep(
+              first: dataFetch.first,
+              last: dataFetch.last,
+              type: dataFetch.type,
+              customer: dataFetch.getId(dataFetch.customer),
+              location: dataFetch.getId(dataFetch.location),
+              project: dataFetch.getId(dataFetch.project),
+              projectTask: dataFetch.getId(dataFetch.projectTask),
+              taskType: dataFetch.getId(dataFetch.taskType),
+              user: dataFetch.getId(dataFetch.user));
           Navigator.pop(context);
         },
       );
@@ -378,9 +411,16 @@ class _FilterboxState extends State<Filterbox> {
 
                             clear().then((val) {
                               widget.fetchRep(
-                                  first: weeks.first.first,
-                                  last: weeks.last.last,
-                                  type: value ?? '');
+                                  first: dataFetch.first,
+                                  last: dataFetch.last,
+                                  type: dataFetch.type,
+                                  customer: dataFetch.getId(dataFetch.customer),
+                                  location: dataFetch.getId(dataFetch.location),
+                                  project: dataFetch.getId(dataFetch.project),
+                                  projectTask:
+                                      dataFetch.getId(dataFetch.projectTask),
+                                  taskType: dataFetch.getId(dataFetch.taskType),
+                                  user: dataFetch.getId(dataFetch.user));
                             });
                           },
                         ),
@@ -499,7 +539,7 @@ class _FilterboxState extends State<Filterbox> {
                                   // ignore: avoid_print
                                   for (var element in data) {
                                     luoghi.add(Luogo(
-                                        element["locatio_id"],
+                                        element["location_id"],
                                         element["location_code"],
                                         element["location_city"]));
                                   }

@@ -69,6 +69,18 @@ class DataFetch with ChangeNotifier {
     taskType = [];
     user = [];
   }
+  dynamic getId(List list){
+    List<dynamic> ids=List.empty(growable: true);
+    if(list.isEmpty){
+      return List.empty();
+    }else{
+      for (var element in list) {
+      ids.add(element.id);
+    }
+    return ids;
+    }
+    
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -95,6 +107,8 @@ class _MyAppState extends State<MyApp> {
     List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
 
     fetchRep(first: weeks.first.first, last: weeks.last.last, type: 'R');
+    final dataFetch=context.read<DataFetch>();
+    dataFetch.initData();
   }
 
   void fetchRep(
@@ -197,14 +211,20 @@ class _MyAppState extends State<MyApp> {
 
     // Update the list of items and refresh the UI
 
-    DateTime focusedDay = DateTime.now();
 
-    List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
 
     dataFetch.initData();
     jobList.updateLista();
 
-    fetchRep(first: weeks.first.first, last: weeks.last.last, type: 'R');
+    fetchRep(first: dataFetch.first,
+              last: dataFetch.last,
+              type: dataFetch.type,
+              customer: dataFetch.getId(dataFetch.customer),
+              location: dataFetch.getId(dataFetch.location),
+              project: dataFetch.getId(dataFetch.project),
+              projectTask: dataFetch.getId(dataFetch.projectTask),
+              taskType: dataFetch.getId(dataFetch.taskType),
+              user: dataFetch.getId(dataFetch.user));
   }
 
   @override

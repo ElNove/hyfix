@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hyfix/Home.dart';
 import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/models/Reports.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class TableBasic extends StatefulWidget {
@@ -29,9 +31,11 @@ class _TableBasicState extends State<TableBasic> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay = DateTime.now();
   DateTime selezionato = DateTime.now();
+ 
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
+    var dataFetch = context.watch<DataFetch>();
     return TableCalendar(
       startingDayOfWeek: StartingDayOfWeek.monday,
       locale: 'it_IT',
@@ -115,7 +119,15 @@ class _TableBasicState extends State<TableBasic> {
         widget.update(_focusedDay);
         List<List<DateTime>> weeks = getWeeksOfMonth(_focusedDay);
         widget.fetchCalendar(
-            first: weeks.first.first, last: weeks.last.last, type: 'R');
+            first: dataFetch.first,
+              last: dataFetch.last,
+              type: dataFetch.type,
+              customer: dataFetch.getId(dataFetch.customer),
+              location: dataFetch.getId(dataFetch.location),
+              project: dataFetch.getId(dataFetch.project),
+              projectTask: dataFetch.getId(dataFetch.projectTask),
+              taskType: dataFetch.getId(dataFetch.taskType),
+              user: dataFetch.getId(dataFetch.user));
       },
     );
   }

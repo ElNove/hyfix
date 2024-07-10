@@ -42,6 +42,7 @@ class _EventsState extends State<Events> {
   }
 
   createRow() {
+    
     double screenHeight = MediaQuery.of(context).size.height;
     var righe = <GestureDetector>[];
     for (var i in widget.lista) {
