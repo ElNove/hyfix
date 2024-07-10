@@ -81,6 +81,17 @@ class DataFetch with ChangeNotifier {
       return ids;
     }
   }
+  void clear(){
+    type = 'R';
+    customer = [];
+    location = [];
+    project = [];
+    projectTask = [];
+    taskType = [];
+    user = [];
+
+    notifyListeners();
+  }
 
   @override
   String toString() {

@@ -376,6 +376,11 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                 MediaQuery.of(context).size.height / 100 * 2.5,
                             fontWeight: FontWeight.bold),
                       ),
+                      Row(
+                        children: [
+                          IconButton(onPressed:(){ clear().then((value) => dataFetch.clear());}, icon: Icon(Icons.delete,color: Theme.of(context)
+                                .colorScheme
+                                .onTertiaryContainer,)),
                       IconButton(
                           onPressed: () {
                             Navigator.pop(context);
@@ -386,6 +391,9 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                 .colorScheme
                                 .onTertiaryContainer,
                           ))
+                        ],
+                      )
+                      
                     ],
                   ),
                 ),
