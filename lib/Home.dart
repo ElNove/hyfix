@@ -189,9 +189,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _handleRefresh() async {
-    // Simulate network fetch or database query
-
-    await Future.delayed(const Duration(seconds: 2));
     final dataFetch = context.read<DataFetch>();
     final jobList = context.read<JobList>();
 

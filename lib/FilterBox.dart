@@ -21,7 +21,7 @@ class Cliente {
   }
   @override
   String toString() {
-    return "{$customer_id - $customer_code - $customer_companyname}";
+    return "$customer_code - $customer_companyname";
   }
 }
 
@@ -39,7 +39,7 @@ class Luogo {
   }
   @override
   String toString() {
-    return "{$location_id - $location_code - $location_city}";
+    return "$location_id - $location_code - $location_city";
   }
 }
 
@@ -57,7 +57,7 @@ class Progetto {
   }
   @override
   String toString() {
-    return "{$project_id - $project_code - $customer_code}";
+    return "$project_id - $project_code - $customer_code";
   }
 }
 
@@ -78,7 +78,7 @@ class Attivita {
   }
   @override
   String toString() {
-    return "{$project_task_id - $project_task_code - $project_code -  $customer_code}";
+    return "$project_task_id - $project_task_code - $project_code -  $customer_code";
   }
 }
 
@@ -96,7 +96,7 @@ class TipoAttivita {
   }
   @override
   String toString() {
-    return "{$task_type_id - $task_type_code - $unity_code}";
+    return "$task_type_id - $task_type_code - $unity_code";
   }
 }
 
@@ -116,7 +116,7 @@ class Utente {
   }
   @override
   String toString() {
-    return "{$user_id - $username - $signature - $avatar}";
+    return "$user_id - $username - $signature - $avatar";
   }
 }
 
@@ -135,7 +135,7 @@ class Filterbox extends StatefulWidget {
   _FilterboxState createState() => _FilterboxState();
 }
 
-class _FilterboxState extends State<Filterbox> {
+class _FilterboxState<T extends Object> extends State<Filterbox> {
   Future<void> clear() async {
     widget.aggiornaData();
   }
@@ -152,25 +152,34 @@ class _FilterboxState extends State<Filterbox> {
     var dataFetch = context.watch<DataFetch>();
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    List<T> selectedList = [];
+    String tipo = "";
 
-    void openFilterDialog<T extends Object>(List<T> list) async {
-      late List selectedList = List.empty(growable: true);
-
-      if (list is List<Cliente>) {
-        selectedList = dataFetch.customer;
-      } else if (list is List<Luogo>) {
-        selectedList = dataFetch.location;
-      } else if (list is List<Progetto>) {
-        selectedList = dataFetch.project;
-      } else if (list is List<Attivita>) {
-        selectedList = dataFetch.projectTask;
-      } else if (list is List<TipoAttivita>) {
-        selectedList = dataFetch.taskType;
-      } else if (list is List<Utente>) {
-        selectedList = dataFetch.user;
-      }
-
-      // print(selectedList.toString());
+    void openFilterDialog(List<T> lista) async {
+      setState(() {
+        for (var ele in lista) {
+          if (ele is Cliente) {
+            selectedList = dataFetch.customer as List<T>;
+            tipo = "C";
+          } else if (ele is Luogo) {
+            selectedList = dataFetch.location as List<T>;
+            tipo = "L";
+          } else if (ele is Progetto) {
+            selectedList = dataFetch.project as List<T>;
+            tipo = "P";
+          } else if (ele is Attivita) {
+            selectedList = dataFetch.projectTask as List<T>;
+            tipo = "A";
+          } else if (ele is TipoAttivita) {
+            selectedList = dataFetch.taskType as List<T>;
+            tipo = "T";
+          } else if (ele is Utente) {
+            selectedList = dataFetch.user as List<T>;
+            tipo = "U";
+          }
+          break;
+        }
+      });
 
       await FilterListDialog.display<T>(
         applyButtonText: 'Applica',
@@ -211,37 +220,45 @@ class _FilterboxState extends State<Filterbox> {
           ),
         ),
         context,
-        listData: list,
-        selectedListData: selectedList as List<T>,
+        listData: lista,
+        selectedItemsText: 'Selezionati',
+        selectedListData: selectedList,
         choiceChipLabel: (item) => '',
-        choiceChipBuilder: (context, item, isSelected) => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            decoration: BoxDecoration(
-              color: isSelected!
-                  ? Theme.of(context).colorScheme.tertiaryContainer
-                  : Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.tertiaryContainer
-                      : Theme.of(context).colorScheme.onSurface),
-            ),
-            child: Text(
-              item.label,
-              style: TextStyle(
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.onTertiaryContainer
-                      : Theme.of(context).colorScheme.onSurface,
-                  fontSize: 15),
-            )),
+        choiceChipBuilder: (context, item, isSelected) {
+          return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+              decoration: BoxDecoration(
+                color: isSelected! || selectedList.contains(item.toString())
+                    ? Theme.of(context).colorScheme.tertiaryContainer
+                    : Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.tertiaryContainer
+                        : Theme.of(context).colorScheme.onSurface),
+              ),
+              child: Text(
+                item.label,
+                style: TextStyle(
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.onTertiaryContainer
+                        : Theme.of(context).colorScheme.onSurface,
+                    fontSize: 15),
+              ));
+        },
         validateSelectedItem: (list, val) {
-          // for (var ele in selectedList) {
-          //   if (ele.toString() == val.toString()) {
-          //     print("Ciao");
-          //   }
-          // }
-          return list!.contains(val);
+          return list.toString().contains(val.toString());
+        },
+        validateRemoveItem: (list, item) {
+          list!.remove(item);
+          for (var ele in list) {
+            if (ele.toString() == item.toString()) {
+              list.remove(ele);
+              break;
+            }
+          }
+          return list.cast<T>();
         },
         onItemSearch: (ele, query) {
           if (ele is Cliente) {
@@ -280,9 +297,29 @@ class _FilterboxState extends State<Filterbox> {
         },
         onApplyButtonClick: (list) {
           setState(() {
-            dataFetch.customer = list as List<Cliente>;
+            switch (tipo) {
+              case "C":
+                dataFetch.customer = list!.cast<Cliente>();
+                break;
+              case "L":
+                dataFetch.location = list!.cast<Luogo>();
+                break;
+              case "P":
+                dataFetch.project = list!.cast<Progetto>();
+                break;
+              case "A":
+                dataFetch.projectTask = list!.cast<Attivita>();
+                break;
+              case "T":
+                dataFetch.taskType = list!.cast<TipoAttivita>();
+                break;
+              case "U":
+                dataFetch.user = list!.cast<Utente>();
+                break;
+              default:
+            }
+            selectedList = list!;
           });
-          print(dataFetch.customer);
           Navigator.pop(context);
         },
       );
@@ -437,10 +474,10 @@ class _FilterboxState extends State<Filterbox> {
                                         element["customer_code"],
                                         element["customer_companyname"]));
                                   }
-                                  openFilterDialog(clienti);
+                                  openFilterDialog(clienti.cast<T>());
                                 });
                               } else {
-                                openFilterDialog(clienti);
+                                openFilterDialog(clienti.cast<T>());
                               }
                             },
                           ),
@@ -503,10 +540,10 @@ class _FilterboxState extends State<Filterbox> {
                                         element["location_code"],
                                         element["location_city"]));
                                   }
-                                  openFilterDialog(luoghi);
+                                  openFilterDialog(luoghi.cast<T>());
                                 });
                               } else {
-                                openFilterDialog(luoghi);
+                                openFilterDialog(luoghi.cast<T>());
                               }
                             },
                           ),
@@ -561,10 +598,10 @@ class _FilterboxState extends State<Filterbox> {
                                         element["project_code"],
                                         element["customer_code"]));
                                   }
-                                  openFilterDialog(progetti);
+                                  openFilterDialog(progetti.cast<T>());
                                 });
                               } else {
-                                openFilterDialog(progetti);
+                                openFilterDialog(progetti.cast<T>());
                               }
                             },
                           ),
@@ -628,10 +665,10 @@ class _FilterboxState extends State<Filterbox> {
                                         element["project_code"],
                                         element["customer_code"]));
                                   }
-                                  openFilterDialog(attivita);
+                                  openFilterDialog(attivita.cast<T>());
                                 });
                               } else {
-                                openFilterDialog(attivita);
+                                openFilterDialog(attivita.cast<T>());
                               }
                             },
                           ),
@@ -688,10 +725,10 @@ class _FilterboxState extends State<Filterbox> {
                                         element["task_type_code"],
                                         element["unity_code"]));
                                   }
-                                  openFilterDialog(tipoAttivita);
+                                  openFilterDialog(tipoAttivita.cast<T>());
                                 });
                               } else {
-                                openFilterDialog(tipoAttivita);
+                                openFilterDialog(tipoAttivita.cast<T>());
                               }
                             },
                           ),
@@ -756,10 +793,10 @@ class _FilterboxState extends State<Filterbox> {
                                         element["signature"],
                                         element["avatar"]));
                                   }
-                                  openFilterDialog(utenti);
+                                  openFilterDialog(utenti.cast<T>());
                                 });
                               } else {
-                                openFilterDialog(utenti);
+                                openFilterDialog(utenti.cast<T>());
                               }
                             },
                           ),

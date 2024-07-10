@@ -7,17 +7,15 @@ import 'package:intl/src/intl/date_format.dart';
 import 'package:hyfix/FilterBox.dart';
 
 class ContainerEvents extends StatefulWidget {
-  const ContainerEvents({
-    required this.selezionato,
-    required this.lista,
-    required this.data,
-    required this.loading,
-    required this.fetchRep,
-    required this.dayReload,
-    super.key,
-    required this.visible,
-  });
-
+  const ContainerEvents(
+      {required this.selezionato,
+      required this.lista,
+      required this.data,
+      required this.loading,
+      required this.fetchRep,
+      required this.dayReload,
+      super.key,
+      required this.visible});
   final DateTime selezionato;
   final bool visible;
   final List<Reports> lista;
@@ -74,43 +72,39 @@ class _ContainerEvents extends State<ContainerEvents> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Flexible(
-                          flex: 1,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(
-                                  "${DateFormat.EEEE('it_IT').format(widget.selezionato)}, ${DateFormat.MMMd('it_IT').format(widget.selezionato)}, ${DateFormat.y('it_IT').format(widget.selezionato)}",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height /
-                                              100 *
-                                              2.5,
-                                      fontWeight: FontWeight.bold)),
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .inverseSurface,
-                                  ),
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      builder: (context) => Filterbox(
-                                          fetchRep: widget.fetchRep,
-                                          data: widget.data,
-                                          aggiornaData: widget.dayReload),
-                                    );
-                                  },
-                                  child: Icon(
-                                    Icons.filter_alt,
-                                    color:
-                                        Theme.of(context).colorScheme.surface,
-                                  ))
-                            ],
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                                "${DateFormat.EEEE('it_IT').format(widget.selezionato)}, ${DateFormat.MMMd('it_IT').format(widget.selezionato)}, ${DateFormat.y('it_IT').format(widget.selezionato)}",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height /
+                                            100 *
+                                            2.5,
+                                    fontWeight: FontWeight.bold)),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .inverseSurface,
+                                ),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (context) => Filterbox(
+                                        fetchRep: widget.fetchRep,
+                                        data: widget.data,
+                                        aggiornaData: widget.dayReload),
+                                  );
+                                },
+                                child: Icon(
+                                  Icons.filter_alt,
+                                  color: Theme.of(context).colorScheme.surface,
+                                ))
+                          ],
                         ),
                         const SizedBox(
                           height: 10,
