@@ -39,7 +39,7 @@ class Luogo {
   }
   @override
   String toString() {
-    return "$location_id - $location_code - $location_city";
+    return "$id - $location_code - $location_city";
   }
 }
 
@@ -57,7 +57,7 @@ class Progetto {
   }
   @override
   String toString() {
-    return "$project_id - $project_code - $customer_code";
+    return "$id - $project_code - $customer_code";
   }
 }
 
@@ -78,7 +78,7 @@ class Attivita {
   }
   @override
   String toString() {
-    return "$project_task_id - $project_task_code - $project_code -  $customer_code";
+    return "$id - $project_task_code - $project_code -  $customer_code";
   }
 }
 
@@ -96,7 +96,7 @@ class TipoAttivita {
   }
   @override
   String toString() {
-    return "$task_type_id - $task_type_code - $unity_code";
+    return "$id - $task_type_code - $unity_code";
   }
 }
 
@@ -116,7 +116,7 @@ class Utente {
   }
   @override
   String toString() {
-    return "$user_id - $username - $signature - $avatar";
+    return "$id - $username - $signature - $avatar";
   }
 }
 
