@@ -338,6 +338,29 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
       );
     }
 
+    Future<void> startLoading() async {
+      return await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const SimpleDialog(
+            elevation: 0.0,
+            backgroundColor:
+                Colors.transparent, // can change this to your prefered color
+            children: <Widget>[
+              Center(
+                child: RefreshProgressIndicator(),
+              )
+            ],
+          );
+        },
+      );
+    }
+
+    Future<void> stopLoading() async {
+      Navigator.of(context).pop();
+    }
+
     return Wrap(
       children: [
         Container(
@@ -481,6 +504,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
+                              startLoading();
                               Service()
                                   .selectRead(
                                       sesid: globals.sesid,
@@ -507,6 +531,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       element["customer_code"],
                                       element["customer_companyname"]));
                                 }
+                                stopLoading();
                                 openFilterDialog(clienti.cast<T>());
                               });
                             },

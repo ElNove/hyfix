@@ -31,10 +31,9 @@ class _TableBasicState extends State<TableBasic> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay = DateTime.now();
   DateTime selezionato = DateTime.now();
- 
 
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     var dataFetch = context.watch<DataFetch>();
     return TableCalendar(
       startingDayOfWeek: StartingDayOfWeek.monday,
@@ -118,16 +117,20 @@ class _TableBasicState extends State<TableBasic> {
 
         widget.update(_focusedDay);
         List<List<DateTime>> weeks = getWeeksOfMonth(_focusedDay);
+        setState(() {
+          dataFetch.first = weeks.first.first;
+          dataFetch.last = weeks.last.last;
+        });
         widget.fetchCalendar(
             first: dataFetch.first,
-              last: dataFetch.last,
-              type: dataFetch.type,
-              customer: dataFetch.getId(dataFetch.customer),
-              location: dataFetch.getId(dataFetch.location),
-              project: dataFetch.getId(dataFetch.project),
-              projectTask: dataFetch.getId(dataFetch.projectTask),
-              taskType: dataFetch.getId(dataFetch.taskType),
-              user: dataFetch.getId(dataFetch.user));
+            last: dataFetch.last,
+            type: dataFetch.type,
+            customer: dataFetch.getId(dataFetch.customer),
+            location: dataFetch.getId(dataFetch.location),
+            project: dataFetch.getId(dataFetch.project),
+            projectTask: dataFetch.getId(dataFetch.projectTask),
+            taskType: dataFetch.getId(dataFetch.taskType),
+            user: dataFetch.getId(dataFetch.user));
       },
     );
   }
