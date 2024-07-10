@@ -184,7 +184,8 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
       await FilterListDialog.display<T>(
         applyButtonText: 'Applica',
         allButtonText: 'Tutti',
-        headlineText: "${selectedList.runtimeType}".substring(5,"${selectedList.runtimeType}".length-1),
+        headlineText: "${selectedList.runtimeType}"
+            .substring(5, "${selectedList.runtimeType}".length - 1),
         themeData: FilterListThemeData(
           context,
           backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
@@ -230,7 +231,6 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
         selectedListData: selectedList,
         choiceChipLabel: (item) => '',
         choiceChipBuilder: (context, item, isSelected) {
-        
           return Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -302,43 +302,22 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
           }
         },
         onApplyButtonClick: (list) {
-          setState(() {
-            switch (tipo) {
-              case "C":
-                dataFetch.customer = list!.cast<Cliente>();
-                break;
-              case "L":
-                dataFetch.location = list!.cast<Luogo>();
-                break;
-              case "P":
-                dataFetch.project = list!.cast<Progetto>();
-                break;
-              case "A":
-                dataFetch.projectTask = list!.cast<Attivita>();
-                break;
-              case "T":
-                dataFetch.taskType = list!.cast<TipoAttivita>();
-                break;
-              case "U":
-                dataFetch.user = list!.cast<Utente>();
-                break;
-              default:
-            }
-            selectedList = list!;
+          dataFetch.addList(tipo, list!);
+          selectedList = list;
 
-            var jobList = context.read<JobList>();
-            jobList.updateLista();
-            widget.fetchRep(
-                first: dataFetch.first,
-                last: dataFetch.last,
-                type: dataFetch.type,
-                customer: dataFetch.getId(dataFetch.customer),
-                location: dataFetch.getId(dataFetch.location),
-                project: dataFetch.getId(dataFetch.project),
-                projectTask: dataFetch.getId(dataFetch.projectTask),
-                taskType: dataFetch.getId(dataFetch.taskType),
-                user: dataFetch.getId(dataFetch.user));
-          });
+          var jobList = context.read<JobList>();
+          jobList.updateLista();
+          widget.fetchRep(
+              first: dataFetch.first,
+              last: dataFetch.last,
+              type: dataFetch.type,
+              customer: dataFetch.getId(dataFetch.customer),
+              location: dataFetch.getId(dataFetch.location),
+              project: dataFetch.getId(dataFetch.project),
+              projectTask: dataFetch.getId(dataFetch.projectTask),
+              taskType: dataFetch.getId(dataFetch.taskType),
+              user: dataFetch.getId(dataFetch.user));
+
           Navigator.pop(context);
         },
       );

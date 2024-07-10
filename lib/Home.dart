@@ -69,17 +69,47 @@ class DataFetch with ChangeNotifier {
     taskType = [];
     user = [];
   }
-  dynamic getId(List list){
-    List<String> ids=List.empty(growable: true);
-    if(list.isEmpty){
+
+  dynamic getId(List list) {
+    List<String> ids = List.empty(growable: true);
+    if (list.isEmpty) {
       return List.empty();
-    }else{
+    } else {
       for (var element in list) {
-      ids.add("${element.id}");
+        ids.add("${element.id}");
+      }
+      return ids;
     }
-    return ids;
+  }
+
+  @override
+  String toString() {
+    return 'DataFetch: first: $first, last: $last, type: $type, customer: $customer, location: $location, project: $project, projectTask: $projectTask, taskType: $taskType, user: $user';
+  }
+
+  void addList(String tipo, List<dynamic> list) {
+    switch (tipo) {
+      case "C":
+        customer = list.cast<Cliente>();
+        break;
+      case "L":
+        location = list.cast<Luogo>();
+        break;
+      case "P":
+        project = list.cast<Progetto>();
+        break;
+      case "A":
+        projectTask = list.cast<Attivita>();
+        break;
+      case "T":
+        taskType = list.cast<TipoAttivita>();
+        break;
+      case "U":
+        user = list.cast<Utente>();
+        break;
+      default:
     }
-    
+    notifyListeners();
   }
 }
 
@@ -107,7 +137,7 @@ class _MyAppState extends State<MyApp> {
     List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
 
     fetchRep(first: weeks.first.first, last: weeks.last.last, type: 'R');
-    final dataFetch=context.read<DataFetch>();
+    final dataFetch = context.read<DataFetch>();
     dataFetch.initData();
   }
 
@@ -208,20 +238,19 @@ class _MyAppState extends State<MyApp> {
 
     // Update the list of items and refresh the UI
 
-
-
     dataFetch.initData();
     jobList.updateLista();
 
-    fetchRep(first: dataFetch.first,
-              last: dataFetch.last,
-              type: dataFetch.type,
-              customer: dataFetch.getId(dataFetch.customer),
-              location: dataFetch.getId(dataFetch.location),
-              project: dataFetch.getId(dataFetch.project),
-              projectTask: dataFetch.getId(dataFetch.projectTask),
-              taskType: dataFetch.getId(dataFetch.taskType),
-              user: dataFetch.getId(dataFetch.user));
+    fetchRep(
+        first: dataFetch.first,
+        last: dataFetch.last,
+        type: dataFetch.type,
+        customer: dataFetch.getId(dataFetch.customer),
+        location: dataFetch.getId(dataFetch.location),
+        project: dataFetch.getId(dataFetch.project),
+        projectTask: dataFetch.getId(dataFetch.projectTask),
+        taskType: dataFetch.getId(dataFetch.taskType),
+        user: dataFetch.getId(dataFetch.user));
   }
 
   @override
@@ -293,6 +322,7 @@ class _MyAppState extends State<MyApp> {
                         fetchCalendar: fetchRep,
                         update: jobList.addFocused,
                         visible: visible,
+                        context2: context,
                       ),
                       Expanded(
                         child: ContainerEvents(
