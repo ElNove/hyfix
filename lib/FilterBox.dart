@@ -320,18 +320,18 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
             }
             selectedList = list!;
 
-          var jobList=context.read<JobList>();
-          jobList.updateLista();
-          widget.fetchRep(
-              first: dataFetch.first,
-              last: dataFetch.last,
-              type: dataFetch.type,
-              customer: dataFetch.getId(dataFetch.customer),
-              location: dataFetch.getId(dataFetch.location),
-              project: dataFetch.getId(dataFetch.project),
-              projectTask: dataFetch.getId(dataFetch.projectTask),
-              taskType: dataFetch.getId(dataFetch.taskType),
-              user: dataFetch.getId(dataFetch.user));
+            var jobList = context.read<JobList>();
+            jobList.updateLista();
+            widget.fetchRep(
+                first: dataFetch.first,
+                last: dataFetch.last,
+                type: dataFetch.type,
+                customer: dataFetch.getId(dataFetch.customer),
+                location: dataFetch.getId(dataFetch.location),
+                project: dataFetch.getId(dataFetch.project),
+                projectTask: dataFetch.getId(dataFetch.projectTask),
+                taskType: dataFetch.getId(dataFetch.taskType),
+                user: dataFetch.getId(dataFetch.user));
           });
           Navigator.pop(context);
         },
@@ -481,7 +481,22 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             onTap: () {
                               if (clienti.isEmpty) {
                                 Service()
-                                    .selectRead(sesid: globals.sesid, tipo: "C")
+                                    .selectRead(
+                                        sesid: globals.sesid,
+                                        tipo: "C",
+                                        report_type: dataFetch.type,
+                                        customer_id:
+                                            dataFetch.getId(dataFetch.customer),
+                                        location_id:
+                                            dataFetch.getId(dataFetch.location),
+                                        project_id:
+                                            dataFetch.getId(dataFetch.project),
+                                        project_task_id: dataFetch
+                                            .getId(dataFetch.projectTask),
+                                        task_type_id:
+                                            dataFetch.getId(dataFetch.taskType),
+                                        user_id:
+                                            dataFetch.getId(dataFetch.user))
                                     .then((res) {
                                   clienti.clear();
                                   var body = jsonDecode(res.body);
@@ -549,7 +564,22 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             onTap: () {
                               if (luoghi.isEmpty) {
                                 Service()
-                                    .selectRead(sesid: globals.sesid, tipo: "L")
+                                    .selectRead(
+                                        sesid: globals.sesid,
+                                        tipo: "L",
+                                        report_type: dataFetch.type,
+                                        customer_id:
+                                            dataFetch.getId(dataFetch.customer),
+                                        location_id:
+                                            dataFetch.getId(dataFetch.location),
+                                        project_id:
+                                            dataFetch.getId(dataFetch.project),
+                                        project_task_id: dataFetch
+                                            .getId(dataFetch.projectTask),
+                                        task_type_id:
+                                            dataFetch.getId(dataFetch.taskType),
+                                        user_id:
+                                            dataFetch.getId(dataFetch.user))
                                     .then((res) {
                                   var body = jsonDecode(res.body);
                                   var data = body["data"];
@@ -607,7 +637,22 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             onTap: () {
                               if (progetti.isEmpty) {
                                 Service()
-                                    .selectRead(sesid: globals.sesid, tipo: "P")
+                                    .selectRead(
+                                        sesid: globals.sesid,
+                                        tipo: "P",
+                                        report_type: dataFetch.type,
+                                        customer_id:
+                                            dataFetch.getId(dataFetch.customer),
+                                        location_id:
+                                            dataFetch.getId(dataFetch.location),
+                                        project_id:
+                                            dataFetch.getId(dataFetch.project),
+                                        project_task_id: dataFetch
+                                            .getId(dataFetch.projectTask),
+                                        task_type_id:
+                                            dataFetch.getId(dataFetch.taskType),
+                                        user_id:
+                                            dataFetch.getId(dataFetch.user))
                                     .then((res) {
                                   var body = jsonDecode(res.body);
                                   var data = body["data"];
@@ -673,7 +718,22 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             onTap: () {
                               if (attivita.isEmpty) {
                                 Service()
-                                    .selectRead(sesid: globals.sesid, tipo: "A")
+                                    .selectRead(
+                                        sesid: globals.sesid,
+                                        tipo: "A",
+                                        report_type: dataFetch.type,
+                                        customer_id:
+                                            dataFetch.getId(dataFetch.customer),
+                                        location_id:
+                                            dataFetch.getId(dataFetch.location),
+                                        project_id:
+                                            dataFetch.getId(dataFetch.project),
+                                        project_task_id: dataFetch
+                                            .getId(dataFetch.projectTask),
+                                        task_type_id:
+                                            dataFetch.getId(dataFetch.taskType),
+                                        user_id:
+                                            dataFetch.getId(dataFetch.user))
                                     .then((res) {
                                   var body = jsonDecode(res.body);
                                   var data = body["data"];
@@ -733,7 +793,21 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               if (tipoAttivita.isEmpty) {
                                 Service()
                                     .selectRead(
-                                        sesid: globals.sesid, tipo: "TA")
+                                        sesid: globals.sesid,
+                                        tipo: "TA",
+                                        report_type: dataFetch.type,
+                                        customer_id:
+                                            dataFetch.getId(dataFetch.customer),
+                                        location_id:
+                                            dataFetch.getId(dataFetch.location),
+                                        project_id:
+                                            dataFetch.getId(dataFetch.project),
+                                        project_task_id: dataFetch
+                                            .getId(dataFetch.projectTask),
+                                        task_type_id:
+                                            dataFetch.getId(dataFetch.taskType),
+                                        user_id:
+                                            dataFetch.getId(dataFetch.user))
                                     .then((res) {
                                   var body = jsonDecode(res.body);
                                   var data = body["data"];
@@ -800,7 +874,22 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             onTap: () {
                               if (utenti.isEmpty) {
                                 Service()
-                                    .selectRead(sesid: globals.sesid, tipo: "U")
+                                    .selectRead(
+                                        sesid: globals.sesid,
+                                        tipo: "U",
+                                        report_type: dataFetch.type,
+                                        customer_id:
+                                            dataFetch.getId(dataFetch.customer),
+                                        location_id:
+                                            dataFetch.getId(dataFetch.location),
+                                        project_id:
+                                            dataFetch.getId(dataFetch.project),
+                                        project_task_id: dataFetch
+                                            .getId(dataFetch.projectTask),
+                                        task_type_id:
+                                            dataFetch.getId(dataFetch.taskType),
+                                        user_id:
+                                            dataFetch.getId(dataFetch.user))
                                     .then((res) {
                                   var body = jsonDecode(res.body);
                                   var data = body["data"];
