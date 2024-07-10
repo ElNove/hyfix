@@ -16,6 +16,9 @@ import 'package:local_auth_darwin/local_auth_darwin.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  const loader = SvgAssetLoader('assets/full_logo.svg');
+  svg.cache.putIfAbsent(loader.cacheKey(null), () => loader.loadBytes(null));
+
   final String themeJson = await rootBundle.loadString('assets/theme.json');
   final Map<String, dynamic> themeMap = jsonDecode(themeJson);
 
