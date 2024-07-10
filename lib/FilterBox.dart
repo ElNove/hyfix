@@ -184,6 +184,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
       await FilterListDialog.display<T>(
         applyButtonText: 'Applica',
         allButtonText: 'Tutti',
+        headlineText: "${selectedList.runtimeType}".substring(5,"${selectedList.runtimeType}".length-1),
         themeData: FilterListThemeData(
           context,
           backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
