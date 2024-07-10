@@ -486,8 +486,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       sesid: globals.sesid,
                                       tipo: "C",
                                       report_type: dataFetch.type,
-                                      customer_id:
-                                          dataFetch.getId(dataFetch.customer),
+                                      customer_id:[],
                                       location_id:
                                           dataFetch.getId(dataFetch.location),
                                       project_id:
@@ -568,7 +567,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       customer_id:
                                           dataFetch.getId(dataFetch.customer),
                                       location_id:
-                                          dataFetch.getId(dataFetch.location),
+                                          [],
                                       project_id:
                                           dataFetch.getId(dataFetch.project),
                                       project_task_id: dataFetch
@@ -641,7 +640,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       location_id:
                                           dataFetch.getId(dataFetch.location),
                                       project_id:
-                                          dataFetch.getId(dataFetch.project),
+                                          [],
                                       project_task_id: dataFetch
                                           .getId(dataFetch.projectTask),
                                       task_type_id:
@@ -721,8 +720,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                           dataFetch.getId(dataFetch.location),
                                       project_id:
                                           dataFetch.getId(dataFetch.project),
-                                      project_task_id: dataFetch
-                                          .getId(dataFetch.projectTask),
+                                      project_task_id: [],
                                       task_type_id:
                                           dataFetch.getId(dataFetch.taskType),
                                       user_id: dataFetch.getId(dataFetch.user))
@@ -796,7 +794,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       project_task_id: dataFetch
                                           .getId(dataFetch.projectTask),
                                       task_type_id:
-                                          dataFetch.getId(dataFetch.taskType),
+                                          [],
                                       user_id: dataFetch.getId(dataFetch.user))
                                   .then((res) {
                                 tipoAttivita.clear();
@@ -877,7 +875,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                           .getId(dataFetch.projectTask),
                                       task_type_id:
                                           dataFetch.getId(dataFetch.taskType),
-                                      user_id: dataFetch.getId(dataFetch.user))
+                                      user_id: [])
                                   .then((res) {
                                 utenti.clear();
                                 var body = jsonDecode(res.body);
