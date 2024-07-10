@@ -471,7 +471,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
-                                Icons.arrow_drop_down,
+                                Icons.filter_list,
                                 color: Colors.white,
                               ),
                               border: const OutlineInputBorder(
@@ -557,7 +557,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
-                                Icons.arrow_drop_down,
+                                Icons.filter_list,
                                 color: Colors.white,
                               ),
                               border: const OutlineInputBorder(
@@ -633,7 +633,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
-                                Icons.arrow_drop_down,
+                                Icons.filter_list,
                                 color: Colors.white,
                               ),
                               border: const OutlineInputBorder(
@@ -717,7 +717,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
-                                Icons.arrow_drop_down,
+                                Icons.filter_list,
                                 color: Colors.white,
                               ),
                               border: const OutlineInputBorder(
@@ -794,7 +794,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
-                                Icons.arrow_drop_down,
+                                Icons.filter_list,
                                 color: Colors.white,
                               ),
                               border: const OutlineInputBorder(
@@ -879,7 +879,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
-                                Icons.arrow_drop_down,
+                                Icons.filter_list,
                                 color: Colors.white,
                               ),
                               border: const OutlineInputBorder(
