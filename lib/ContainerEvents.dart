@@ -110,8 +110,8 @@ class _ContainerEvents extends State<ContainerEvents> {
                           height: 10,
                         ),
                         Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.only(bottom: 5),
+                             child: Padding(
+                           padding: const EdgeInsets.only(bottom: 5),
                           child: Events(
                               data: widget.selezionato, lista: widget.lista),
                         )),

@@ -29,6 +29,7 @@ class Service {
       dynamic projectTask,
       dynamic taskType,
       dynamic user) async {
+
     var client = http.Client();
 
     final startDate = start.toString().split(' ')[0];
@@ -38,21 +39,53 @@ class Service {
       'filters[start]': startDate,
       'filters[end]': endDate,
       'filters[report_type]': type,
-      'filters[customer_id]': customer,
+      /*'filters[customer_id]': customer,
       'filters[location_id]': location,
       'filters[project_id]': project,
       'filters[project_task_id]': projectTask,
       'filters[task_type_id]': taskType,
-      'filters[user_id]': user,
-      'limit': '10000'
+      'filters[user_id]': user,*/
+      '_limit': '10000'
     };
+    if(customer!=""){
+      for (var element in customer) {
+        print(element);
+        queryParameters.addAll({'filters[customer_id][]':"$element"});
+        print(queryParameters);
+      }
+    }
+    if(location!=""){
+      for (var element in location) {
+        queryParameters.addAll({'filters[location_id][]':"$element"});
+      }
+    }
+    if(project!=""){
+      for (var element in project) {
+        queryParameters.addAll({'filters[project_id][]':"$element"});
+      }
+    }
+    if(projectTask!=""){
+      for (var element in projectTask) {
+        queryParameters.addAll({'filters[project_task_id][]':"$element"});
+      }
+    }
+    if(taskType!=""){
+      for (var element in taskType) {
+        queryParameters.addAll({'filters[task_type_id][]':"$element"});
+      }
+    }
+    if(user!=""){
+      for (var element in user) {
+        queryParameters.addAll({'filters[user_id][]':"$element"});
+      }
+    }
+    print(queryParameters);
     var uri = Uri.https(
         'hyfix.test.nealis.it', '/reports/report/read', queryParameters);
     var response = await client.get(uri, headers: {
       HttpHeaders.contentTypeHeader: 'application/json',
       HttpHeaders.cookieHeader: sesid,
     });
-
     if (response.body.contains('"success":true')) {
       var json = response.body;
       final dynamic jsonData = jsonDecode(json);
