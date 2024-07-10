@@ -467,7 +467,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.customer.isEmpty
                                   ? ""
-                                  : "${dataFetch.customer.length} Selezionati",
+                                  : "${dataFetch.customer.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -481,41 +481,34 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
-                              if (clienti.isEmpty) {
-                                Service()
-                                    .selectRead(
-                                        sesid: globals.sesid,
-                                        tipo: "C",
-                                        report_type: dataFetch.type,
-                                        customer_id:
-                                            dataFetch.getId(dataFetch.customer),
-                                        location_id:
-                                            dataFetch.getId(dataFetch.location),
-                                        project_id:
-                                            dataFetch.getId(dataFetch.project),
-                                        project_task_id: dataFetch
-                                            .getId(dataFetch.projectTask),
-                                        task_type_id:
-                                            dataFetch.getId(dataFetch.taskType),
-                                        user_id:
-                                            dataFetch.getId(dataFetch.user))
-                                    .then((res) {
-                                  clienti.clear();
-                                  var body = jsonDecode(res.body);
-                                  var data = body["data"];
-
-                                  // ignore: avoid_print
-                                  for (var element in data) {
-                                    clienti.add(Cliente(
-                                        element["customer_id"],
-                                        element["customer_code"],
-                                        element["customer_companyname"]));
-                                  }
-                                  openFilterDialog(clienti.cast<T>());
-                                });
-                              } else {
+                              Service()
+                                  .selectRead(
+                                      sesid: globals.sesid,
+                                      tipo: "C",
+                                      report_type: dataFetch.type,
+                                      customer_id:
+                                          dataFetch.getId(dataFetch.customer),
+                                      location_id:
+                                          dataFetch.getId(dataFetch.location),
+                                      project_id:
+                                          dataFetch.getId(dataFetch.project),
+                                      project_task_id: dataFetch
+                                          .getId(dataFetch.projectTask),
+                                      task_type_id:
+                                          dataFetch.getId(dataFetch.taskType),
+                                      user_id: dataFetch.getId(dataFetch.user))
+                                  .then((res) {
+                                clienti.clear();
+                                var body = jsonDecode(res.body);
+                                var data = body["data"];
+                                for (var element in data) {
+                                  clienti.add(Cliente(
+                                      element["customer_id"],
+                                      element["customer_code"],
+                                      element["customer_companyname"]));
+                                }
                                 openFilterDialog(clienti.cast<T>());
-                              }
+                              });
                             },
                           ),
                         ),
@@ -553,7 +546,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.location.isEmpty
                                   ? ""
-                                  : "${dataFetch.location.length} Selezionati",
+                                  : "${dataFetch.location.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -567,39 +560,34 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
-                              if (luoghi.isEmpty) {
-                                Service()
-                                    .selectRead(
-                                        sesid: globals.sesid,
-                                        tipo: "L",
-                                        report_type: dataFetch.type,
-                                        customer_id:
-                                            dataFetch.getId(dataFetch.customer),
-                                        location_id:
-                                            dataFetch.getId(dataFetch.location),
-                                        project_id:
-                                            dataFetch.getId(dataFetch.project),
-                                        project_task_id: dataFetch
-                                            .getId(dataFetch.projectTask),
-                                        task_type_id:
-                                            dataFetch.getId(dataFetch.taskType),
-                                        user_id:
-                                            dataFetch.getId(dataFetch.user))
-                                    .then((res) {
-                                  var body = jsonDecode(res.body);
-                                  var data = body["data"];
-                                  // ignore: avoid_print
-                                  for (var element in data) {
-                                    luoghi.add(Luogo(
-                                        element["location_id"],
-                                        element["location_code"],
-                                        element["location_city"]));
-                                  }
-                                  openFilterDialog(luoghi.cast<T>());
-                                });
-                              } else {
+                              Service()
+                                  .selectRead(
+                                      sesid: globals.sesid,
+                                      tipo: "L",
+                                      report_type: dataFetch.type,
+                                      customer_id:
+                                          dataFetch.getId(dataFetch.customer),
+                                      location_id:
+                                          dataFetch.getId(dataFetch.location),
+                                      project_id:
+                                          dataFetch.getId(dataFetch.project),
+                                      project_task_id: dataFetch
+                                          .getId(dataFetch.projectTask),
+                                      task_type_id:
+                                          dataFetch.getId(dataFetch.taskType),
+                                      user_id: dataFetch.getId(dataFetch.user))
+                                  .then((res) {
+                                luoghi.clear();
+                                var body = jsonDecode(res.body);
+                                var data = body["data"];
+                                for (var element in data) {
+                                  luoghi.add(Luogo(
+                                      element["location_id"],
+                                      element["location_code"],
+                                      element["location_city"]));
+                                }
                                 openFilterDialog(luoghi.cast<T>());
-                              }
+                              });
                             },
                           ),
                         ),
@@ -629,7 +617,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.project.isEmpty
                                   ? ""
-                                  : "${dataFetch.project.length} Selezionati",
+                                  : "${dataFetch.project.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -643,39 +631,34 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
-                              if (progetti.isEmpty) {
-                                Service()
-                                    .selectRead(
-                                        sesid: globals.sesid,
-                                        tipo: "P",
-                                        report_type: dataFetch.type,
-                                        customer_id:
-                                            dataFetch.getId(dataFetch.customer),
-                                        location_id:
-                                            dataFetch.getId(dataFetch.location),
-                                        project_id:
-                                            dataFetch.getId(dataFetch.project),
-                                        project_task_id: dataFetch
-                                            .getId(dataFetch.projectTask),
-                                        task_type_id:
-                                            dataFetch.getId(dataFetch.taskType),
-                                        user_id:
-                                            dataFetch.getId(dataFetch.user))
-                                    .then((res) {
-                                  var body = jsonDecode(res.body);
-                                  var data = body["data"];
-                                  // ignore: avoid_print
-                                  for (var element in data) {
-                                    progetti.add(Progetto(
-                                        element["project_id"],
-                                        element["project_code"],
-                                        element["customer_code"]));
-                                  }
-                                  openFilterDialog(progetti.cast<T>());
-                                });
-                              } else {
+                              Service()
+                                  .selectRead(
+                                      sesid: globals.sesid,
+                                      tipo: "P",
+                                      report_type: dataFetch.type,
+                                      customer_id:
+                                          dataFetch.getId(dataFetch.customer),
+                                      location_id:
+                                          dataFetch.getId(dataFetch.location),
+                                      project_id:
+                                          dataFetch.getId(dataFetch.project),
+                                      project_task_id: dataFetch
+                                          .getId(dataFetch.projectTask),
+                                      task_type_id:
+                                          dataFetch.getId(dataFetch.taskType),
+                                      user_id: dataFetch.getId(dataFetch.user))
+                                  .then((res) {
+                                progetti.clear();
+                                var body = jsonDecode(res.body);
+                                var data = body["data"];
+                                for (var element in data) {
+                                  progetti.add(Progetto(
+                                      element["project_id"],
+                                      element["project_code"],
+                                      element["customer_code"]));
+                                }
                                 openFilterDialog(progetti.cast<T>());
-                              }
+                              });
                             },
                           ),
                         ),
@@ -713,7 +696,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.projectTask.isEmpty
                                   ? ""
-                                  : "${dataFetch.projectTask.length} Selezionati",
+                                  : "${dataFetch.projectTask.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -727,40 +710,35 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
-                              if (attivita.isEmpty) {
-                                Service()
-                                    .selectRead(
-                                        sesid: globals.sesid,
-                                        tipo: "A",
-                                        report_type: dataFetch.type,
-                                        customer_id:
-                                            dataFetch.getId(dataFetch.customer),
-                                        location_id:
-                                            dataFetch.getId(dataFetch.location),
-                                        project_id:
-                                            dataFetch.getId(dataFetch.project),
-                                        project_task_id: dataFetch
-                                            .getId(dataFetch.projectTask),
-                                        task_type_id:
-                                            dataFetch.getId(dataFetch.taskType),
-                                        user_id:
-                                            dataFetch.getId(dataFetch.user))
-                                    .then((res) {
-                                  var body = jsonDecode(res.body);
-                                  var data = body["data"];
-                                  // ignore: avoid_print
-                                  for (var element in data) {
-                                    attivita.add(Attivita(
-                                        element["project_task_id"],
-                                        element["project_task_code"],
-                                        element["project_code"],
-                                        element["customer_code"]));
-                                  }
-                                  openFilterDialog(attivita.cast<T>());
-                                });
-                              } else {
+                              Service()
+                                  .selectRead(
+                                      sesid: globals.sesid,
+                                      tipo: "A",
+                                      report_type: dataFetch.type,
+                                      customer_id:
+                                          dataFetch.getId(dataFetch.customer),
+                                      location_id:
+                                          dataFetch.getId(dataFetch.location),
+                                      project_id:
+                                          dataFetch.getId(dataFetch.project),
+                                      project_task_id: dataFetch
+                                          .getId(dataFetch.projectTask),
+                                      task_type_id:
+                                          dataFetch.getId(dataFetch.taskType),
+                                      user_id: dataFetch.getId(dataFetch.user))
+                                  .then((res) {
+                                attivita.clear();
+                                var body = jsonDecode(res.body);
+                                var data = body["data"];
+                                for (var element in data) {
+                                  attivita.add(Attivita(
+                                      element["project_task_id"],
+                                      element["project_task_code"],
+                                      element["project_code"],
+                                      element["customer_code"]));
+                                }
                                 openFilterDialog(attivita.cast<T>());
-                              }
+                              });
                             },
                           ),
                         ),
@@ -790,7 +768,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.taskType.isEmpty
                                   ? ""
-                                  : "${dataFetch.taskType.length} Selezionati",
+                                  : "${dataFetch.taskType.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -804,40 +782,35 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
-                              if (tipoAttivita.isEmpty) {
-                                Service()
-                                    .selectRead(
-                                        sesid: globals.sesid,
-                                        tipo: "TA",
-                                        report_type: dataFetch.type,
-                                        customer_id:
-                                            dataFetch.getId(dataFetch.customer),
-                                        location_id:
-                                            dataFetch.getId(dataFetch.location),
-                                        project_id:
-                                            dataFetch.getId(dataFetch.project),
-                                        project_task_id: dataFetch
-                                            .getId(dataFetch.projectTask),
-                                        task_type_id:
-                                            dataFetch.getId(dataFetch.taskType),
-                                        user_id:
-                                            dataFetch.getId(dataFetch.user))
-                                    .then((res) {
-                                  var body = jsonDecode(res.body);
-                                  var data = body["data"];
+                              Service()
+                                  .selectRead(
+                                      sesid: globals.sesid,
+                                      tipo: "TA",
+                                      report_type: dataFetch.type,
+                                      customer_id:
+                                          dataFetch.getId(dataFetch.customer),
+                                      location_id:
+                                          dataFetch.getId(dataFetch.location),
+                                      project_id:
+                                          dataFetch.getId(dataFetch.project),
+                                      project_task_id: dataFetch
+                                          .getId(dataFetch.projectTask),
+                                      task_type_id:
+                                          dataFetch.getId(dataFetch.taskType),
+                                      user_id: dataFetch.getId(dataFetch.user))
+                                  .then((res) {
+                                tipoAttivita.clear();
+                                var body = jsonDecode(res.body);
+                                var data = body["data"];
 
-                                  // ignore: avoid_print
-                                  for (var element in data) {
-                                    tipoAttivita.add(TipoAttivita(
-                                        element["task_type_id"],
-                                        element["task_type_code"],
-                                        element["unity_code"]));
-                                  }
-                                  openFilterDialog(tipoAttivita.cast<T>());
-                                });
-                              } else {
+                                for (var element in data) {
+                                  tipoAttivita.add(TipoAttivita(
+                                      element["task_type_id"],
+                                      element["task_type_code"],
+                                      element["unity_code"]));
+                                }
                                 openFilterDialog(tipoAttivita.cast<T>());
-                              }
+                              });
                             },
                           ),
                         ),
@@ -875,7 +848,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.user.isEmpty
                                   ? ""
-                                  : "${dataFetch.user.length} Selezionati",
+                                  : "${dataFetch.user.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -889,41 +862,36 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
-                              if (utenti.isEmpty) {
-                                Service()
-                                    .selectRead(
-                                        sesid: globals.sesid,
-                                        tipo: "U",
-                                        report_type: dataFetch.type,
-                                        customer_id:
-                                            dataFetch.getId(dataFetch.customer),
-                                        location_id:
-                                            dataFetch.getId(dataFetch.location),
-                                        project_id:
-                                            dataFetch.getId(dataFetch.project),
-                                        project_task_id: dataFetch
-                                            .getId(dataFetch.projectTask),
-                                        task_type_id:
-                                            dataFetch.getId(dataFetch.taskType),
-                                        user_id:
-                                            dataFetch.getId(dataFetch.user))
-                                    .then((res) {
-                                  var body = jsonDecode(res.body);
-                                  var data = body["data"];
+                              Service()
+                                  .selectRead(
+                                      sesid: globals.sesid,
+                                      tipo: "U",
+                                      report_type: dataFetch.type,
+                                      customer_id:
+                                          dataFetch.getId(dataFetch.customer),
+                                      location_id:
+                                          dataFetch.getId(dataFetch.location),
+                                      project_id:
+                                          dataFetch.getId(dataFetch.project),
+                                      project_task_id: dataFetch
+                                          .getId(dataFetch.projectTask),
+                                      task_type_id:
+                                          dataFetch.getId(dataFetch.taskType),
+                                      user_id: dataFetch.getId(dataFetch.user))
+                                  .then((res) {
+                                utenti.clear();
+                                var body = jsonDecode(res.body);
+                                var data = body["data"];
 
-                                  // ignore: avoid_print
-                                  for (var element in data) {
-                                    utenti.add(Utente(
-                                        element["user_id"],
-                                        element["username"],
-                                        element["signature"],
-                                        element["avatar"]));
-                                  }
-                                  openFilterDialog(utenti.cast<T>());
-                                });
-                              } else {
+                                for (var element in data) {
+                                  utenti.add(Utente(
+                                      element["user_id"],
+                                      element["username"],
+                                      element["signature"],
+                                      element["avatar"]));
+                                }
                                 openFilterDialog(utenti.cast<T>());
-                              }
+                              });
                             },
                           ),
                         ),
