@@ -186,25 +186,28 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
         allButtonText: 'Tutti',
         themeData: FilterListThemeData(
           context,
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
           headerTheme: HeaderThemeData(
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            closeIconColor: Theme.of(context).colorScheme.onSurface,
-            searchFieldBackgroundColor: Theme.of(context).colorScheme.onSurface,
-            searchFieldIconColor: Theme.of(context).colorScheme.surface,
+            backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
+            closeIconColor: Theme.of(context).colorScheme.onTertiaryContainer,
+            searchFieldBackgroundColor:
+                Theme.of(context).colorScheme.onTertiaryContainer,
+            searchFieldIconColor:
+                Theme.of(context).colorScheme.tertiaryContainer,
             searchFieldHintText: 'Cerca...',
             searchFieldHintTextStyle: TextStyle(
                 color: Theme.of(context).colorScheme.outline, fontSize: 18),
             searchFieldTextStyle: TextStyle(
-                color: Theme.of(context).colorScheme.surface, fontSize: 18),
+                color: Theme.of(context).colorScheme.inverseSurface,
+                fontSize: 18),
             headerTextStyle: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
+                color: Theme.of(context).colorScheme.onTertiaryContainer,
                 fontSize: 18,
                 fontWeight: FontWeight.bold),
           ),
           controlButtonBarTheme: ControlButtonBarThemeData(
             context,
-            backgroundColor: Theme.of(context).colorScheme.onSurface,
+            backgroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
             controlButtonTheme: ControlButtonThemeData(
               primaryButtonBackgroundColor:
                   Theme.of(context).colorScheme.tertiaryContainer,
@@ -213,37 +216,39 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                 fontSize: 15,
               ),
               textStyle: TextStyle(
-                color: Theme.of(context).colorScheme.surface,
+                color: Theme.of(context).colorScheme.tertiaryContainer,
                 fontSize: 15,
               ),
             ),
           ),
         ),
         context,
+        hideCloseIcon: true,
         listData: lista,
         selectedItemsText: 'Selezionati',
         selectedListData: selectedList,
         choiceChipLabel: (item) => '',
         choiceChipBuilder: (context, item, isSelected) {
+        
           return Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
               decoration: BoxDecoration(
                 color: isSelected! || selectedList.contains(item.toString())
-                    ? Theme.of(context).colorScheme.tertiaryContainer
-                    : Theme.of(context).colorScheme.surface,
+                    ? Theme.of(context).colorScheme.surface
+                    : Theme.of(context).colorScheme.tertiaryContainer,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                     color: isSelected
-                        ? Theme.of(context).colorScheme.tertiaryContainer
-                        : Theme.of(context).colorScheme.onSurface),
+                        ? Theme.of(context).colorScheme.surface
+                        : Theme.of(context).colorScheme.onTertiaryContainer),
               ),
               child: Text(
                 item.label,
                 style: TextStyle(
                     color: isSelected
-                        ? Theme.of(context).colorScheme.onTertiaryContainer
-                        : Theme.of(context).colorScheme.onSurface,
+                        ? Theme.of(context).colorScheme.onSurface
+                        : Theme.of(context).colorScheme.onTertiaryContainer,
                     fontSize: 15),
               ));
         },
@@ -384,7 +389,9 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                       Text(
                         'FILTRA PER:',
                         style: TextStyle(
-                            color: Colors.white,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onTertiaryContainer,
                             fontSize:
                                 MediaQuery.of(context).size.height / 100 * 2.5,
                             fontWeight: FontWeight.bold),
@@ -393,9 +400,11 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.close,
-                            color: Colors.white,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onTertiaryContainer,
                           ))
                     ],
                   ),
@@ -411,10 +420,12 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                         Container(
                             width: screenWidth / 100 * 37,
                             alignment: Alignment.centerLeft,
-                            child: const Text('TIPO',
+                            child: Text('TIPO',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18))),
                         const SizedBox(
@@ -428,14 +439,21 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                   borderSide: BorderSide.none,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10)))),
-                          textStyle: const TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                          textStyle: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onTertiaryContainer,
+                              fontWeight: FontWeight.bold),
                           width: screenWidth / 100 * 40,
-                          trailingIcon: const Icon(Icons.arrow_drop_down,
-                              color: Colors.white),
-                          selectedTrailingIcon: const Icon(
+                          trailingIcon: Icon(Icons.arrow_drop_down,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onTertiaryContainer),
+                          selectedTrailingIcon: Icon(
                             Icons.arrow_drop_up,
-                            color: Colors.white,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onTertiaryContainer,
                           ),
                           initialSelection: dataFetch.type,
                           dropdownMenuEntries: const [
@@ -471,10 +489,12 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                         Container(
                             width: screenWidth / 100 * 37,
                             alignment: Alignment.centerLeft,
-                            child: const Text('CLIENTE',
+                            child: Text('CLIENTE',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18))),
                         const SizedBox(
@@ -484,18 +504,26 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                           width: screenWidth / 100 * 40,
                           child: TextField(
                             readOnly: true,
-                            style: const TextStyle(
-                                color: Colors.white,
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
                               hintText: dataFetch.customer.isEmpty
                                   ? ""
                                   : "${dataFetch.customer.length} selezionati",
+                              hintStyle: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiaryContainer),
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
-                              suffixIcon: const Icon(
+                              suffixIcon: Icon(
                                 Icons.filter_list,
-                                color: Colors.white,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                               ),
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
@@ -510,7 +538,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       sesid: globals.sesid,
                                       tipo: "C",
                                       report_type: dataFetch.type,
-                                      customer_id:[],
+                                      customer_id: [],
                                       location_id:
                                           dataFetch.getId(dataFetch.location),
                                       project_id:
@@ -551,10 +579,12 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                         Container(
                             width: screenWidth / 100 * 37,
                             alignment: Alignment.centerLeft,
-                            child: const Text('LUOGO',
+                            child: Text('LUOGO',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18))),
                         const SizedBox(
@@ -564,18 +594,26 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                           width: screenWidth / 100 * 40,
                           child: TextField(
                             readOnly: true,
-                            style: const TextStyle(
-                                color: Colors.white,
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
                               hintText: dataFetch.location.isEmpty
                                   ? ""
                                   : "${dataFetch.location.length} selezionati",
+                              hintStyle: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiaryContainer),
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
-                              suffixIcon: const Icon(
+                              suffixIcon: Icon(
                                 Icons.filter_list,
-                                color: Colors.white,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                               ),
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
@@ -584,6 +622,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
+                              startLoading();
                               Service()
                                   .selectRead(
                                       sesid: globals.sesid,
@@ -591,8 +630,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       report_type: dataFetch.type,
                                       customer_id:
                                           dataFetch.getId(dataFetch.customer),
-                                      location_id:
-                                          [],
+                                      location_id: [],
                                       project_id:
                                           dataFetch.getId(dataFetch.project),
                                       project_task_id: dataFetch
@@ -610,6 +648,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       element["location_code"],
                                       element["location_city"]));
                                 }
+                                stopLoading();
                                 openFilterDialog(luoghi.cast<T>());
                               });
                             },
@@ -622,10 +661,12 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                         Container(
                             width: screenWidth / 100 * 37,
                             alignment: Alignment.centerLeft,
-                            child: const Text('PROGETTO',
+                            child: Text('PROGETTO',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18))),
                         const SizedBox(
@@ -635,18 +676,26 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                           width: screenWidth / 100 * 40,
                           child: TextField(
                             readOnly: true,
-                            style: const TextStyle(
-                                color: Colors.white,
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
                               hintText: dataFetch.project.isEmpty
                                   ? ""
                                   : "${dataFetch.project.length} selezionati",
+                              hintStyle: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiaryContainer),
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
-                              suffixIcon: const Icon(
+                              suffixIcon: Icon(
                                 Icons.filter_list,
-                                color: Colors.white,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                               ),
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
@@ -655,6 +704,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
+                              startLoading();
                               Service()
                                   .selectRead(
                                       sesid: globals.sesid,
@@ -664,8 +714,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                           dataFetch.getId(dataFetch.customer),
                                       location_id:
                                           dataFetch.getId(dataFetch.location),
-                                      project_id:
-                                          [],
+                                      project_id: [],
                                       project_task_id: dataFetch
                                           .getId(dataFetch.projectTask),
                                       task_type_id:
@@ -681,6 +730,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       element["project_code"],
                                       element["customer_code"]));
                                 }
+                                stopLoading();
                                 openFilterDialog(progetti.cast<T>());
                               });
                             },
@@ -701,10 +751,12 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                         Container(
                             width: screenWidth / 100 * 37,
                             alignment: Alignment.centerLeft,
-                            child: const Text('ATTIVITÀ',
+                            child: Text('ATTIVITÀ',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18))),
                         const SizedBox(
@@ -714,18 +766,26 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                           width: screenWidth / 100 * 40,
                           child: TextField(
                             readOnly: true,
-                            style: const TextStyle(
-                                color: Colors.white,
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
                               hintText: dataFetch.projectTask.isEmpty
                                   ? ""
                                   : "${dataFetch.projectTask.length} selezionati",
+                              hintStyle: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiaryContainer),
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
-                              suffixIcon: const Icon(
+                              suffixIcon: Icon(
                                 Icons.filter_list,
-                                color: Colors.white,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                               ),
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
@@ -734,6 +794,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
+                              startLoading();
                               Service()
                                   .selectRead(
                                       sesid: globals.sesid,
@@ -760,6 +821,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       element["project_code"],
                                       element["customer_code"]));
                                 }
+                                stopLoading();
                                 openFilterDialog(attivita.cast<T>());
                               });
                             },
@@ -772,10 +834,12 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                         Container(
                             width: screenWidth / 100 * 37,
                             alignment: Alignment.centerLeft,
-                            child: const Text('TIPO ATTIVITÀ',
+                            child: Text('TIPO ATTIVITÀ',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18))),
                         const SizedBox(
@@ -785,18 +849,26 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                           width: screenWidth / 100 * 40,
                           child: TextField(
                             readOnly: true,
-                            style: const TextStyle(
-                                color: Colors.white,
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
                               hintText: dataFetch.taskType.isEmpty
                                   ? ""
                                   : "${dataFetch.taskType.length} selezionati",
+                              hintStyle: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiaryContainer),
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
-                              suffixIcon: const Icon(
+                              suffixIcon: Icon(
                                 Icons.filter_list,
-                                color: Colors.white,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                               ),
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
@@ -805,6 +877,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
+                              startLoading();
                               Service()
                                   .selectRead(
                                       sesid: globals.sesid,
@@ -818,8 +891,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                           dataFetch.getId(dataFetch.project),
                                       project_task_id: dataFetch
                                           .getId(dataFetch.projectTask),
-                                      task_type_id:
-                                          [],
+                                      task_type_id: [],
                                       user_id: dataFetch.getId(dataFetch.user))
                                   .then((res) {
                                 tipoAttivita.clear();
@@ -832,6 +904,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       element["task_type_code"],
                                       element["unity_code"]));
                                 }
+                                stopLoading();
                                 openFilterDialog(tipoAttivita.cast<T>());
                               });
                             },
@@ -852,10 +925,12 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                         Container(
                             width: screenWidth / 100 * 75,
                             alignment: Alignment.centerLeft,
-                            child: const Text('UTENTE',
+                            child: Text('UTENTE',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18))),
                         const SizedBox(
@@ -865,18 +940,26 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                           width: screenWidth / 100 * 80,
                           child: TextField(
                             readOnly: true,
-                            style: const TextStyle(
-                                color: Colors.white,
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
                               hintText: dataFetch.user.isEmpty
                                   ? ""
                                   : "${dataFetch.user.length} selezionati",
+                              hintStyle: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiaryContainer),
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
-                              suffixIcon: const Icon(
+                              suffixIcon: Icon(
                                 Icons.filter_list,
-                                color: Colors.white,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
                               ),
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
@@ -885,23 +968,22 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                               ),
                             ),
                             onTap: () {
-                              Service()
-                                  .selectRead(
-                                      sesid: globals.sesid,
-                                      tipo: "U",
-                                      report_type: dataFetch.type,
-                                      customer_id:
-                                          dataFetch.getId(dataFetch.customer),
-                                      location_id:
-                                          dataFetch.getId(dataFetch.location),
-                                      project_id:
-                                          dataFetch.getId(dataFetch.project),
-                                      project_task_id: dataFetch
-                                          .getId(dataFetch.projectTask),
-                                      task_type_id:
-                                          dataFetch.getId(dataFetch.taskType),
-                                      user_id: [])
-                                  .then((res) {
+                              startLoading();
+                              Service().selectRead(
+                                  sesid: globals.sesid,
+                                  tipo: "U",
+                                  report_type: dataFetch.type,
+                                  customer_id:
+                                      dataFetch.getId(dataFetch.customer),
+                                  location_id:
+                                      dataFetch.getId(dataFetch.location),
+                                  project_id:
+                                      dataFetch.getId(dataFetch.project),
+                                  project_task_id:
+                                      dataFetch.getId(dataFetch.projectTask),
+                                  task_type_id:
+                                      dataFetch.getId(dataFetch.taskType),
+                                  user_id: []).then((res) {
                                 utenti.clear();
                                 var body = jsonDecode(res.body);
                                 var data = body["data"];
@@ -913,6 +995,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                       element["signature"],
                                       element["avatar"]));
                                 }
+                                stopLoading();
                                 openFilterDialog(utenti.cast<T>());
                               });
                             },

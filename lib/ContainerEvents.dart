@@ -78,7 +78,9 @@ class _ContainerEvents extends State<ContainerEvents> {
                             Text(
                                 "${DateFormat.EEEE('it_IT').format(widget.selezionato)}, ${DateFormat.MMMd('it_IT').format(widget.selezionato)}, ${DateFormat.y('it_IT').format(widget.selezionato)}",
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer,
                                     fontSize:
                                         MediaQuery.of(context).size.height /
                                             100 *

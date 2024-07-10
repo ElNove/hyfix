@@ -40,25 +40,24 @@ class Service {
       'filters[report_type]': type,
       '_limit': '10000'
     };
-    if(customer!=""){
-        queryParameters.addAll({'filters[customer_id][]':customer});
+    if (customer != "") {
+      queryParameters.addAll({'filters[customer_id][]': customer});
     }
-    if(location!=""){
-        queryParameters.addAll({'filters[location_id][]':location});
+    if (location != "") {
+      queryParameters.addAll({'filters[location_id][]': location});
     }
-    if(project!=""){
-        queryParameters.addAll({'filters[project_id][]':project});
+    if (project != "") {
+      queryParameters.addAll({'filters[project_id][]': project});
     }
-    if(projectTask!=""){
-        queryParameters.addAll({'filters[project_task_id][]':projectTask});
+    if (projectTask != "") {
+      queryParameters.addAll({'filters[project_task_id][]': projectTask});
     }
-    if(taskType!=""){
-        queryParameters.addAll({'filters[task_type_id][]':taskType});
+    if (taskType != "") {
+      queryParameters.addAll({'filters[task_type_id][]': taskType});
     }
-    if(user!=""){
-        queryParameters.addAll({'filters[user_id][]':user});
+    if (user != "") {
+      queryParameters.addAll({'filters[user_id][]': user});
     }
-    print(queryParameters);
     var uri = Uri.https(
         'hyfix.test.nealis.it', '/reports/report/read', queryParameters);
     var response = await client.get(uri, headers: {
@@ -107,7 +106,8 @@ class Service {
     if (id == 0) {
       uri = Uri.https('hyfix.test.nealis.it', '/reports/customer/read');
     } else {
-      uri = Uri.https('hyfix.test.nealis.it', '/reports/customer/read', queryParameters);
+      uri = Uri.https(
+          'hyfix.test.nealis.it', '/reports/customer/read', queryParameters);
     }
     final response = await http.get(uri, headers: {
       HttpHeaders.contentTypeHeader: 'application/json',
@@ -126,8 +126,8 @@ class Service {
     if (cliente.isEmpty) {
       uri = Uri.https('hyfix.test.nealis.it', '/reports/project/readactive');
     } else {
-      uri = Uri.https(
-          'hyfix.test.nealis.it', '/reports/project/readactive', queryParameters);
+      uri = Uri.https('hyfix.test.nealis.it', '/reports/project/readactive',
+          queryParameters);
     }
 
     final response = await http.get(
@@ -150,8 +150,8 @@ class Service {
     if (id == 0) {
       uri = Uri.https('hyfix.test.nealis.it', '/reports/customerlocation/read');
     } else {
-      uri = Uri.https(
-          'hyfix.test.nealis.it', '/reports/customerlocation/read', queryParameters);
+      uri = Uri.https('hyfix.test.nealis.it', '/reports/customerlocation/read',
+          queryParameters);
     }
     final response = await http.get(
       uri,
@@ -167,7 +167,8 @@ class Service {
   Future<http.Response> getResolve(
       String sesid, Map<String, Object> queryParameters) async {
     final Uri uri;
-    uri = Uri.https('hyfix.test.nealis.it', '/reports/report/resolve', queryParameters);
+    uri = Uri.https(
+        'hyfix.test.nealis.it', '/reports/report/resolve', queryParameters);
     final response = await http.get(
       uri,
       headers: {
@@ -198,7 +199,8 @@ class Service {
       final queryParameters = {
         'filters[unity_type]': cate,
       };
-      uri = Uri.https('hyfix.test.nealis.it', '/reports/tasktype/read', queryParameters);
+      uri = Uri.https(
+          'hyfix.test.nealis.it', '/reports/tasktype/read', queryParameters);
     }
 
     final response = await http.get(
@@ -242,44 +244,39 @@ class Service {
     final startDate = weeks.first.first.toString().split(' ')[0];
     final endDate = weeks.last.last.toString().split(' ')[0];
 
-
-    
     Map<String, dynamic> queryParameters = {
       'filters[start]': startDate,
       'filters[end]': endDate,
       'filters[report_type]': report_type,
       '_limit': '10000'
     };
-    if(customer_id!=""){
-        queryParameters.addAll({'filters[customer_id][]':customer_id});
+    if (customer_id != "") {
+      queryParameters.addAll({'filters[customer_id][]': customer_id});
     }
-    if(location_id!=""){
-        queryParameters.addAll({'filters[location_id][]':location_id});
+    if (location_id != "") {
+      queryParameters.addAll({'filters[location_id][]': location_id});
     }
-    if(project_id!=""){
-        queryParameters.addAll({'filters[project_id][]':project_id});
+    if (project_id != "") {
+      queryParameters.addAll({'filters[project_id][]': project_id});
     }
-    if(project_task_id!=""){
-        queryParameters.addAll({'filters[project_task_id][]':project_task_id});
+    if (project_task_id != "") {
+      queryParameters.addAll({'filters[project_task_id][]': project_task_id});
     }
-    if(task_type_id!=""){
-        queryParameters.addAll({'filters[task_type_id][]':task_type_id});
+    if (task_type_id != "") {
+      queryParameters.addAll({'filters[task_type_id][]': task_type_id});
     }
-    if(user_id!=""){
-        queryParameters.addAll({'filters[user_id][]':user_id});
+    if (user_id != "") {
+      queryParameters.addAll({'filters[user_id][]': user_id});
     }
-    print(queryParameters);
 
     switch (tipo) {
       case "C":
         queryParameters.addAll({
-          "selectParams[distinctFields][]":
-            [
+          "selectParams[distinctFields][]": [
             "customer_id",
             "customer_code",
             "customer_companyname"
           ]
-          
         });
         break;
       case "L":
@@ -332,8 +329,8 @@ class Service {
         break;
     }
     if (tipo != "A") {
-      var uri = Uri.https('hyfix.test.nealis.it',
-          '/reports/report/selectread', queryParameters);
+      var uri = Uri.https('hyfix.test.nealis.it', '/reports/report/selectread',
+          queryParameters);
       final response = await http.get(
         uri,
         headers: {
