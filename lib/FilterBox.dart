@@ -320,18 +320,18 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
             }
             selectedList = list!;
 
-          var jobList=context.read<JobList>();
-          jobList.updateLista();
-          widget.fetchRep(
-              first: dataFetch.first,
-              last: dataFetch.last,
-              type: dataFetch.type,
-              customer: dataFetch.getId(dataFetch.customer),
-              location: dataFetch.getId(dataFetch.location),
-              project: dataFetch.getId(dataFetch.project),
-              projectTask: dataFetch.getId(dataFetch.projectTask),
-              taskType: dataFetch.getId(dataFetch.taskType),
-              user: dataFetch.getId(dataFetch.user));
+            var jobList = context.read<JobList>();
+            jobList.updateLista();
+            widget.fetchRep(
+                first: dataFetch.first,
+                last: dataFetch.last,
+                type: dataFetch.type,
+                customer: dataFetch.getId(dataFetch.customer),
+                location: dataFetch.getId(dataFetch.location),
+                project: dataFetch.getId(dataFetch.project),
+                projectTask: dataFetch.getId(dataFetch.projectTask),
+                taskType: dataFetch.getId(dataFetch.taskType),
+                user: dataFetch.getId(dataFetch.user));
           });
           Navigator.pop(context);
         },
@@ -421,8 +421,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             DropdownMenuEntry(value: 'E', label: 'Evento'),
                           ],
                           onSelected: (value) async {
-                            List<List<DateTime>> weeks =
-                                getWeeksOfMonth(widget.data);
+                            getWeeksOfMonth(widget.data);
 
                             dataFetch.type = value ?? '';
 
@@ -466,6 +465,9 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
+                              hintText: dataFetch.customer.isEmpty
+                                  ? ""
+                                  : "${dataFetch.customer.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -534,6 +536,9 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
+                              hintText: dataFetch.location.isEmpty
+                                  ? ""
+                                  : "${dataFetch.location.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -592,6 +597,9 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
+                              hintText: dataFetch.project.isEmpty
+                                  ? ""
+                                  : "${dataFetch.project.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -658,6 +666,9 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
+                              hintText: dataFetch.projectTask.isEmpty
+                                  ? ""
+                                  : "${dataFetch.projectTask.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -717,6 +728,9 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
+                              hintText: dataFetch.taskType.isEmpty
+                                  ? ""
+                                  : "${dataFetch.taskType.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -785,6 +799,9 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
+                              hintText: dataFetch.user.isEmpty
+                                  ? ""
+                                  : "${dataFetch.user.length} selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(

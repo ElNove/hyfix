@@ -29,7 +29,6 @@ class Service {
       dynamic projectTask,
       dynamic taskType,
       dynamic user) async {
-
     var client = http.Client();
 
     final startDate = start.toString().split(' ')[0];
@@ -47,36 +46,37 @@ class Service {
       'filters[user_id]': user,*/
       '_limit': '10000'
     };
-    if(customer!=""){
+    if (customer != "") {
       for (var element in customer) {
         print(element);
-        queryParameters.addAll({'filters[customer_id][]':"$element"});
+        // queryParameters.
+        queryParameters.addAll({'filters[customer_id][]': "$element"});
         print(queryParameters);
       }
     }
-    if(location!=""){
+    if (location != "") {
       for (var element in location) {
-        queryParameters.addAll({'filters[location_id][]':"$element"});
+        queryParameters.addAll({'filters[location_id][]': "$element"});
       }
     }
-    if(project!=""){
+    if (project != "") {
       for (var element in project) {
-        queryParameters.addAll({'filters[project_id][]':"$element"});
+        queryParameters.addAll({'filters[project_id][]': "$element"});
       }
     }
-    if(projectTask!=""){
+    if (projectTask != "") {
       for (var element in projectTask) {
-        queryParameters.addAll({'filters[project_task_id][]':"$element"});
+        queryParameters.addAll({'filters[project_task_id][]': "$element"});
       }
     }
-    if(taskType!=""){
+    if (taskType != "") {
       for (var element in taskType) {
-        queryParameters.addAll({'filters[task_type_id][]':"$element"});
+        queryParameters.addAll({'filters[task_type_id][]': "$element"});
       }
     }
-    if(user!=""){
+    if (user != "") {
       for (var element in user) {
-        queryParameters.addAll({'filters[user_id][]':"$element"});
+        queryParameters.addAll({'filters[user_id][]': "$element"});
       }
     }
     print(queryParameters);
@@ -274,13 +274,11 @@ class Service {
           "filters[project_task_id]": project_task_id ?? '',
           "filters[task_type_id]": task_type_id ?? '',
           "filters[user_id]": user_id ?? '',
-          "selectParams[distinctFields][]":
-            [
+          "selectParams[distinctFields][]": [
             "customer_id",
             "customer_code",
             "customer_companyname"
           ]
-          
         };
         break;
       case "L":
@@ -368,8 +366,8 @@ class Service {
         break;
     }
     if (tipo != "A") {
-      var uri = Uri.https('hyfix.test.nealis.it',
-          '/reports/report/selectread', params);
+      var uri = Uri.https(
+          'hyfix.test.nealis.it', '/reports/report/selectread', params);
       final response = await http.get(
         uri,
         headers: {
