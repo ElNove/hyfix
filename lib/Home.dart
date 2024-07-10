@@ -70,12 +70,12 @@ class DataFetch with ChangeNotifier {
     user = [];
   }
   dynamic getId(List list){
-    List<dynamic> ids=List.empty(growable: true);
+    List<String> ids=List.empty(growable: true);
     if(list.isEmpty){
       return List.empty();
     }else{
       for (var element in list) {
-      ids.add(element.id);
+      ids.add("${element.id}");
     }
     return ids;
     }
