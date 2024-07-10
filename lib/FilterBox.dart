@@ -378,22 +378,45 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                       ),
                       Row(
                         children: [
-                          IconButton(onPressed:(){ clear().then((value) => dataFetch.clear());}, icon: Icon(Icons.delete,color: Theme.of(context)
-                                .colorScheme
-                                .onTertiaryContainer,)),
-                      IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.close,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onTertiaryContainer,
-                          ))
+                          IconButton(
+                              onPressed: () {
+                                clear().then((value) {
+                                  dataFetch.clear();
+                                  widget.fetchRep(
+                                      first: dataFetch.first,
+                                      last: dataFetch.last,
+                                      type: dataFetch.type,
+                                      customer:
+                                          dataFetch.getId(dataFetch.customer),
+                                      location:
+                                          dataFetch.getId(dataFetch.location),
+                                      project:
+                                          dataFetch.getId(dataFetch.project),
+                                      projectTask: dataFetch
+                                          .getId(dataFetch.projectTask),
+                                      taskType:
+                                          dataFetch.getId(dataFetch.taskType),
+                                      user: dataFetch.getId(dataFetch.user));
+                                });
+                              },
+                              icon: Icon(
+                                Icons.delete,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
+                              )),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: Icon(
+                                Icons.close,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onTertiaryContainer,
+                              ))
                         ],
                       )
-                      
                     ],
                   ),
                 ),
