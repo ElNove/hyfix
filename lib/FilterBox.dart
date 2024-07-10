@@ -467,7 +467,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.customer.isEmpty
                                   ? ""
-                                  : "${dataFetch.customer.length} selezionati",
+                                  : "${dataFetch.customer.length} Selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -553,7 +553,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.location.isEmpty
                                   ? ""
-                                  : "${dataFetch.location.length} selezionati",
+                                  : "${dataFetch.location.length} Selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -629,7 +629,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.project.isEmpty
                                   ? ""
-                                  : "${dataFetch.project.length} selezionati",
+                                  : "${dataFetch.project.length} Selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -713,7 +713,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.projectTask.isEmpty
                                   ? ""
-                                  : "${dataFetch.projectTask.length} selezionati",
+                                  : "${dataFetch.projectTask.length} Selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -790,7 +790,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.taskType.isEmpty
                                   ? ""
-                                  : "${dataFetch.taskType.length} selezionati",
+                                  : "${dataFetch.taskType.length} Selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
@@ -875,7 +875,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                             decoration: InputDecoration(
                               hintText: dataFetch.user.isEmpty
                                   ? ""
-                                  : "${dataFetch.user.length} selezionati",
+                                  : "${dataFetch.user.length} Selezionati",
                               fillColor: Theme.of(context).colorScheme.tertiary,
                               filled: true,
                               suffixIcon: const Icon(
