@@ -54,6 +54,7 @@ dependencies:
   local_auth_android: ^1.0.41
   filter_list: ^1.0.3
   internet_connection_checker_plus: ^2.5.0
+  top_snackbar_flutter: ^3.1.0
   
 
 

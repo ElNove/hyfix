@@ -8,6 +8,8 @@ import 'package:hyfix/services/Service.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'Home.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'Login.dart' as globals;
@@ -308,11 +310,20 @@ class _AccessoState extends State<Accesso> {
         InternetConnection().onStatusChange.listen((InternetStatus status) {
       switch (status) {
         case InternetStatus.connected:
-          print('Connessione Internet Stabilita');
+
+          // The internet is now connected
+          if (result == false) {
+            showTopSnackBar(
+              Overlay.of(context),
+              dismissType: DismissType.onSwipe,
+              const CustomSnackBar.info(
+                message: "Sei Tornato Online",
+              ),
+            );
+          }
           setState(() {
             result = true;
           });
-          // The internet is now connected
           // ScaffoldMessenger.of(context).showSnackBar(
           //   const SnackBar(
           //     duration: Duration(seconds: 3),
@@ -326,10 +337,17 @@ class _AccessoState extends State<Accesso> {
           break;
         case InternetStatus.disconnected:
           // The internet is now disconnected
-          print('Nessuna Connessione Internet');
           setState(() {
             result = false;
           });
+          showTopSnackBar(
+            Overlay.of(context),
+            persistent: true,
+            dismissType: DismissType.none,
+            const CustomSnackBar.error(
+              message: "Connessione Internet Persa",
+            ),
+          );
           // ScaffoldMessenger.of(context).showSnackBar(
           //   const SnackBar(
           //     duration: Duration(seconds: 3),
@@ -449,12 +467,15 @@ class _AccessoState extends State<Accesso> {
                                 onPressed: () => {userController.clear()},
                                 icon: const Icon(Icons.clear)),
                             border: const OutlineInputBorder(),
-                            floatingLabelStyle: MaterialStateTextStyle.resolveWith(
+                            floatingLabelStyle:
+                                MaterialStateTextStyle.resolveWith(
                               (Set<MaterialState> states) {
                                 final Color color =
                                     states.contains(MaterialState.error)
                                         ? Theme.of(context).colorScheme.error
-                                        : Theme.of(context).colorScheme.tertiaryContainer;
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .tertiaryContainer;
                                 return TextStyle(
                                     color: color, letterSpacing: 1.3);
                               },
@@ -508,7 +529,9 @@ class _AccessoState extends State<Accesso> {
                                 final Color color =
                                     states.contains(MaterialState.error)
                                         ? Theme.of(context).colorScheme.error
-                                        : Theme.of(context).colorScheme.tertiaryContainer;
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .tertiaryContainer;
                                 return TextStyle(
                                     color: color, letterSpacing: 1.3);
                               },
@@ -556,16 +579,23 @@ class _AccessoState extends State<Accesso> {
                                 prefs.setString(
                                     'username', userController.text);
                                 if (res.body.contains('"success":false')) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      duration: Duration(seconds: 3),
-                                      content: Text(
-                                        'Username e/o Password Errati',
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      behavior: SnackBarBehavior.floating,
+                                  showTopSnackBar(
+                                    Overlay.of(context),
+                                    dismissType: DismissType.onSwipe,
+                                    const CustomSnackBar.error(
+                                      message: "Username e/o Password Errati",
                                     ),
                                   );
+                                  // ScaffoldMessenger.of(context).showSnackBar(
+                                  //   const SnackBar(
+                                  //     duration: Duration(seconds: 3),
+                                  //     content: Text(
+                                  //       'Username e/o Password Errati',
+                                  //       textAlign: TextAlign.center,
+                                  //     ),
+                                  //     behavior: SnackBarBehavior.floating,
+                                  //   ),
+                                  // );
                                 } else {
                                   setState(() {
                                     globals.username = userController.text;
@@ -578,28 +608,43 @@ class _AccessoState extends State<Accesso> {
                                 }
                               });
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  duration: Duration(seconds: 3),
-                                  content: Text(
-                                    'Nesuna Connessione Internet',
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  behavior: SnackBarBehavior.floating,
+                              showTopSnackBar(
+                                Overlay.of(context),
+                                dismissType: DismissType.onSwipe,
+                                const CustomSnackBar.error(
+                                  message: "Nesuna Connessione Internet",
                                 ),
                               );
+                              // ScaffoldMessenger.of(context).showSnackBar(
+                              //   const SnackBar(
+                              //     duration: Duration(seconds: 3),
+                              //     dismissDirection: DismissDirection.up,
+                              //     content: Text(
+                              //       'Nesuna Connessione Internet',
+                              //       textAlign: TextAlign.center,
+                              //     ),
+                              //     behavior: SnackBarBehavior.floating,
+                              //   ),
+                              // );
                             }
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                duration: Duration(seconds: 3),
-                                content: Text(
-                                  'Riempi tutti i campi',
-                                  textAlign: TextAlign.center,
-                                ),
-                                behavior: SnackBarBehavior.floating,
+                            showTopSnackBar(
+                              Overlay.of(context),
+                              dismissType: DismissType.onSwipe,
+                              const CustomSnackBar.error(
+                                message: "Riempi tutti i campi",
                               ),
                             );
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   const SnackBar(
+                            //     duration: Duration(seconds: 3),
+                            //     content: Text(
+                            //       'Riempi tutti i campi',
+                            //       textAlign: TextAlign.center,
+                            //     ),
+                            //     behavior: SnackBarBehavior.floating,
+                            //   ),
+                            // );
                           }
                         },
                         child: Text(
@@ -644,7 +689,7 @@ class _AccessoState extends State<Accesso> {
           biometricOnly: false,
         ),
       );
-      if (authenticated && globals.sesid.isNotEmpty) {
+      if (authenticated && globals.sesid.isNotEmpty && result) {
         setState(() {
           globals.username = userController.text;
         });
@@ -653,16 +698,23 @@ class _AccessoState extends State<Accesso> {
           MaterialPageRoute(builder: (context) => const MyApp()),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            duration: Duration(seconds: 3),
-            content: Text(
-              'Autenticazione fallita',
-              textAlign: TextAlign.center,
-            ),
-            behavior: SnackBarBehavior.floating,
+        showTopSnackBar(
+          Overlay.of(context),
+          dismissType: DismissType.onSwipe,
+          const CustomSnackBar.error(
+            message: "Autenticazione fallita",
           ),
         );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //     duration: Duration(seconds: 3),
+        //     content: Text(
+        //       'Autenticazione fallita',
+        //       textAlign: TextAlign.center,
+        //     ),
+        //     behavior: SnackBarBehavior.floating,
+        //   ),
+        // );
       }
     } on PlatformException catch (e) {
       print(e);

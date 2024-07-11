@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:hyfix/WeeksDay.dart';
 import 'package:intl/intl.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'Login.dart' as globals;
 import './models/ReportSave.dart';
 import './services/Service.dart';
@@ -416,14 +418,31 @@ class _InsertActivity extends State<InsertActivity> {
     );
 
     Service().saveReport(globals.sesid, ReportSaveToJson(rep)).then((report) {
-      DateTime focusedDay = DateTime.now();
+      if (report.body.contains('"success":false')) {
+        showTopSnackBar(
+          Overlay.of(context),
+          dismissType: DismissType.onSwipe,
+          const CustomSnackBar.error(
+            message: "Inserimento non riuscito",
+          ),
+        );
+      } else {
+        showTopSnackBar(
+          Overlay.of(context),
+          dismissType: DismissType.onSwipe,
+          const CustomSnackBar.success(
+            message: "Inserimento avvenuto con successo",
+          ),
+        );
+        DateTime focusedDay = DateTime.now();
 
-      List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
+        List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
 
-      widget.update();
-      widget.fetchCalendar(
-          first: weeks.first.first, last: weeks.last.last, type: 'R');
-      Navigator.pop(context);
+        widget.update();
+        widget.fetchCalendar(
+            first: weeks.first.first, last: weeks.last.last, type: 'R');
+        Navigator.pop(context);
+      }
     });
   }
 
@@ -1307,8 +1326,7 @@ class _InsertActivity extends State<InsertActivity> {
                                                         return InkWell(
                                                           onTap: () =>
                                                               onSelected(
-                                                            option,
-                                                          ),
+                                                                  option),
                                                           child: Padding(
                                                             padding:
                                                                 const EdgeInsets
@@ -1556,7 +1574,7 @@ class _InsertActivity extends State<InsertActivity> {
                                               left: BorderSide(
                                                   color: Theme.of(context)
                                                       .colorScheme
-                                                      .onSurfaceVariant),
+                                                      .outline),
                                               bottom: BorderSide(
                                                   color: Theme.of(context)
                                                       .colorScheme
