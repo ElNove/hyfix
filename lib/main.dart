@@ -10,12 +10,12 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'Home.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'Login.dart' as globals;
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:hyfix/Home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -324,6 +324,8 @@ class _AccessoState extends State<Accesso> {
           setState(() {
             result = true;
           });
+          // _handleRefresh();
+
           // ScaffoldMessenger.of(context).showSnackBar(
           //   const SnackBar(
           //     duration: Duration(seconds: 3),
