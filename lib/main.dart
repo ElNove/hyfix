@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/services/Service.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';

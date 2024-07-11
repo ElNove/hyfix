@@ -25,20 +25,17 @@ List<List<DateTime>> getWeeksOfMonth(DateTime date) {
       week = [];
     }
     currentDay = currentDay.add(const Duration(days: 1));
+    if (currentDay.hour == 1) {
+      currentDay = DateTime(currentDay.year, currentDay.month, currentDay.day);
+    } else if (currentDay.hour == 23) {
+      currentDay =
+          DateTime(currentDay.year, currentDay.month, currentDay.day + 1);
+    }
   }
 
   if (week.isNotEmpty) {
     weeks.add(week);
   }
-
-  // Add an additional week after the last complete week
-  DateTime nextWeekStart = endDay.add(const Duration(days: 1));
-  List<DateTime> nextWeek = [];
-  while (nextWeek.length < 7) {
-    nextWeek.add(nextWeekStart);
-    nextWeekStart = nextWeekStart.add(const Duration(days: 1));
-  }
-  weeks.add(nextWeek);
 
   return weeks;
 }
