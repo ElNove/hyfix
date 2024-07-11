@@ -301,7 +301,6 @@ class _MyAppState extends State<MyApp> {
     // Update the list of items and refresh the UI
 
     dataFetch.initData();
-    jobList.updateLista();
 
     List<List<DateTime>> weeks = getWeeksOfMonth(jobList.focusedDay);
 
