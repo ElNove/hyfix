@@ -1544,7 +1544,7 @@ class _InsertActivity extends State<InsertActivity> {
                                   enabled: loading,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Inserisci il attività';
+                                      return 'Inserisci l\'attività';
                                     }
                                     return null;
                                   },
@@ -1553,7 +1553,7 @@ class _InsertActivity extends State<InsertActivity> {
                                   decoration: InputDecoration(
                                       suffixIcon:
                                           const Icon(Icons.arrow_drop_down),
-                                      label: Text(cate == "T"
+                                      label: Text(cate == "T" && progetto["code"]!="N/A"
                                           ? 'Attività'
                                           : 'Tipo attività'),
                                       border: const OutlineInputBorder()),
