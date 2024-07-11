@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'Login.dart' as globals;
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -119,6 +121,7 @@ class MainApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
@@ -288,10 +291,59 @@ class _AccessoState extends State<Accesso> {
 
   late final LocalAuthentication auth;
   bool isLogged = false;
+  bool result = true;
+  late StreamSubscription<InternetStatus> listener;
+
+  void checkConnection() async {
+    result = await InternetConnection().hasInternetAccess;
+  }
 
   @override
   void initState() {
     super.initState();
+
+    checkConnection();
+
+    listener =
+        InternetConnection().onStatusChange.listen((InternetStatus status) {
+      switch (status) {
+        case InternetStatus.connected:
+          print('Connessione Internet Stabilita');
+          setState(() {
+            result = true;
+          });
+          // The internet is now connected
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(
+          //     duration: Duration(seconds: 3),
+          //     content: Text(
+          //       'Sei Tornato Online',
+          //       textAlign: TextAlign.center,
+          //     ),
+          //     behavior: SnackBarBehavior.floating,
+          //   ),
+          // );
+          break;
+        case InternetStatus.disconnected:
+          // The internet is now disconnected
+          print('Nessuna Connessione Internet');
+          setState(() {
+            result = false;
+          });
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(
+          //     duration: Duration(seconds: 3),
+          //     content: Text(
+          //       'Connessione Internet Persa',
+          //       textAlign: TextAlign.center,
+          //     ),
+          //     behavior: SnackBarBehavior.floating,
+          //   ),
+          // );
+          break;
+      }
+    });
+
     _loadPreferences();
 
     auth = LocalAuthentication();
@@ -477,38 +529,53 @@ class _AccessoState extends State<Accesso> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            Service()
-                                .fetchUtente(userController.text,
-                                    passwordController.text)
-                                .then((res) async {
-                              var sesid = res.headers["set-cookie"];
-                              globals.sesid = sesid!;
+                            if (result) {
+                              Service()
+                                  .fetchUtente(userController.text,
+                                      passwordController.text)
+                                  .then((res) async {
+                                var sesid = res.headers["set-cookie"];
+                                globals.sesid = sesid!;
 
-                              var prefs = await SharedPreferences.getInstance();
-                              prefs.setString('sesid', sesid);
-                              prefs.setString('username', userController.text);
-                              if (res.body.contains('"success":false')) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    duration: Duration(seconds: 3),
-                                    content: Text(
-                                      'Username e/o Password Errati',
-                                      textAlign: TextAlign.center,
+                                var prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString('sesid', sesid);
+                                prefs.setString(
+                                    'username', userController.text);
+                                if (res.body.contains('"success":false')) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      duration: Duration(seconds: 3),
+                                      content: Text(
+                                        'Username e/o Password Errati',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      behavior: SnackBarBehavior.floating,
                                     ),
-                                    behavior: SnackBarBehavior.floating,
+                                  );
+                                } else {
+                                  setState(() {
+                                    globals.username = userController.text;
+                                  });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const MyApp()),
+                                  );
+                                }
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  duration: Duration(seconds: 3),
+                                  content: Text(
+                                    'Nesuna Connessione Internet',
+                                    textAlign: TextAlign.center,
                                   ),
-                                );
-                              } else {
-                                setState(() {
-                                  globals.username = userController.text;
-                                });
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MyApp()),
-                                );
-                              }
-                            });
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -564,13 +631,24 @@ class _AccessoState extends State<Accesso> {
           biometricOnly: false,
         ),
       );
-      if (authenticated) {
+      if (authenticated && globals.sesid.isNotEmpty) {
         setState(() {
           globals.username = userController.text;
         });
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const MyApp()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(seconds: 3),
+            content: Text(
+              'Autenticazione fallita',
+              textAlign: TextAlign.center,
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
     } on PlatformException catch (e) {

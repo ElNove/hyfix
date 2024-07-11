@@ -181,7 +181,19 @@ class _MyAppState extends State<MyApp> {
             user ?? '')
         .then((report) {
       if (report == false) {
-        logout();
+        setState(() {
+          loading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(seconds: 3),
+            content: Text(
+              'Errore nel caricamento dei dati. Riprova più tardi...',
+              textAlign: TextAlign.center,
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       } else {
         setState(() {
           loading = false;
@@ -253,9 +265,11 @@ class _MyAppState extends State<MyApp> {
     dataFetch.initData();
     jobList.updateLista();
 
+    List<List<DateTime>> weeks = getWeeksOfMonth(jobList.focusedDay);
+
     fetchRep(
-        first: dataFetch.first,
-        last: dataFetch.last,
+        first: weeks.first.first,
+        last: weeks.last.last,
         type: dataFetch.type,
         customer: dataFetch.getId(dataFetch.customer),
         location: dataFetch.getId(dataFetch.location),
