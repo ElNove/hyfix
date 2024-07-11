@@ -140,6 +140,12 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
     widget.aggiornaData();
   }
 
+  String splitText(String text) {
+    // Use a regular expression to insert a space before each uppercase letter
+    final regExp = RegExp(r'(?<=[a-z])(?=[A-Z])');
+    return text.replaceAllMapped(regExp, (match) => ' ');
+  }
+
   List<Cliente> clienti = List.empty(growable: true);
   List<Luogo> luoghi = List.empty(growable: true);
   List<Progetto> progetti = List.empty(growable: true);
@@ -154,8 +160,6 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
     double screenHeight = MediaQuery.of(context).size.height;
     List<T> selectedList = [];
     String tipo = "";
-    String hintText="";
-
 
     void openFilterDialog(List<T> lista) async {
       setState(() {
@@ -179,15 +183,14 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
             selectedList = dataFetch.user as List<T>;
             tipo = "U";
           }
-          hintText="${ele.runtimeType}";
           break;
         }
       });
       await FilterListDialog.display<T>(
         applyButtonText: 'Applica',
         allButtonText: 'Tutti',
-        headlineText: "${lista.runtimeType}"
-            .substring(9, ("${lista.runtimeType}".length-9)),
+        headlineText: splitText("${lista.runtimeType}"
+            .substring(9, ("${lista.runtimeType}".length - 9))),
         themeData: FilterListThemeData(
           context,
           backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
