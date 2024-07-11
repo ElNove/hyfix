@@ -154,6 +154,8 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
     double screenHeight = MediaQuery.of(context).size.height;
     List<T> selectedList = [];
     String tipo = "";
+    String hintText="";
+
 
     void openFilterDialog(List<T> lista) async {
       setState(() {
@@ -177,15 +179,15 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
             selectedList = dataFetch.user as List<T>;
             tipo = "U";
           }
+          hintText="${ele.runtimeType}";
           break;
         }
       });
-
       await FilterListDialog.display<T>(
         applyButtonText: 'Applica',
         allButtonText: 'Tutti',
-        headlineText: "${selectedList.runtimeType}"
-            .substring(5, "${selectedList.runtimeType}".length - 1),
+        headlineText: "${lista.runtimeType}"
+            .substring(9, ("${lista.runtimeType}".length-9)),
         themeData: FilterListThemeData(
           context,
           backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
