@@ -376,13 +376,13 @@ class _MyAppState extends State<MyApp> {
 
 Route _createRoute(fetchRep, data, update) {
   return PageRouteBuilder(
-    transitionDuration: const Duration(milliseconds: 750),
+    transitionDuration: const Duration(milliseconds: 1500),
     pageBuilder: (context, animation, secondaryAnimation) => InsertActivity(
         fetchCalendar: fetchRep, update: update, dataAttuale: data),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;
-      const curve = Curves.fastOutSlowIn;
+      const curve = Curves.fastEaseInToSlowEaseOut;
 
       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
