@@ -323,7 +323,7 @@ class _AccessoState extends State<Accesso> {
             );
           }
           if (Navigator.canPop(context)) {
-            _handleRefresh();
+            // _handleRefresh();
           }
           setState(() {
             result = true;
@@ -394,30 +394,6 @@ class _AccessoState extends State<Accesso> {
     setState(() {
       visible = !visible;
     });
-  }
-
-  Future<void> _handleRefresh() async {
-    final dataFetch = context.read<DataFetch>();
-    final jobList = context.read<JobList>();
-
-    // Update the list of items and refresh the UI
-
-    dataFetch.initData();
-    jobList.updateLista();
-
-    List<List<DateTime>> weeks = getWeeksOfMonth(jobList.focusedDay);
-
-    fetchRep(
-        context: context,
-        first: weeks.first.first,
-        last: weeks.last.last,
-        type: dataFetch.type,
-        customer: dataFetch.getId(dataFetch.customer),
-        location: dataFetch.getId(dataFetch.location),
-        project: dataFetch.getId(dataFetch.project),
-        projectTask: dataFetch.getId(dataFetch.projectTask),
-        taskType: dataFetch.getId(dataFetch.taskType),
-        user: dataFetch.getId(dataFetch.user));
   }
 
   @override

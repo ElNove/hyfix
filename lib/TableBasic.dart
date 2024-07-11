@@ -125,7 +125,6 @@ class _TableBasicState extends State<TableBasic> {
         dataFetch.last = weeks.last.last;
 
         widget.fetchCalendar(
-            context: context,
             first: dataFetch.first,
             last: dataFetch.last,
             type: dataFetch.type,

@@ -313,7 +313,6 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
           var jobList = context.read<JobList>();
           jobList.updateLista();
           widget.fetchRep(
-              context: context,
               first: dataFetch.first,
               last: dataFetch.last,
               type: dataFetch.type,
@@ -389,7 +388,6 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                 clear().then((value) {
                                   dataFetch.clear();
                                   widget.fetchRep(
-                                      context: context,
                                       first: dataFetch.first,
                                       last: dataFetch.last,
                                       type: dataFetch.type,
@@ -486,7 +484,6 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
 
                             clear().then((val) {
                               widget.fetchRep(
-                                  context: context,
                                   first: dataFetch.first,
                                   last: dataFetch.last,
                                   type: dataFetch.type,

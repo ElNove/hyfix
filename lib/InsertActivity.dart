@@ -440,10 +440,7 @@ class _InsertActivity extends State<InsertActivity> {
 
         widget.update();
         widget.fetchCalendar(
-            context: context,
-            first: weeks.first.first,
-            last: weeks.last.last,
-            type: 'R');
+            first: weeks.first.first, last: weeks.last.last, type: 'R');
         Navigator.pop(context);
       }
     });

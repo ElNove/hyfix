@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hyfix/FilterBox.dart';
 import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/main.dart';
 import 'package:hyfix/models/Reports.dart';
 import 'package:hyfix/services/Service.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'TableBasic.dart';
 import 'ContainerEvents.dart';
@@ -11,62 +14,6 @@ import 'InsertActivity.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
 import 'Login.dart' as globals;
-
-DateTime _data = DateTime.now();
-bool loading = true;
-
-void fetchRep(
-    {required BuildContext context,
-    required dynamic first,
-    required dynamic last,
-    required String type,
-    List? customer,
-    List? location,
-    List? project,
-    List? projectTask,
-    List? taskType,
-    List? user}) {
-  var jobList = context.read<JobList>();
-    loading = true;
-  Service()
-      .getReports(
-          globals.sesid,
-          first,
-          last,
-          type,
-          customer ?? '',
-          location ?? '',
-          project ?? '',
-          projectTask ?? '',
-          taskType ?? '',
-          user ?? '')
-      .then((report) {
-    if (report == false) {
-        loading = false;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          duration: Duration(seconds: 3),
-          content: Text(
-            'Errore nel caricamento dei dati. Riprova più tardi...',
-            textAlign: TextAlign.center,
-          ),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    } else {
-        loading = false;
-      jobList.lista = <Reports>[];
-      for (var element in report) {
-        Reports reports = Reports.fromJson(element);
-        jobList.lista.add(reports);
-      }
-        jobList.lista = jobList.lista;
-        if (jobList.listaEventi.isEmpty) {
-          jobList.eventiGiorno(_data);
-        }
-    }
-  });
-}
 
 class JobList with ChangeNotifier {
   List<Reports> lista = <Reports>[];
@@ -194,6 +141,74 @@ class _MyAppState extends State<MyApp> {
 
   int i = 0;
 
+  DateTime _data = DateTime.now();
+  bool loading = true;
+
+  void fetchRep(
+      {required dynamic first,
+      required dynamic last,
+      required String type,
+      List? customer,
+      List? location,
+      List? project,
+      List? projectTask,
+      List? taskType,
+      List? user}) {
+    var jobList = context.read<JobList>();
+    setState(() {
+      loading = true;
+    });
+    Service()
+        .getReports(
+            globals.sesid,
+            first,
+            last,
+            type,
+            customer ?? '',
+            location ?? '',
+            project ?? '',
+            projectTask ?? '',
+            taskType ?? '',
+            user ?? '')
+        .then((report) {
+      if (report == false) {
+        setState(() {
+          loading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(seconds: 3),
+            content: Text(
+              'Errore nel caricamento dei dati. Riprova più tardi...',
+              textAlign: TextAlign.center,
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else {
+        setState(() {
+          loading = false;
+        });
+        jobList.lista = <Reports>[];
+        for (var element in report) {
+          Reports reports = Reports.fromJson(element);
+          jobList.lista.add(reports);
+        }
+        jobList.lista = jobList.lista;
+        if (jobList.listaEventi.isEmpty) {
+          jobList.eventiGiorno(_data);
+        }
+      }
+    });
+  }
+
+  late StreamSubscription<InternetStatus> listener;
+  bool result = true;
+
+  void checkConnection() async {
+    result = await InternetConnection().hasInternetAccess;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -202,9 +217,38 @@ class _MyAppState extends State<MyApp> {
 
     List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
 
-    fetchRep(context: context, first: weeks.first.first, last: weeks.last.last, type: 'R'); // Pass the context object to fetchRep
+    fetchRep(
+        first: weeks.first.first,
+        last: weeks.last.last,
+        type: 'R'); // Pass the context object to fetchRep
     final dataFetch = context.read<DataFetch>();
     dataFetch.initData();
+
+    checkConnection();
+
+    listener =
+        InternetConnection().onStatusChange.listen((InternetStatus status) {
+      switch (status) {
+        case InternetStatus.connected:
+
+          // The internet is now connected
+          if (result == false) {
+            if (Navigator.canPop(context)) {
+              _handleRefresh();
+            }
+          }
+
+          setState(() {
+            result = true;
+          });
+          break;
+        case InternetStatus.disconnected:
+          setState(() {
+            result = false;
+          });
+          break;
+      }
+    });
   }
 
   void logout() {
@@ -261,7 +305,7 @@ class _MyAppState extends State<MyApp> {
 
     List<List<DateTime>> weeks = getWeeksOfMonth(jobList.focusedDay);
 
-    fetchRep(context: context,
+    fetchRep(
         first: weeks.first.first,
         last: weeks.last.last,
         type: dataFetch.type,
