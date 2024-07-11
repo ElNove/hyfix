@@ -12,6 +12,62 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
 import 'Login.dart' as globals;
 
+DateTime _data = DateTime.now();
+bool loading = true;
+
+void fetchRep(
+    {required BuildContext context,
+    required dynamic first,
+    required dynamic last,
+    required String type,
+    List? customer,
+    List? location,
+    List? project,
+    List? projectTask,
+    List? taskType,
+    List? user}) {
+  var jobList = context.read<JobList>();
+    loading = true;
+  Service()
+      .getReports(
+          globals.sesid,
+          first,
+          last,
+          type,
+          customer ?? '',
+          location ?? '',
+          project ?? '',
+          projectTask ?? '',
+          taskType ?? '',
+          user ?? '')
+      .then((report) {
+    if (report == false) {
+        loading = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          duration: Duration(seconds: 3),
+          content: Text(
+            'Errore nel caricamento dei dati. Riprova più tardi...',
+            textAlign: TextAlign.center,
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+        loading = false;
+      jobList.lista = <Reports>[];
+      for (var element in report) {
+        Reports reports = Reports.fromJson(element);
+        jobList.lista.add(reports);
+      }
+        jobList.lista = jobList.lista;
+        if (jobList.listaEventi.isEmpty) {
+          jobList.eventiGiorno(_data);
+        }
+    }
+  });
+}
+
 class JobList with ChangeNotifier {
   List<Reports> lista = <Reports>[];
   List<Reports> listaEventi = <Reports>[];
@@ -133,10 +189,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  DateTime _data = DateTime.now();
   bool visible = true;
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  bool loading = true;
 
   int i = 0;
 
@@ -148,69 +202,9 @@ class _MyAppState extends State<MyApp> {
 
     List<List<DateTime>> weeks = getWeeksOfMonth(focusedDay);
 
-    fetchRep(first: weeks.first.first, last: weeks.last.last, type: 'R');
+    fetchRep(context: context, first: weeks.first.first, last: weeks.last.last, type: 'R'); // Pass the context object to fetchRep
     final dataFetch = context.read<DataFetch>();
     dataFetch.initData();
-  }
-
-  void fetchRep(
-      {required dynamic first,
-      required dynamic last,
-      required String type,
-      List? customer,
-      List? location,
-      List? project,
-      List? projectTask,
-      List? taskType,
-      List? user}) {
-    var jobList = context.read<JobList>();
-    setState(() {
-      loading = true;
-    });
-    Service()
-        .getReports(
-            globals.sesid,
-            first,
-            last,
-            type,
-            customer ?? '',
-            location ?? '',
-            project ?? '',
-            projectTask ?? '',
-            taskType ?? '',
-            user ?? '')
-        .then((report) {
-      if (report == false) {
-        setState(() {
-          loading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            duration: Duration(seconds: 3),
-            content: Text(
-              'Errore nel caricamento dei dati. Riprova più tardi...',
-              textAlign: TextAlign.center,
-            ),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      } else {
-        setState(() {
-          loading = false;
-        });
-        jobList.lista = <Reports>[];
-        for (var element in report) {
-          Reports reports = Reports.fromJson(element);
-          jobList.lista.add(reports);
-        }
-        setState(() {
-          jobList.lista = jobList.lista;
-          if (jobList.listaEventi.isEmpty) {
-            jobList.eventiGiorno(_data);
-          }
-        });
-      }
-    });
   }
 
   void logout() {
@@ -267,7 +261,7 @@ class _MyAppState extends State<MyApp> {
 
     List<List<DateTime>> weeks = getWeeksOfMonth(jobList.focusedDay);
 
-    fetchRep(
+    fetchRep(context: context,
         first: weeks.first.first,
         last: weeks.last.last,
         type: dataFetch.type,

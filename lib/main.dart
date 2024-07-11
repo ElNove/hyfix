@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/services/Service.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
@@ -321,21 +322,12 @@ class _AccessoState extends State<Accesso> {
               ),
             );
           }
+          if (Navigator.canPop(context)) {
+            _handleRefresh();
+          }
           setState(() {
             result = true;
           });
-          // _handleRefresh();
-
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   const SnackBar(
-          //     duration: Duration(seconds: 3),
-          //     content: Text(
-          //       'Sei Tornato Online',
-          //       textAlign: TextAlign.center,
-          //     ),
-          //     behavior: SnackBarBehavior.floating,
-          //   ),
-          // );
           break;
         case InternetStatus.disconnected:
           // The internet is now disconnected
@@ -350,16 +342,6 @@ class _AccessoState extends State<Accesso> {
               message: "Connessione Internet Persa",
             ),
           );
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   const SnackBar(
-          //     duration: Duration(seconds: 3),
-          //     content: Text(
-          //       'Connessione Internet Persa',
-          //       textAlign: TextAlign.center,
-          //     ),
-          //     behavior: SnackBarBehavior.floating,
-          //   ),
-          // );
           break;
       }
     });
@@ -414,6 +396,30 @@ class _AccessoState extends State<Accesso> {
     });
   }
 
+  Future<void> _handleRefresh() async {
+    final dataFetch = context.read<DataFetch>();
+    final jobList = context.read<JobList>();
+
+    // Update the list of items and refresh the UI
+
+    dataFetch.initData();
+    jobList.updateLista();
+
+    List<List<DateTime>> weeks = getWeeksOfMonth(jobList.focusedDay);
+
+    fetchRep(
+        context: context,
+        first: weeks.first.first,
+        last: weeks.last.last,
+        type: dataFetch.type,
+        customer: dataFetch.getId(dataFetch.customer),
+        location: dataFetch.getId(dataFetch.location),
+        project: dataFetch.getId(dataFetch.project),
+        projectTask: dataFetch.getId(dataFetch.projectTask),
+        taskType: dataFetch.getId(dataFetch.taskType),
+        user: dataFetch.getId(dataFetch.user));
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = context.watch<ThemeProvider>();
@@ -447,7 +453,6 @@ class _AccessoState extends State<Accesso> {
               SvgPicture.asset(
                 'assets/full_logo.svg',
                 colorFilter: ColorFilter.mode(
-                    // Theme.of(context).colorScheme.primaryContainer,
                     Theme.of(context).colorScheme.tertiaryContainer,
                     BlendMode.srcIn),
                 width: 280,
@@ -558,7 +563,6 @@ class _AccessoState extends State<Accesso> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              // Theme.of(context).colorScheme.primaryContainer,
                               Theme.of(context).colorScheme.tertiaryContainer,
                           shape: RoundedRectangleBorder(
                             borderRadius:
@@ -588,16 +592,6 @@ class _AccessoState extends State<Accesso> {
                                       message: "Username e/o Password Errati",
                                     ),
                                   );
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //   const SnackBar(
-                                  //     duration: Duration(seconds: 3),
-                                  //     content: Text(
-                                  //       'Username e/o Password Errati',
-                                  //       textAlign: TextAlign.center,
-                                  //     ),
-                                  //     behavior: SnackBarBehavior.floating,
-                                  //   ),
-                                  // );
                                 } else {
                                   setState(() {
                                     globals.username = userController.text;
@@ -609,25 +603,6 @@ class _AccessoState extends State<Accesso> {
                                   );
                                 }
                               });
-                            } else {
-                              showTopSnackBar(
-                                Overlay.of(context),
-                                dismissType: DismissType.onSwipe,
-                                const CustomSnackBar.error(
-                                  message: "Nesuna Connessione Internet",
-                                ),
-                              );
-                              // ScaffoldMessenger.of(context).showSnackBar(
-                              //   const SnackBar(
-                              //     duration: Duration(seconds: 3),
-                              //     dismissDirection: DismissDirection.up,
-                              //     content: Text(
-                              //       'Nesuna Connessione Internet',
-                              //       textAlign: TextAlign.center,
-                              //     ),
-                              //     behavior: SnackBarBehavior.floating,
-                              //   ),
-                              // );
                             }
                           } else {
                             showTopSnackBar(
@@ -637,16 +612,6 @@ class _AccessoState extends State<Accesso> {
                                 message: "Riempi tutti i campi",
                               ),
                             );
-                            // ScaffoldMessenger.of(context).showSnackBar(
-                            //   const SnackBar(
-                            //     duration: Duration(seconds: 3),
-                            //     content: Text(
-                            //       'Riempi tutti i campi',
-                            //       textAlign: TextAlign.center,
-                            //     ),
-                            //     behavior: SnackBarBehavior.floating,
-                            //   ),
-                            // );
                           }
                         },
                         child: Text(
@@ -654,7 +619,6 @@ class _AccessoState extends State<Accesso> {
                           style: TextStyle(
                               color: Theme.of(context)
                                   .colorScheme
-                                  // .onPrimaryContainer),
                                   .onTertiaryContainer),
                         ),
                       ),
@@ -707,16 +671,6 @@ class _AccessoState extends State<Accesso> {
             message: "Autenticazione fallita",
           ),
         );
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   const SnackBar(
-        //     duration: Duration(seconds: 3),
-        //     content: Text(
-        //       'Autenticazione fallita',
-        //       textAlign: TextAlign.center,
-        //     ),
-        //     behavior: SnackBarBehavior.floating,
-        //   ),
-        // );
       }
     } on PlatformException catch (e) {
       print(e);
