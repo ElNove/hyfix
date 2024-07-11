@@ -81,7 +81,8 @@ class DataFetch with ChangeNotifier {
       return ids;
     }
   }
-  void clear(){
+
+  void clear() {
     type = 'R';
     customer = [];
     location = [];

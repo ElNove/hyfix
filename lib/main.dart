@@ -375,7 +375,8 @@ class _AccessoState extends State<Accesso> {
               SvgPicture.asset(
                 'assets/full_logo.svg',
                 colorFilter: ColorFilter.mode(
-                    Theme.of(context).colorScheme.primaryContainer,
+                    // Theme.of(context).colorScheme.primaryContainer,
+                    Theme.of(context).colorScheme.tertiaryContainer,
                     BlendMode.srcIn),
                 width: 280,
               ),
@@ -388,12 +389,23 @@ class _AccessoState extends State<Accesso> {
                     SizedBox(
                       width: 300,
                       child: TextFormField(
+                        cursorColor:
+                            Theme.of(context).colorScheme.tertiaryContainer,
                         controller: userController,
                         decoration: InputDecoration(
                             suffixIcon: IconButton(
                                 onPressed: () => {userController.clear()},
                                 icon: const Icon(Icons.clear)),
                             border: const OutlineInputBorder(),
+                            floatingLabelStyle: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .tertiaryContainer),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .tertiaryContainer)),
                             labelText: "Nome Utente"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -407,6 +419,8 @@ class _AccessoState extends State<Accesso> {
                     SizedBox(
                       width: 300,
                       child: TextFormField(
+                        cursorColor:
+                            Theme.of(context).colorScheme.tertiaryContainer,
                         controller: passwordController,
                         obscureText: !visible,
                         focusNode: passwordFocus,
@@ -430,6 +444,15 @@ class _AccessoState extends State<Accesso> {
                               ],
                             ),
                             border: const OutlineInputBorder(),
+                            floatingLabelStyle: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .tertiaryContainer),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .tertiaryContainer)),
                             labelText: "Password"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -445,7 +468,8 @@ class _AccessoState extends State<Accesso> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              Theme.of(context).colorScheme.primaryContainer,
+                              // Theme.of(context).colorScheme.primaryContainer,
+                              Theme.of(context).colorScheme.tertiaryContainer,
                           shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(8), // <-- Radius
@@ -503,7 +527,8 @@ class _AccessoState extends State<Accesso> {
                           style: TextStyle(
                               color: Theme.of(context)
                                   .colorScheme
-                                  .onPrimaryContainer),
+                                  // .onPrimaryContainer),
+                                  .onTertiaryContainer),
                         ),
                       ),
                     ),
