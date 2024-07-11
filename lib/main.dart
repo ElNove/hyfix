@@ -449,10 +449,16 @@ class _AccessoState extends State<Accesso> {
                                 onPressed: () => {userController.clear()},
                                 icon: const Icon(Icons.clear)),
                             border: const OutlineInputBorder(),
-                            floatingLabelStyle: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .tertiaryContainer),
+                            floatingLabelStyle: MaterialStateTextStyle.resolveWith(
+                              (Set<MaterialState> states) {
+                                final Color color =
+                                    states.contains(MaterialState.error)
+                                        ? Theme.of(context).colorScheme.error
+                                        : Theme.of(context).colorScheme.tertiaryContainer;
+                                return TextStyle(
+                                    color: color, letterSpacing: 1.3);
+                              },
+                            ),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Theme.of(context)
@@ -496,10 +502,17 @@ class _AccessoState extends State<Accesso> {
                               ],
                             ),
                             border: const OutlineInputBorder(),
-                            floatingLabelStyle: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .tertiaryContainer),
+                            floatingLabelStyle:
+                                MaterialStateTextStyle.resolveWith(
+                              (Set<MaterialState> states) {
+                                final Color color =
+                                    states.contains(MaterialState.error)
+                                        ? Theme.of(context).colorScheme.error
+                                        : Theme.of(context).colorScheme.tertiaryContainer;
+                                return TextStyle(
+                                    color: color, letterSpacing: 1.3);
+                              },
+                            ),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Theme.of(context)
