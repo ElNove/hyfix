@@ -805,20 +805,29 @@ class _InsertActivity extends State<InsertActivity> {
                                   ),
                                   child: Container(
                                     decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryContainer,
+                                        borderRadius: const BorderRadius.only(
+                                          bottomLeft: Radius.circular(8),
+                                          bottomRight: Radius.circular(8),
+                                          topLeft: Radius.circular(8),
+                                          topRight: Radius.circular(8),
+                                        ),
                                         border: Border(
-                                      left: BorderSide(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface),
-                                      bottom: BorderSide(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface),
-                                      right: BorderSide(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface),
-                                    )),
+                                          left: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline),
+                                          bottom: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline),
+                                          right: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline),
+                                        )),
                                     height: 65.0 * options.length,
                                     width: constraints
                                         .biggest.width, // <-- Right here !
@@ -834,7 +843,13 @@ class _InsertActivity extends State<InsertActivity> {
                                           onTap: () => onSelected(option),
                                           child: Padding(
                                             padding: const EdgeInsets.all(16.0),
-                                            child: Text(option),
+                                            child: Text(
+                                              option,
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimaryContainer),
+                                            ),
                                           ),
                                         );
                                       },
@@ -993,20 +1008,30 @@ class _InsertActivity extends State<InsertActivity> {
                                         ),
                                         child: Container(
                                           decoration: BoxDecoration(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryContainer,
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                bottomLeft: Radius.circular(8),
+                                                bottomRight: Radius.circular(8),
+                                                topLeft: Radius.circular(8),
+                                                topRight: Radius.circular(8),
+                                              ),
                                               border: Border(
-                                            left: BorderSide(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onSurface),
-                                            bottom: BorderSide(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onSurface),
-                                            right: BorderSide(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onSurface),
-                                          )),
+                                                left: BorderSide(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .outline),
+                                                bottom: BorderSide(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .outline),
+                                                right: BorderSide(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .outline),
+                                              )),
                                           height: 65.0 * options.length,
                                           width: constraints.biggest
                                               .width, // <-- Right here !
@@ -1023,7 +1048,13 @@ class _InsertActivity extends State<InsertActivity> {
                                                 child: Padding(
                                                   padding: const EdgeInsets.all(
                                                       16.0),
-                                                  child: Text(option),
+                                                  child: Text(
+                                                    option,
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .onPrimaryContainer),
+                                                  ),
                                                 ),
                                               );
                                             },
@@ -1221,23 +1252,42 @@ class _InsertActivity extends State<InsertActivity> {
                                                   ),
                                                   child: Container(
                                                     decoration: BoxDecoration(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primaryContainer,
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .only(
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  8),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  8),
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  8),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  8),
+                                                        ),
                                                         border: Border(
-                                                      left: BorderSide(
-                                                          color:
-                                                              Theme.of(context)
+                                                          left: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
                                                                   .colorScheme
-                                                                  .onSurface),
-                                                      bottom: BorderSide(
-                                                          color:
-                                                              Theme.of(context)
+                                                                  .outline),
+                                                          bottom: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
                                                                   .colorScheme
-                                                                  .onSurface),
-                                                      right: BorderSide(
-                                                          color:
-                                                              Theme.of(context)
+                                                                  .outline),
+                                                          right: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
                                                                   .colorScheme
-                                                                  .onSurface),
-                                                    )),
+                                                                  .outline),
+                                                        )),
                                                     height:
                                                         65.0 * options.length,
                                                     width: constraints.biggest
@@ -1257,12 +1307,20 @@ class _InsertActivity extends State<InsertActivity> {
                                                         return InkWell(
                                                           onTap: () =>
                                                               onSelected(
-                                                                  option),
+                                                            option,
+                                                          ),
                                                           child: Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(16.0),
-                                                            child: Text(option),
+                                                            child: Text(
+                                                              option,
+                                                              style: TextStyle(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .onPrimaryContainer),
+                                                            ),
                                                           ),
                                                         );
                                                       },
@@ -1484,20 +1542,30 @@ class _InsertActivity extends State<InsertActivity> {
                                       ),
                                       child: Container(
                                         decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryContainer,
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              bottomLeft: Radius.circular(8),
+                                              bottomRight: Radius.circular(8),
+                                              topLeft: Radius.circular(8),
+                                              topRight: Radius.circular(8),
+                                            ),
                                             border: Border(
-                                          left: BorderSide(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface),
-                                          bottom: BorderSide(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface),
-                                          right: BorderSide(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface),
-                                        )),
+                                              left: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurfaceVariant),
+                                              bottom: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .outline),
+                                              right: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .outline),
+                                            )),
                                         height: 65.0 * options.length,
                                         width: constraints
                                             .biggest.width, // <-- Right here !
@@ -1514,7 +1582,13 @@ class _InsertActivity extends State<InsertActivity> {
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(16.0),
-                                                child: Text(option),
+                                                child: Text(
+                                                  option,
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimaryContainer),
+                                                ),
                                               ),
                                             );
                                           },
@@ -1553,7 +1627,8 @@ class _InsertActivity extends State<InsertActivity> {
                                   decoration: InputDecoration(
                                       suffixIcon:
                                           const Icon(Icons.arrow_drop_down),
-                                      label: Text(cate == "T" && progetto["code"]!="N/A"
+                                      label: Text(cate == "T" &&
+                                              progetto["code"] != "N/A"
                                           ? 'Attività'
                                           : 'Tipo attività'),
                                       border: const OutlineInputBorder()),
