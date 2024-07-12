@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:hyfix/WeeksDay.dart';
+import 'package:hyfix/models/Reports.dart';
 import 'package:intl/intl.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -17,10 +18,14 @@ class InsertActivity extends StatefulWidget {
       {super.key,
       required this.fetchCalendar,
       required this.dataAttuale,
-      required this.update});
+      required this.update,
+      required this.action,
+      this.report});
   final Function fetchCalendar;
   final DateTime dataAttuale;
   final Function update;
+  final String action;
+  final Reports? report;
 
   @override
   _InsertActivity createState() => _InsertActivity();
@@ -41,9 +46,11 @@ class _InsertActivity extends State<InsertActivity> {
   late Map<String, dynamic> progetto = {};
   late Map<String, dynamic> attivita = {};
   var id = 0;
+  int id_elim=0;
   bool rimborso = false;
   String tipo = "";
   String note = "";
+  String customer_note="";
   String cate = "T";
   int task = 0;
   String task_type = "";
@@ -120,14 +127,15 @@ class _InsertActivity extends State<InsertActivity> {
 
   @override
   void initState() {
+    if(widget.report!=null){
+      var l=widget.report!.toJson();
+      id_elim=l["id"];
+      print(id_elim);
+    }
     setState(() {
       loading = false;
     });
-    if (widget.dataAttuale.isAfter(DateTime.now())) {
-      tipo = "E";
-    } else {
       tipo = "R";
-    }
 
     Service().getUtente(globals.sesid).then((response) {
       var deco = jsonDecode(response.body);
@@ -372,6 +380,12 @@ class _InsertActivity extends State<InsertActivity> {
     }
   }
 
+  void delete() async{
+    Service().delete(globals.sesid, widget.report!).then((response){
+      print(response.body);
+    });
+  }
+
   void insert() async {
     final rep = ReportSave(
       id: 0,
@@ -526,7 +540,7 @@ class _InsertActivity extends State<InsertActivity> {
                   scrollDirection: Axis.vertical,
                   child: Column(children: [
                     Text(
-                      "AGGIUNGI ",
+                      widget.action=="add"?"AGGIUNGI":"MODIFICA",
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primaryContainer,
                           fontSize: screenHeight / 100 * 4,
@@ -1815,7 +1829,34 @@ class _InsertActivity extends State<InsertActivity> {
                               onChanged: (String newText) {
                                 note = newText;
                               }),
-                        )
+                        ),
+                        
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                              enabled: loading,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Inserisci le note';
+                                }
+                                return null;
+                              },
+                              maxLines: 4,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Note Cliente',
+                              ),
+                              onChanged: (String newText) {
+                                note = newText;
+                              }),
+                        ),
+                        
                       ],
                     ),
                     const SizedBox(
@@ -1852,6 +1893,60 @@ class _InsertActivity extends State<InsertActivity> {
                               // you'd often call a server or save the information in a database.
 
                               insert();
+                              }
+                            
+                          },
+                          child: Text(
+                            widget.action=="add"?'Aggiungi':'Modifica',
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        widget.action=="add"?Text(""):TextButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8), // <-- Radius
+                            ),
+                          ),
+                          onPressed: () {
+                            if (/*_formKey.currentState!.validate()*/1==1) {
+                              // If the form is valid, display a snackbar. In the real world,
+                              // you'd often call a server or save the information in a database.
+                              showDialog<void>(
+                                context: context,
+                                barrierDismissible:
+                                    false, // user must tap button!
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Conferma eliminazione'),
+                                    content: const SingleChildScrollView(
+                                      child: ListBody(
+                                        children: <Widget>[
+                                          Text('Sei Sicuro?'),
+                                        ],
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          delete();
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              
                             } else {
                               showDialog<void>(
                                 context: context,
@@ -1881,7 +1976,7 @@ class _InsertActivity extends State<InsertActivity> {
                             }
                           },
                           child: Text(
-                            'Aggiungi',
+                            'Elimina',
                             style: TextStyle(
                                 color: Theme.of(context)
                                     .colorScheme

@@ -15,7 +15,9 @@ class ContainerEvents extends StatefulWidget {
       required this.fetchRep,
       required this.dayReload,
       super.key,
-      required this.visible});
+      required this.visible,
+      required this.createRoute,
+      required this.update});
   final DateTime selezionato;
   final bool visible;
   final List<Reports> lista;
@@ -23,6 +25,8 @@ class ContainerEvents extends StatefulWidget {
   final Function fetchRep;
   final DateTime data;
   final Function dayReload;
+  final Function createRoute;
+  final Function update;
 
   @override
   _ContainerEvents createState() => _ContainerEvents();
@@ -121,7 +125,7 @@ class _ContainerEvents extends State<ContainerEvents> {
                             child: Padding(
                           padding: const EdgeInsets.only(bottom: 5),
                           child: Events(
-                              data: widget.selezionato, lista: widget.lista),
+                              data: widget.selezionato, lista: widget.lista,action:widget.createRoute,fetchRep: widget.fetchRep,update:widget.update),
                         )),
                       ],
                     ))),
