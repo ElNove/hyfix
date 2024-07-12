@@ -38,7 +38,7 @@ class Service {
       'filters[start]': startDate,
       'filters[end]': endDate,
       'filters[report_type]': type,
-      '_limit': '10000'
+      'limit': '10000'
     };
     if (customer != "") {
       queryParameters.addAll({'filters[customer_id][]': customer});
@@ -248,7 +248,7 @@ class Service {
       'filters[start]': startDate,
       'filters[end]': endDate,
       'filters[report_type]': report_type,
-      '_limit': '10000'
+      'limit': '10000'
     };
     if (customer_id != "") {
       queryParameters.addAll({'filters[customer_id][]': customer_id});

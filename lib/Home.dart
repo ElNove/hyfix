@@ -254,8 +254,12 @@ class _MyAppState extends State<MyApp> {
   void logout() {
     Service().logout(globals.sesid).then(
       (response) async {
-        JobList jobList = context.read<JobList>();
+        final dataFetch = context.read<DataFetch>();
+        final jobList = context.read<JobList>();
+
         jobList.lista = <Reports>[];
+        jobList.updateLista();
+        dataFetch.initData();
 
         var prefs = await SharedPreferences.getInstance();
         prefs.remove('username');
