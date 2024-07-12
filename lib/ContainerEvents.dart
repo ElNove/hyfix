@@ -1,55 +1,131 @@
 import 'package:flutter/material.dart';
-import 'package:progetto/Events.dart';
+import 'package:hyfix/Events.dart';
+import 'package:hyfix/models/Reports.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/src/intl/date_format.dart';
+import 'package:hyfix/FilterBox.dart';
 
 class ContainerEvents extends StatefulWidget {
   const ContainerEvents(
       {required this.selezionato,
+      required this.lista,
+      required this.data,
+      required this.loading,
+      required this.fetchRep,
+      required this.dayReload,
       super.key,
-      required this.visible,
-      required this.lista});
+      required this.visible});
   final DateTime selezionato;
   final bool visible;
+  final List<Reports> lista;
+  final bool loading;
+  final Function fetchRep;
+  final DateTime data;
+  final Function dayReload;
 
-  final List lista;
-
+  @override
   _ContainerEvents createState() => _ContainerEvents();
 }
 
 class _ContainerEvents extends State<ContainerEvents> {
   bool controllo() {
     bool check = false;
-    widget.lista.forEach((ele) {
-      if (DateUtils.isSameDay(widget.selezionato, ele.data)) {
+    for (Reports ele in widget.lista) {
+      if (DateUtils.isSameDay(widget.selezionato, ele.reportDate)) {
         check = true;
       }
-    });
+    }
 
     return check;
   }
 
   @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting('it_IT', null);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return AnimatedVisibility(
-        visible: widget.visible,
-        enter: fadeIn(),
-        exit: fadeOut(),
-        child: Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(227, 170, 237, 255)
-                        .withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
+      child: AnimatedVisibility(
+          enter: fadeIn(),
+          exit: fadeOut(),
+          child: Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: const Color.fromARGB(255, 140, 219, 255)),
-            child: controllo()
-                ? Events(lista: widget.lista, data: widget.selezionato)
-                : const Center(child: Text("NON CI SONO ATTIVITÀ"))));
+                color: Theme.of(context).colorScheme.tertiaryContainer,
+              ),
+              child: widget.loading
+                  ? Center(
+                      child: LoadingAnimationWidget.staggeredDotsWave(
+                        color:
+                            Theme.of(context).colorScheme.onTertiaryContainer,
+                        size: 80,
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                                "${DateFormat.EEEE('it_IT').format(widget.selezionato)}, ${DateFormat.MMMd('it_IT').format(widget.selezionato)}, ${DateFormat.y('it_IT').format(widget.selezionato)}",
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height /
+                                            100 *
+                                            2.5,
+                                    fontWeight: FontWeight.bold)),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .inverseSurface,
+                                ),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    transitionAnimationController:
+                                        AnimationController(
+                                            vsync: Navigator.of(context),
+                                            duration: const Duration(
+                                                milliseconds: 600))
+                                          ..forward(),
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (context) => Filterbox(
+                                        fetchRep: widget.fetchRep,
+                                        data: widget.data,
+                                        aggiornaData: widget.dayReload),
+                                  );
+                                },
+                                child: Icon(
+                                  Icons.filter_alt,
+                                  color: Theme.of(context).colorScheme.surface,
+                                ))
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Expanded(
+                            child: Padding(
+                          padding: const EdgeInsets.only(bottom: 5),
+                          child: Events(
+                              data: widget.selezionato, lista: widget.lista),
+                        )),
+                      ],
+                    ))),
+    );
   }
 }
 
