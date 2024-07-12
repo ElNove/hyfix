@@ -3,6 +3,7 @@
 
 android/local.properties
 .android/local.properties
+./android/local.properties
 
 # Miscellaneous
 *.class
