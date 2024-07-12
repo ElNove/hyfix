@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hyfix/DialogEvent.dart';
 import 'package:hyfix/models/Reports.dart';
 
@@ -31,18 +32,160 @@ class Events extends StatefulWidget {
   _EventsState createState() => _EventsState();
 }
 
+void delete(context, report) {
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Conferma eliminazione'),
+        content: const SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('Sei sicuro di voler eliminare questo evento?'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Si'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 class _EventsState extends State<Events> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.only(top: 5, bottom: 5),
-        child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(children: createRow())));
+      // padding: const EdgeInsets.fromLTRB(10, 3, 10, 3),
+      margin: const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        // child: Column(children: createRow()),
+        child: ListView.builder(
+          itemCount: widget.lista.length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) {
+            return Stack(children: [
+              Positioned.fill(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 6),
+                        decoration: const BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.all(Radius.circular(8))),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Slidable(
+                key: UniqueKey(),
+                endActionPane: ActionPane(
+                    extentRatio: 0.2,
+                    motion: const BehindMotion(),
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          delete(context, widget.lista[index]);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 6),
+                          padding: const EdgeInsets.only(left: 30),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.horizontal(
+                                right: Radius.circular(15)),
+                            color: Colors.red,
+                          ),
+                          alignment: Alignment.center,
+                          child: const Icon(Icons.delete_forever,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ]),
+                child: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            DialogEvent(report: widget.lista[index]));
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.only(bottom: 6),
+                    // margin: const EdgeInsets.fromLTRB(10, 3, 10, 3),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.white, width: 1),
+                      color: HexColor.fromHex(widget.lista[index].color),
+                    ),
+                    child: Row(
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              widget.lista[index].reportType == "R"
+                                  ? Icons.assignment
+                                  : Icons.bookmark,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                          ],
+                        ),
+                        Center(
+                          child: Text(
+                            "[  ${int.parse(widget.lista[index].quantity).toStringAsFixed(2)} ${widget.lista[index].unityCode}  ]",
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: Text(
+                            "${widget.lista[index].customerCode} - ${widget.lista[index].taskTypeCode}",
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ]);
+          },
+        ),
+      ),
+    );
   }
 
   createRow() {
-    
     double screenHeight = MediaQuery.of(context).size.height;
     var righe = <GestureDetector>[];
     for (var i in widget.lista) {

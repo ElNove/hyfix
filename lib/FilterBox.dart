@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:hyfix/services/Service.dart';
 import 'Login.dart' as globals;
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
 class Cliente {
   dynamic id;
@@ -405,7 +406,7 @@ class _FilterboxState<T extends Object> extends State<Filterbox> {
                                 });
                               },
                               icon: Icon(
-                                Icons.delete,
+                                FluentIcons.broom_32_filled,
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onTertiaryContainer,
