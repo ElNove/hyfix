@@ -400,6 +400,8 @@ class _MyAppState extends State<MyApp> {
                           fetchRep: fetchRep,
                           dayReload: jobList.updateLista,
                           data: jobList.focusedDay,
+                          createRoute:_createRoute,
+                          update:update,
                         ),
                       ),
                       Align(
@@ -411,7 +413,7 @@ class _MyAppState extends State<MyApp> {
                                 Theme.of(context).colorScheme.primaryContainer,
                             onPressed: () {
                               Navigator.of(context)
-                                  .push(_createRoute(fetchRep, _data, update));
+                                  .push(_createRoute(fetchRep: fetchRep,data:  _data,update:  update,action:  "add"));
                             },
                             child: const Icon(Icons.add_rounded),
                           ),
@@ -429,11 +431,11 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-Route _createRoute(fetchRep, data, update) {
+Route _createRoute({required fetchRep,required data, required update,required action,report}) {
   return PageRouteBuilder(
     transitionDuration: const Duration(milliseconds: 1500),
     pageBuilder: (context, animation, secondaryAnimation) => InsertActivity(
-        fetchCalendar: fetchRep, update: update, dataAttuale: data),
+        fetchCalendar: fetchRep, update: update, dataAttuale: data,action: action,report: report,),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;

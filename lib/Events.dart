@@ -23,10 +23,15 @@ Color darken(Color color, [double amount = .1]) {
 }
 
 class Events extends StatefulWidget {
-  const Events({super.key, required this.data, required this.lista});
+  const Events({super.key, required this.data, required this.lista,required this.action,required this.fetchRep,required this.update});
 
   final DateTime data;
   final List<Reports> lista;
+  final Function action;
+  final Function update;
+  final Function fetchRep;
+  
+      
   @override
   _EventsState createState() => _EventsState();
 }
@@ -48,9 +53,13 @@ class _EventsState extends State<Events> {
     for (var i in widget.lista) {
       var con = GestureDetector(
         onTap: () {
-          showDialog(
+          /*showDialog(
               context: context,
-              builder: (BuildContext context) => DialogEvent(report: i));
+              builder: (BuildContext context) => DialogEvent(report: i));*/
+              print("VIA");
+               Navigator.of(context)
+                                  .push(widget.action(fetchRep: widget.fetchRep,data: widget.data,update: widget.update,action: "mod_el", report: i))
+              ;
         },
         child: Container(
           padding: EdgeInsets.all(screenHeight / 100),

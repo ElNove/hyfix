@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:hyfix/WeeksDay.dart';
+import 'package:hyfix/models/Reports.dart';
 
 class Service {
   Future<http.Response> fetchUtente(String user, String password) async {
@@ -222,6 +223,83 @@ class Service {
           'Cookie': sesid,
         },
         body: rep);
+
+    return response;
+  }
+
+  Future<http.Response> delete(String sesid, Reports report) async {
+    print("${report.reportDate}".substring(0,10));
+    var queryParameters = <String, dynamic>{
+      "id": report.id,
+      /*"report_type": report.reportType,
+      "report_date": "${report.reportDate}".substring(0,10),
+      "customer_id": report.customerId,
+      "customer_location_id": report.customerLocationId,
+      "customer_code": report.customerCode,
+      "location_id": report.customerLocationId,
+      "location_code": report.locationCode,
+      "location_fulladdress": report.locationFulladdress,
+      "location_distance": report.locationDistance,
+      "project_id": report.projectId,
+      "default_project": report.defaultProject,
+      "project_task_id": report.projectTaskId,
+      "task_type_id": report.taskTypeId,
+      "task_type_code": report.taskTypeCode,
+      "quantity": report.quantity,
+      "customer_quantity": report.customerQuantity,
+      "note": report.note,
+      "customer_note": report.customerNote,
+      "user_id": report.userId,
+      "signature": report.signature,
+      "username": report.username,
+      "bill": report.bill,
+      "billed": report.billed,
+      "refund": report.refund,
+      "refunded": report.refunded,
+      "report_print": report.reportPrint,
+      "unity_code": report.unityCode,
+      "unity_type": report.unityType,
+      "report_unity_type": report.unityType,
+      "blockdate": report.blockdate.toString(),
+      "start": report.start.toString(),
+      "blocked": report.blocked,
+      "type_description": report.typeDescription,
+      "customer_companyname": report.customerCompanyname,
+      "location_address": report.locationAddress,
+      "location_zip": report.locationZip,
+      "location_city": report.locationCity,
+      "location_province": report.locationProvince,
+      "location_country": report.locationCountry,
+      "avatar": report.avatar,
+      "project_code": report.projectCode,
+      "project_description": report.projectDescription,
+      "project_expire": report.projectExpire,
+      "project_position": report.projectPosition,
+      "project_position_not_zero": report.projectPositionNotZero,
+      "project_task_code": report.projectTaskCode,
+      "project_task_description": report.projectTaskDescription,
+      "project_task_expire": report.projectTaskExpire.toString(),
+      "project_task_estimate": report.projectTaskEstimate.toString(),
+      "project_task_position": report.projectTaskPosition,
+      "project_task_position_not_zero": report.projectPositionNotZero,
+      "unity_id": report.unityId,
+      "task_type_bill": report.taskTypeBill,
+      "task_type_refund": report.taskTypeRefund,
+      "task_type_report_print": report.taskTypeReportPrint,
+      "task_type_color": report.taskTypeColor,
+      "color": report.color,
+      "first_of_the_month": report.firstOfTheMonth.toString(),
+      "user_blocked": report.userBlocked,*/
+    };
+
+    var uri = Uri.https('hyfix.test.nealis.it', '/reports/report/delete');
+
+    final response = await http.post(uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Cookie': sesid,
+        },
+        body: jsonEncode(queryParameters));
 
     return response;
   }
