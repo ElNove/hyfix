@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hyfix/DialogEvent.dart';
+import 'package:hyfix/Home.dart';
+import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/models/Reports.dart';
+import 'package:provider/provider.dart';
+import 'Login.dart' as globals;
 
 import 'dart:math' as math;
+
+import 'package:hyfix/services/Service.dart';
 
 extension HexColor on Color {
   static Color fromHex(String hexString) {
@@ -24,53 +30,81 @@ Color darken(Color color, [double amount = .1]) {
 }
 
 class Events extends StatefulWidget {
-  const Events({super.key, required this.data, required this.lista,required this.action,required this.fetchRep,required this.update});
+  const Events(
+      {super.key,
+      required this.data,
+      required this.lista,
+      required this.action,
+      required this.fetchRep,
+      required this.update});
 
   final DateTime data;
   final List<Reports> lista;
   final Function action;
   final Function update;
   final Function fetchRep;
-  
-      
+
   @override
   _EventsState createState() => _EventsState();
 }
 
-void delete(context, report) {
-  showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Conferma eliminazione'),
-        content: const SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text('Sei sicuro di voler eliminare questo evento?'),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Si'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-
 class _EventsState extends State<Events> {
+  void delete(context, report) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Conferma eliminazione'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Sei sicuro di voler eliminare questo evento?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Si'),
+              onPressed: () {
+                Service().delete(globals.sesid, report).then((response) {
+                  final dataFetch = context.read<DataFetch>();
+                  final jobList = context.read<JobList>();
+
+                  // Update the list of items and refresh the UI
+
+                  dataFetch.initData();
+                  jobList.updateLista();
+
+                  List<List<DateTime>> weeks =
+                      getWeeksOfMonth(jobList.focusedDay);
+
+                  widget.fetchRep(
+                      first: weeks.first.first,
+                      last: weeks.last.last,
+                      type: dataFetch.type,
+                      customer: dataFetch.getId(dataFetch.customer),
+                      location: dataFetch.getId(dataFetch.location),
+                      project: dataFetch.getId(dataFetch.project),
+                      projectTask: dataFetch.getId(dataFetch.projectTask),
+                      taskType: dataFetch.getId(dataFetch.taskType),
+                      user: dataFetch.getId(dataFetch.user));
+                  Navigator.of(context).pop();
+                });
+              },
+            ),
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -125,10 +159,12 @@ class _EventsState extends State<Events> {
                     ]),
                 child: GestureDetector(
                   onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) =>
-                            DialogEvent(report: widget.lista[index]));
+                    Navigator.of(context).push(widget.action(
+                        fetchRep: widget.fetchRep,
+                        data: widget.data,
+                        update: widget.update,
+                        action: "mod_el",
+                        report: widget.lista[index]));
                   },
                   child: Container(
                     padding: const EdgeInsets.all(10),
@@ -199,10 +235,13 @@ class _EventsState extends State<Events> {
           /*showDialog(
               context: context,
               builder: (BuildContext context) => DialogEvent(report: i));*/
-              print("VIA");
-               Navigator.of(context)
-                                  .push(widget.action(fetchRep: widget.fetchRep,data: widget.data,update: widget.update,action: "mod_el", report: i))
-              ;
+          print("VIA");
+          Navigator.of(context).push(widget.action(
+              fetchRep: widget.fetchRep,
+              data: widget.data,
+              update: widget.update,
+              action: "mod_el",
+              report: i));
         },
         child: Container(
           padding: EdgeInsets.all(screenHeight / 100),

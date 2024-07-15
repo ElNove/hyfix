@@ -305,7 +305,7 @@ class _MyAppState extends State<MyApp> {
     // Update the list of items and refresh the UI
 
     dataFetch.initData();
-    jobList.listaEventi.clear();
+    jobList.updateLista();
 
     List<List<DateTime>> weeks = getWeeksOfMonth(jobList.focusedDay);
 
@@ -401,8 +401,8 @@ class _MyAppState extends State<MyApp> {
                           fetchRep: fetchRep,
                           dayReload: jobList.updateLista,
                           data: jobList.focusedDay,
-                          createRoute:_createRoute,
-                          update:update,
+                          createRoute: _createRoute,
+                          update: update,
                         ),
                       ),
                       Align(
@@ -413,8 +413,11 @@ class _MyAppState extends State<MyApp> {
                             backgroundColor:
                                 Theme.of(context).colorScheme.primaryContainer,
                             onPressed: () {
-                              Navigator.of(context)
-                                  .push(_createRoute(fetchRep: fetchRep,data:  _data,update:  update,action:  "add"));
+                              Navigator.of(context).push(_createRoute(
+                                  fetchRep: fetchRep,
+                                  data: _data,
+                                  update: update,
+                                  action: "add"));
                             },
                             child: const Icon(Icons.add_rounded),
                           ),
@@ -432,11 +435,21 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-Route _createRoute({required fetchRep,required data, required update,required action,report}) {
+Route _createRoute(
+    {required fetchRep,
+    required data,
+    required update,
+    required action,
+    report}) {
   return PageRouteBuilder(
     transitionDuration: const Duration(milliseconds: 1500),
     pageBuilder: (context, animation, secondaryAnimation) => InsertActivity(
-        fetchCalendar: fetchRep, update: update, dataAttuale: data,action: action,report: report,),
+      fetchCalendar: fetchRep,
+      update: update,
+      dataAttuale: data,
+      action: action,
+      report: report,
+    ),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;

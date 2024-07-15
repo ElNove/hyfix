@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:hyfix/WeeksDay.dart';
 import 'package:hyfix/models/Reports.dart';
+import 'package:hyfix/Login.dart' as globals;
 
 class Service {
   Future<http.Response> fetchUtente(String user, String password) async {
@@ -65,6 +66,8 @@ class Service {
       HttpHeaders.contentTypeHeader: 'application/json',
       HttpHeaders.cookieHeader: sesid,
     });
+
+    print(globals.sesid);
     if (response.body.contains('"success":true')) {
       var json = response.body;
       final dynamic jsonData = jsonDecode(json);
@@ -228,7 +231,7 @@ class Service {
   }
 
   Future<http.Response> delete(String sesid, Reports report) async {
-    print("${report.reportDate}".substring(0,10));
+    print("${report.reportDate}".substring(0, 10));
     var queryParameters = <String, dynamic>{
       "id": report.id,
       /*"report_type": report.reportType,

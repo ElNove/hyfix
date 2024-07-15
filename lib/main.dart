@@ -630,7 +630,7 @@ class _AccessoState extends State<Accesso> {
           biometricOnly: false,
         ),
       );
-      if (authenticated && globals.sesid.isNotEmpty && result) {
+      if (authenticated && result) {
         setState(() {
           globals.username = userController.text;
         });
