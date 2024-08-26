@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
@@ -10,6 +11,7 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'Login.dart' as globals;
 import './models/ReportSave.dart';
 import './services/Service.dart';
+import 'dart:developer';
 
 var loading = false;
 
@@ -52,7 +54,7 @@ class _InsertActivity extends State<InsertActivity> {
   String note = "";
   String customer_note = "";
   String cate = "T";
-  int task = 0;
+  double task = 0;
   String task_type = "";
   dynamic project_task_id = 0;
   var indirizzo = "";
@@ -127,7 +129,6 @@ class _InsertActivity extends State<InsertActivity> {
 
   @override
   void initState() {
-    
     setState(() {
       loading = false;
     });
@@ -140,50 +141,71 @@ class _InsertActivity extends State<InsertActivity> {
       Service().getClienti(globals.sesid, l["customer_id"]).then((response) {
         var deco = jsonDecode(response.body);
         setState(() {
-        cliente = deco["data"][0];
-        cController.text =
-            "${cliente["customer_code"]}  - ${cliente["companyname"]}";
-            });
+          cliente = deco["data"][0];
+          cController.text =
+              "${cliente["customer_code"]}  - ${cliente["companyname"]}";
+        });
         Service()
             .getLuoghi(globals.sesid, cliente["customer_id"])
             .then((response) {
           var decol = jsonDecode(response.body);
           for (var elem in decol["data"]) {
-            if (elem["location_id"] ==l["location_id"]) {
-              luogo=elem;
-              lController.text="${luogo["location_code"]} - ${luogo["customer_companyname"]} - ${luogo["location_city"]}  ";
+            if (elem["location_id"] == l["location_id"]) {
+              luogo = elem;
+              lController.text =
+                  "${luogo["location_code"]} - ${luogo["customer_companyname"]} - ${luogo["location_city"]}  ";
               setState(() {
-                indirizzo=luogo["location_fulladdress"];
+                indirizzo = luogo["location_fulladdress"];
               });
             }
           }
           setLuoghi(response);
         });
-        Service().getProgetti(globals.sesid, cliente["customer_id"], cliente).then((response){
-          var decol = jsonDecode(response.body); 
+        Service()
+            .getProgetti(globals.sesid, cliente["customer_id"], cliente)
+            .then((response) {
+          var decol = jsonDecode(response.body);
           for (var elem in decol["data"]) {
-            if (elem["project_id"] ==l["project_id"]) {
-              progetto=elem;
-              pController.text="${progetto["project_code"]} - ${progetto["customer_code"]}";
+            if (elem["project_id"] == l["project_id"]) {
+              progetto = elem;
+              pController.text =
+                  "${progetto["project_code"]} - ${progetto["customer_code"]}";
             }
           }
           setProgetti(response);
-          Service().getActivity(sesid:globals.sesid,cate: l["unity_type"],cu_id: cliente["customer_id"],pr_id: progetto["project_id"],defaultPr: l["default_project"]).then((response){
-          var decol = jsonDecode(response.body); 
-          for (var elem in decol["data"]) {
-            if (elem["task_type_id"] ==l["task_type_id"]) {
-              attivita=elem;
-              aController.text="${attivita["task_type_code"]} - ${attivita["unity_code"]} ";
+          Service()
+              .getActivity(
+                  sesid: globals.sesid,
+                  cate: l["unity_type"],
+                  cu_id: cliente["customer_id"],
+                  pr_id: progetto["project_id"],
+                  defaultPr: l["default_project"])
+              .then((response) {
+            var decol = jsonDecode(response.body);
+            for (var elem in decol["data"]) {
+              if (elem["task_type_id"] == l["task_type_id"]) {
+                attivita = elem;
+                aController.text =
+                    "${attivita["task_type_code"]} - ${attivita["unity_code"]} ";
+              }
             }
-          }
-          setActivity(response);
+            setActivity(response);
+            log(l.toString());
+            qController.text = "${l["quantity"]}";
+            nController.text = "${l["note"]}";
+            ncController.text = "${l["customer_note"]}";
+            setState(() {
+              customer_note = l["customer_note"];
+              note = l["note"];
+              task = double.parse(l["quantity"]);
+            });
           });
         });
       });
-      
-    tipo = l["report_type"];
-    cate=l["unity_type"];
-    }else{
+
+      tipo = l["report_type"];
+      cate = l["unity_type"];
+    } else {
       tipo = "R";
     }
 
@@ -414,7 +436,7 @@ class _InsertActivity extends State<InsertActivity> {
     });
   }
 
-  void assegnaTask(int o) {
+  void assegnaTask(double o) {
     task = o;
   }
 
@@ -438,7 +460,7 @@ class _InsertActivity extends State<InsertActivity> {
 
   void insert() async {
     final rep = ReportSave(
-      id: 0,
+      id: id_elim,
       reportType: tipo,
       reportDate: widget.dataAttuale,
       customerId: cliente["customer_id"],
@@ -455,8 +477,8 @@ class _InsertActivity extends State<InsertActivity> {
       taskTypeCode: attivita["task_type_code"],
       quantity: task,
       customerQuantity: task,
-      note: "",
-      customerNote: note,
+      note: note,
+      customerNote: customer_note,
       userId: utente["id"],
       signature: utente["signature"],
       username: utente["username"],
@@ -480,22 +502,22 @@ class _InsertActivity extends State<InsertActivity> {
       projectActive: progetto["active"],
       unityId: attivita["unity_id"],
     );
-
     Service().saveReport(globals.sesid, ReportSaveToJson(rep)).then((report) {
+      print(report.body.toString());
       if (report.body.contains('"success":false')) {
         showTopSnackBar(
           Overlay.of(context),
           dismissType: DismissType.onSwipe,
-          const CustomSnackBar.error(
-            message: "Inserimento non riuscito",
+          CustomSnackBar.error(
+            message: id_elim==0?"Inserimento non riuscito":"Modifica non riuscita",
           ),
         );
       } else {
         showTopSnackBar(
           Overlay.of(context),
           dismissType: DismissType.onSwipe,
-          const CustomSnackBar.success(
-            message: "Inserimento avvenuto con successo",
+          CustomSnackBar.success(
+            message: id_elim==0?"Inserimento avvenuto con successo":"Modifica avvenuta con successo",
           ),
         );
         DateTime focusedDay = DateTime.now();
@@ -516,6 +538,9 @@ class _InsertActivity extends State<InsertActivity> {
   TextEditingController pController = TextEditingController();
   TextEditingController lController = TextEditingController();
   TextEditingController aController = TextEditingController();
+  TextEditingController qController = TextEditingController();
+  TextEditingController nController = TextEditingController();
+  TextEditingController ncController = TextEditingController();
 
   void _clear(type) {
     switch (type) {
@@ -1846,8 +1871,8 @@ class _InsertActivity extends State<InsertActivity> {
                           width: 100,
                           child: Task(
                             task: assegnaTask,
-                            task_type: task_type
-                            
+                            task_type: task_type,
+                            qController: qController,
                           ),
                         ),
                         const SizedBox(
@@ -1865,6 +1890,7 @@ class _InsertActivity extends State<InsertActivity> {
                       children: [
                         Expanded(
                           child: TextFormField(
+                              controller: nController,
                               enabled: loading,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -1890,6 +1916,7 @@ class _InsertActivity extends State<InsertActivity> {
                       children: [
                         Expanded(
                           child: TextFormField(
+                              controller: ncController,
                               enabled: loading,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -1903,7 +1930,7 @@ class _InsertActivity extends State<InsertActivity> {
                                 labelText: 'Note Cliente',
                               ),
                               onChanged: (String newText) {
-                                note = newText;
+                                customer_note = newText;
                               }),
                         ),
                       ],
@@ -2069,9 +2096,14 @@ class _InsertActivity extends State<InsertActivity> {
 ////////////////     ORE     ///////////////////////
 
 class Task extends StatefulWidget {
-  const Task({super.key, required this.task, required this.task_type});
+  const Task(
+      {super.key,
+      required this.task,
+      required this.task_type,
+      required this.qController});
   final Function task;
   final String task_type;
+  final TextEditingController qController;
 
   @override
   State<Task> createState() => _TaskState();
@@ -2081,6 +2113,7 @@ class _TaskState extends State<Task> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: widget.qController,
       enabled: loading,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -2090,12 +2123,12 @@ class _TaskState extends State<Task> {
       },
       decoration: const InputDecoration(
           labelText: "Quantità", border: OutlineInputBorder()),
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.numberWithOptions(decimal: true),
       inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.digitsOnly
+        FilteringTextInputFormatter.allow(RegExp(r'^\d+(\.\d*)?')),
       ],
       onChanged: (value) {
-        widget.task(value != '' ? int.parse(value) : 0);
+        widget.task(value != '' ? double.parse(value) : 0.0);
       }, // Only numbers can be entered
     );
   }

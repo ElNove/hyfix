@@ -24,8 +24,8 @@ class ReportSave {
     dynamic projectTaskId;
     int taskTypeId;
     String taskTypeCode;
-    int quantity;
-    int customerQuantity;
+    double quantity;
+    double customerQuantity;
     String note;
     String customerNote;
     int userId;
