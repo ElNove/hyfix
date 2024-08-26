@@ -193,7 +193,7 @@ class _EventsState extends State<Events> {
                         ),
                         Center(
                           child: Text(
-                            "[  ${int.parse(widget.lista[index].quantity).toStringAsFixed(2)} ${widget.lista[index].unityCode}  ]",
+                            "[  ${double.parse(widget.lista[index].quantity).toStringAsFixed(2)} ${widget.lista[index].unityCode}  ]",
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
