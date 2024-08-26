@@ -46,11 +46,11 @@ class _InsertActivity extends State<InsertActivity> {
   late Map<String, dynamic> progetto = {};
   late Map<String, dynamic> attivita = {};
   var id = 0;
-  int id_elim=0;
+  int id_elim = 0;
   bool rimborso = false;
   String tipo = "";
   String note = "";
-  String customer_note="";
+  String customer_note = "";
   String cate = "T";
   int task = 0;
   String task_type = "";
@@ -127,15 +127,65 @@ class _InsertActivity extends State<InsertActivity> {
 
   @override
   void initState() {
-    if(widget.report!=null){
-      var l=widget.report!.toJson();
-      id_elim=l["id"];
-      print(id_elim);
-    }
+    
     setState(() {
       loading = false;
     });
+    if (widget.report != null) {
+      var l = widget.report!.toJson();
+      id_elim = l["id"];
+
+      print(l["unity_type"]);
+
+      Service().getClienti(globals.sesid, l["customer_id"]).then((response) {
+        var deco = jsonDecode(response.body);
+        setState(() {
+        cliente = deco["data"][0];
+        cController.text =
+            "${cliente["customer_code"]}  - ${cliente["companyname"]}";
+            });
+        Service()
+            .getLuoghi(globals.sesid, cliente["customer_id"])
+            .then((response) {
+          var decol = jsonDecode(response.body);
+          for (var elem in decol["data"]) {
+            if (elem["location_id"] ==l["location_id"]) {
+              luogo=elem;
+              lController.text="${luogo["location_code"]} - ${luogo["customer_companyname"]} - ${luogo["location_city"]}  ";
+              setState(() {
+                indirizzo=luogo["location_fulladdress"];
+              });
+            }
+          }
+          setLuoghi(response);
+        });
+        Service().getProgetti(globals.sesid, cliente["customer_id"], cliente).then((response){
+          var decol = jsonDecode(response.body); 
+          for (var elem in decol["data"]) {
+            if (elem["project_id"] ==l["project_id"]) {
+              progetto=elem;
+              pController.text="${progetto["project_code"]} - ${progetto["customer_code"]}";
+            }
+          }
+          setProgetti(response);
+          Service().getActivity(sesid:globals.sesid,cate: l["unity_type"],cu_id: cliente["customer_id"],pr_id: progetto["project_id"],defaultPr: l["default_project"]).then((response){
+          var decol = jsonDecode(response.body); 
+          for (var elem in decol["data"]) {
+            if (elem["task_type_id"] ==l["task_type_id"]) {
+              attivita=elem;
+              aController.text="${attivita["task_type_code"]} - ${attivita["unity_code"]} ";
+            }
+          }
+          setActivity(response);
+          });
+        });
+      });
+      
+    tipo = l["report_type"];
+    cate=l["unity_type"];
+    }else{
       tipo = "R";
+    }
 
     Service().getUtente(globals.sesid).then((response) {
       var deco = jsonDecode(response.body);
@@ -380,8 +430,8 @@ class _InsertActivity extends State<InsertActivity> {
     }
   }
 
-  void delete() async{
-    Service().delete(globals.sesid, widget.report!).then((response){
+  void delete() async {
+    Service().delete(globals.sesid, widget.report!).then((response) {
       print(response.body);
     });
   }
@@ -540,7 +590,7 @@ class _InsertActivity extends State<InsertActivity> {
                   scrollDirection: Axis.vertical,
                   child: Column(children: [
                     Text(
-                      widget.action=="add"?"AGGIUNGI":"MODIFICA",
+                      widget.action == "add" ? "AGGIUNGI" : "MODIFICA",
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primaryContainer,
                           fontSize: screenHeight / 100 * 4,
@@ -1797,6 +1847,7 @@ class _InsertActivity extends State<InsertActivity> {
                           child: Task(
                             task: assegnaTask,
                             task_type: task_type,
+                            val:task.toDouble(),
                           ),
                         ),
                         const SizedBox(
@@ -1830,7 +1881,6 @@ class _InsertActivity extends State<InsertActivity> {
                                 note = newText;
                               }),
                         ),
-                        
                       ],
                     ),
                     const SizedBox(
@@ -1856,7 +1906,6 @@ class _InsertActivity extends State<InsertActivity> {
                                 note = newText;
                               }),
                         ),
-                        
                       ],
                     ),
                     const SizedBox(
@@ -1893,11 +1942,10 @@ class _InsertActivity extends State<InsertActivity> {
                               // you'd often call a server or save the information in a database.
 
                               insert();
-                              }
-                            
+                            }
                           },
                           child: Text(
-                            widget.action=="add"?'Aggiungi':'Modifica',
+                            widget.action == "add" ? 'Aggiungi' : 'Modifica',
                             style: TextStyle(
                                 color: Theme.of(context)
                                     .colorScheme
@@ -1907,82 +1955,85 @@ class _InsertActivity extends State<InsertActivity> {
                         const SizedBox(
                           width: 20,
                         ),
-                        widget.action=="add"?Text(""):TextButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(8), // <-- Radius
-                            ),
-                          ),
-                          onPressed: () {
-                            if (/*_formKey.currentState!.validate()*/1==1) {
-                              // If the form is valid, display a snackbar. In the real world,
-                              // you'd often call a server or save the information in a database.
-                              showDialog<void>(
-                                context: context,
-                                barrierDismissible:
-                                    false, // user must tap button!
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Conferma eliminazione'),
-                                    content: const SingleChildScrollView(
-                                      child: ListBody(
-                                        children: <Widget>[
-                                          Text('Sei Sicuro?'),
-                                        ],
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('OK'),
-                                        onPressed: () {
-                                          delete();
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
+                        widget.action == "add"
+                            ? Text("")
+                            : TextButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(8), // <-- Radius
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (/*_formKey.currentState!.validate()*/ 1 ==
+                                      1) {
+                                    // If the form is valid, display a snackbar. In the real world,
+                                    // you'd often call a server or save the information in a database.
+                                    showDialog<void>(
+                                      context: context,
+                                      barrierDismissible:
+                                          false, // user must tap button!
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'Conferma eliminazione'),
+                                          content: const SingleChildScrollView(
+                                            child: ListBody(
+                                              children: <Widget>[
+                                                Text('Sei Sicuro?'),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('OK'),
+                                              onPressed: () {
+                                                delete();
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    showDialog<void>(
+                                      context: context,
+                                      barrierDismissible:
+                                          false, // user must tap button!
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Attenzione'),
+                                          content: const SingleChildScrollView(
+                                            child: ListBody(
+                                              children: <Widget>[
+                                                Text(
+                                                    'Devi riempire tutti i campi!'),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('OK'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
                                 },
-                              );
-                              
-                            } else {
-                              showDialog<void>(
-                                context: context,
-                                barrierDismissible:
-                                    false, // user must tap button!
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Attenzione'),
-                                    content: const SingleChildScrollView(
-                                      child: ListBody(
-                                        children: <Widget>[
-                                          Text('Devi riempire tutti i campi!'),
-                                        ],
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('OK'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-                          },
-                          child: Text(
-                            'Elimina',
-                            style: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onPrimaryContainer),
-                          ),
-                        ),
+                                child: Text(
+                                  'Elimina',
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer),
+                                ),
+                              ),
                         const SizedBox(
                           width: 20,
                         ),
@@ -2018,9 +2069,10 @@ class _InsertActivity extends State<InsertActivity> {
 ////////////////     ORE     ///////////////////////
 
 class Task extends StatefulWidget {
-  const Task({super.key, required this.task, required this.task_type});
+  const Task({super.key, required this.task, required this.task_type, required this.val});
   final Function task;
   final String task_type;
+  final double val;
 
   @override
   State<Task> createState() => _TaskState();
