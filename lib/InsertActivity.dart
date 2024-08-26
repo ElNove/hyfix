@@ -1846,8 +1846,8 @@ class _InsertActivity extends State<InsertActivity> {
                           width: 100,
                           child: Task(
                             task: assegnaTask,
-                            task_type: task_type,
-                            val:task.toDouble(),
+                            task_type: task_type
+                            
                           ),
                         ),
                         const SizedBox(
@@ -2069,10 +2069,9 @@ class _InsertActivity extends State<InsertActivity> {
 ////////////////     ORE     ///////////////////////
 
 class Task extends StatefulWidget {
-  const Task({super.key, required this.task, required this.task_type, required this.val});
+  const Task({super.key, required this.task, required this.task_type});
   final Function task;
   final String task_type;
-  final double val;
 
   @override
   State<Task> createState() => _TaskState();
